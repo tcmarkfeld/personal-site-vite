@@ -8,7 +8,7 @@ export const Experience = () => {
     <Terminal
       page={ROUTES.EXPERIENCE}
       pwd="experience"
-      txt="work_experience.txt"
+      txt="work_experience"
       eofLineNumber={19}
     >
       {/* File content */}
@@ -26,7 +26,7 @@ export const Experience = () => {
           {/* FirmPilot */}
           <div className="border-terminal-border border-l pl-4">
             <div className="mb-1 flex items-center justify-between space-x-2">
-              <div className="flex space-x-2">
+              <div className="flex items-center space-x-2">
                 <LineNumber>4</LineNumber>
                 <span className="text-terminal-bright-red">●</span>
                 <h3 className="text-terminal-green font-bold">FirmPilot</h3>
@@ -71,7 +71,7 @@ export const Experience = () => {
           {/* HCA Healthcare */}
           <div className="border-terminal-border border-l pl-4">
             <div className="mb-1 flex items-center justify-between space-x-2">
-              <div className="flex space-x-2">
+              <div className="flex items-center space-x-2">
                 <LineNumber>8</LineNumber>
                 <span className="text-terminal-bright-red">●</span>
                 <h3 className="text-terminal-green font-bold">
@@ -139,7 +139,7 @@ export const Experience = () => {
           {/* Corolla Ice Delivery */}
           <div className="border-terminal-border border-l pl-4">
             <div className="mb-1 flex items-center justify-between space-x-2">
-              <div className="flex space-x-2">
+              <div className="flex items-center space-x-2">
                 <LineNumber>14</LineNumber>
                 <span className="text-terminal-bright-red">●</span>
                 <h3 className="text-terminal-green font-bold">
