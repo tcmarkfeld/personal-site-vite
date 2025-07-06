@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { TerminalHeader } from './TerminalHeader';
 import { Footer } from './Footer';
 import { LineNumber } from './LineNumber';
+import { RightPanel } from './RightPanel';
 
 interface TerminalProps {
   children: ReactNode;
@@ -19,9 +20,9 @@ export function Terminal({
   eofLineNumber,
 }: TerminalProps) {
   return (
-    <div className="bg-background-secondary text-terminal-text flex h-screen flex-col justify-between overflow-hidden font-mono">
-      <div className="flex flex-grow items-center justify-center overflow-hidden p-4">
-        <div className="no-scrollbar bg-terminal border-terminal-border flex max-h-4/5 w-full max-w-4xl flex-col overflow-hidden rounded-lg border shadow-2xl">
+    <div className="bg-background-secondary text-terminal-text flex h-screen flex-row justify-between overflow-hidden rounded-md font-mono">
+      <div className="flex w-4/6 flex-col">
+        <div className="no-scrollbar bg-terminal border-terminal-border flex h-screen w-full flex-grow flex-col overflow-y-auto rounded-lg border shadow-2xl">
           <TerminalHeader pwd={pwd} />
 
           <div className="flex-1 overflow-y-auto p-6">
@@ -56,37 +57,13 @@ export function Terminal({
             {children}
 
             {/* End of file indicator */}
-            <div className="border-terminal-border mt-8 border-t pt-4">
-              <div className="text-terminal-cyan flex items-center justify-between text-sm">
-                <div className="flex items-center">
-                  <LineNumber>{eofLineNumber}</LineNumber>
-                  <span>EOF</span>
-                </div>
-                <div className="flex flex-row gap-2">
-                  <span>
-                    <a
-                      href="https://www.linkedin.com/in/timothy-markfeld/"
-                      target="_blank"
-                      className="hover:text-terminal-green underline transition-colors"
-                    >
-                      LinkedIn
-                    </a>
-                  </span>
-                  <span>
-                    <a
-                      href="https://github.com/tcmarkfeld"
-                      target="_blank"
-                      className="hover:text-terminal-green underline transition-colors"
-                    >
-                      GitHub
-                    </a>
-                  </span>
-                </div>
-              </div>
+            <div className="border-terminal-border text-terminal-cyan mt-8 flex space-x-2 border-t pt-4 text-sm">
+              <LineNumber>{eofLineNumber}</LineNumber>
+              <span>EOF</span>
             </div>
 
             {/* Next command prompt */}
-            <div className="mt-6 flex items-center space-x-2">
+            <div className="mt-4 flex items-center space-x-2">
               <LineNumber>{eofLineNumber + 1}</LineNumber>
               <span className="text-terminal-green">timothy@portfolio</span>
               <span className="text-terminal-text">:</span>
@@ -96,8 +73,11 @@ export function Terminal({
             </div>
           </div>
         </div>
+        <Footer currentPage={page} />
       </div>
-      <Footer currentPage={page} />
+      <div className="bg-terminal w-2/6 p-4">
+        <RightPanel />
+      </div>
     </div>
   );
 }
