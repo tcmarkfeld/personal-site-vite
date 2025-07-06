@@ -21,11 +21,11 @@ export function Terminal({
 }: TerminalProps) {
   return (
     <div className="bg-background-secondary text-terminal-text flex h-screen flex-row justify-between overflow-hidden rounded-md font-mono">
-      <div className="flex w-4/6 flex-col">
-        <div className="no-scrollbar bg-terminal border-terminal-border flex h-screen w-full flex-grow flex-col overflow-y-auto rounded-lg border shadow-2xl">
+      <div className="flex w-full flex-col lg:w-4/6">
+        <div className="no-scrollbar bg-terminal border-terminal-border flex h-screen w-full flex-grow flex-col overflow-auto rounded-lg border shadow-2xl">
           <TerminalHeader pwd={pwd} />
 
-          <div className="flex-1 overflow-y-auto p-6">
+          <div className="w-full flex-1 overflow-y-auto p-6">
             <style>{`
               @keyframes blink {
                 0%, 50% { opacity: 1; }
@@ -54,7 +54,7 @@ export function Terminal({
               </div>
             </div>
 
-            {children}
+            <div className="w-full p-[-6]">{children}</div>
 
             {/* End of file indicator */}
             <div className="border-terminal-border text-terminal-cyan mt-8 flex space-x-2 border-t pt-4 text-sm">
@@ -75,7 +75,7 @@ export function Terminal({
         </div>
         <Footer currentPage={page} />
       </div>
-      <div className="bg-terminal w-2/6 p-4">
+      <div className="bg-terminal hidden w-2/6 p-4 sm:block">
         <RightPanel />
       </div>
     </div>

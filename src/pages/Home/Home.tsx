@@ -26,7 +26,7 @@ export const Home = () => {
       <div className="mb-2 flex">
         <LineNumber>6</LineNumber>
         <ChevronRight className="text-terminal-yellow" />
-        <span className="text-terminal-blue">Skilled With: </span> .NET,
+        <span className="text-terminal-blue">Skilled With:</span> .NET,
         TypeScript/JS, React/React Native, GraphQL, SQL, Java, and more
       </div>
 
