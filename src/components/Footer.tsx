@@ -13,7 +13,7 @@ export function Footer({ currentPage }: FooterProps) {
     <div className="bg-terminal border-terminal-border flex items-center justify-start border-t px-2 text-sm">
       <p className="border-terminal-border border-r py-1 pr-2">TM</p>
       {Object.values(ROUTES)
-        .filter((val) => val !== ROUTES.NOT_FOUND)
+        .filter((val) => val !== ROUTES.NOT_FOUND && val !== ROUTES.ABOUT)
         .map((tab, index) => (
           <div
             key={tab}

@@ -12,22 +12,27 @@ export const Home = () => {
 
       <div className="mb-2 flex">
         <LineNumber>4</LineNumber>
-        <ChevronRight className="text-terminal-yellow" />
-        <span className="text-terminal-blue">Name:</span> Timothy Markfeld
+        <ChevronRight className="text-terminal-yellow flex-shrink-0" />
+        <span className="text-terminal-blue">Name:</span>
+        <span className="ml-1">Timothy Markfeld</span>
       </div>
 
       <div className="mb-2 flex">
         <LineNumber>5</LineNumber>
-        <ChevronRight className="text-terminal-yellow" />
-        <span className="text-terminal-blue">Role:</span> Full-Stack Software
-        Developer
+        <ChevronRight className="text-terminal-yellow flex-shrink-0" />
+        <span className="text-terminal-blue">Role:</span>
+        <span className="ml-1">Full-Stack Software Developer</span>
       </div>
 
       <div className="mb-2 flex">
         <LineNumber>6</LineNumber>
-        <ChevronRight className="text-terminal-yellow" />
-        <span className="text-terminal-blue">Skilled With:</span> .NET,
-        TypeScript/JS, React/React Native, GraphQL, SQL, Java, and more
+        <ChevronRight className="text-terminal-yellow flex-shrink-0" />
+        <span className="text-terminal-blue whitespace-nowrap">
+          Skilled With:
+        </span>
+        <span className="ml-1">
+          .NET, TypeScript/JS, React/React Native, GraphQL, SQL, Java, and more
+        </span>
       </div>
 
       <div className="border-terminal-border mt-6 flex border-t pt-4">
