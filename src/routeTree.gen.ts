@@ -9,21 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ExperienceRouteImport } from './routes/experience'
-import { Route as AboutMeRouteImport } from './routes/about-me'
 import { Route as R404RouteImport } from './routes/404'
 import { Route as IndexRouteImport } from './routes/index'
 
-const ExperienceRoute = ExperienceRouteImport.update({
-  id: '/experience',
-  path: '/experience',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutMeRoute = AboutMeRouteImport.update({
-  id: '/about-me',
-  path: '/about-me',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const R404Route = R404RouteImport.update({
   id: '/404',
   path: '/404',
@@ -38,53 +26,31 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/404': typeof R404Route
-  '/about-me': typeof AboutMeRoute
-  '/experience': typeof ExperienceRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/404': typeof R404Route
-  '/about-me': typeof AboutMeRoute
-  '/experience': typeof ExperienceRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/404': typeof R404Route
-  '/about-me': typeof AboutMeRoute
-  '/experience': typeof ExperienceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/404' | '/about-me' | '/experience'
+  fullPaths: '/' | '/404'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/404' | '/about-me' | '/experience'
-  id: '__root__' | '/' | '/404' | '/about-me' | '/experience'
+  to: '/' | '/404'
+  id: '__root__' | '/' | '/404'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   R404Route: typeof R404Route
-  AboutMeRoute: typeof AboutMeRoute
-  ExperienceRoute: typeof ExperienceRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/experience': {
-      id: '/experience'
-      path: '/experience'
-      fullPath: '/experience'
-      preLoaderRoute: typeof ExperienceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about-me': {
-      id: '/about-me'
-      path: '/about-me'
-      fullPath: '/about-me'
-      preLoaderRoute: typeof AboutMeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/404': {
       id: '/404'
       path: '/404'
@@ -105,8 +71,6 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   R404Route: R404Route,
-  AboutMeRoute: AboutMeRoute,
-  ExperienceRoute: ExperienceRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -7,9 +7,5 @@ export const Route = createFileRoute(ROUTES.HOME)({
 });
 
 function HomeComponent() {
-  return (
-    <div className="flex h-[100vh] w-screen max-w-screen flex-col gap-4 overflow-hidden p-4">
-      <Home />
-    </div>
-  );
+  return <Home />;
 }
