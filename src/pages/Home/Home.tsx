@@ -498,7 +498,11 @@ export const Home = () => {
 
       <footer className="site-footer">
         <p>Timothy Markfeld</p>
-        <a href="mailto:timmarkfeld@gmail.com">timmarkfeld@gmail.com</a>
+        <div className='footer-grouping'>
+          <a href="mailto:timmarkfeld@gmail.com">timmarkfeld@gmail.com</a>
+          <a href="https://github.com/tcmarkfeld" target='_blank'>GitHub</a>
+          <a href="https://linkedin.com/in/timothy-markfeld" target='_blank'>LinkedIn</a>
+        </div>
       </footer>
     </main>
   );
