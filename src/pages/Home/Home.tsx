@@ -1,4 +1,34 @@
 import {
+  Binary,
+  Braces,
+  Cloud,
+  Code2,
+  ChevronDown,
+  Container,
+  Database,
+  Disc3,
+  GitBranch,
+  Github,
+  Globe,
+  HardDrive,
+  KeyRound,
+  Layers,
+  LayoutGrid,
+  Linkedin,
+  Mail,
+  Network,
+  Radio,
+  RefreshCcw,
+  Server,
+  ShieldCheck,
+  Smartphone,
+  TerminalSquare,
+  Truck,
+  Workflow,
+  Wrench,
+  type LucideIcon,
+} from 'lucide-react';
+import {
   useEffect,
   useMemo,
   useState,
@@ -18,11 +48,17 @@ type ProjectItem = {
   title: string;
   period: string;
   description: string;
+  href?: string;
 };
 
 type SkillGroup = {
   label: string;
-  values: string[];
+  values: SkillTag[];
+};
+
+type SkillTag = {
+  label: string;
+  Icon: LucideIcon;
 };
 
 type ScrollMarker = {
@@ -39,11 +75,13 @@ const EXPERIENCE: ExperienceItem[] = [
     location: 'Nashville, TN',
     dateRange: 'Apr 2025 - Present',
     bullets: [
-      'Built and scaled distributed automation systems for content, SEO, and social media workflows.',
-      'Owned message-driven worker systems processing thousands of jobs daily with retries, fault tolerance, and observability.',
-      'Designed secure GraphQL APIs and React apps for multi-tenant RBAC and OAuth integrations.',
-      'Engineered AI-driven publishing pipelines with LLMs, fact-checking, media generation, and WordPress delivery.',
-      'Helped lead architecture cleanup and large-scale CQRS refactors.',
+      'Built and owned fault-tolerant message-driven worker systems with retry logic and full observability for content, social media, and backlink automation workflows.',
+      'Designed and implemented secure GraphQL APIs and React/Next.js TypeScript frontends with optimized database access patterns, maintaining p99 query latency under 25ms across multi-tenant workloads.',
+      'Engineered end-to-end AI-driven content pipelines integrating LLMs, fact-checking, media generation, and automated WordPress publishing.',
+      'Led architecture cleanup and large-scale refactors, introducing CQRS patterns to improve long-term maintainability.',
+      'Conducted daily code reviews, maintaining code quality standards and mentoring junior engineers on architecture and best practices.',
+      'Active on-call responder with 97.8% incident acknowledgment rate, 13s MTTA, and 22min MTTR across 45+ production incidents, with zero timeout escalations.',
+      'Partnered with Product and Design to define technical requirements and drive architecture decisions across multiple concurrent initiatives.',
     ],
   },
   {
@@ -52,11 +90,11 @@ const EXPERIENCE: ExperienceItem[] = [
     location: 'Nashville, TN',
     dateRange: 'Sep 2023 - Apr 2025',
     bullets: [
-      'Managed a system of 200+ .NET microservices integrated with 10 SQL databases and Kafka-based data flows.',
-      'Helped drive migration from legacy .NET microservices to Apache NiFi for higher scalability.',
-      'Analyzed legacy systems and designed replacement services in Java.',
-      'Implemented monitoring and alerting workflows in Dynatrace with automated failover support.',
-      'Automated regression testing workflows, saving up to 8 hours per full test cycle.',
+      'Managed a system of 200+ HIPAA-regulated .NET microservices processing 1M+ daily events via Kafka and file-based ingestion across 10 SQL databases.',
+      'Integrated with FHIR standards and external EHRs, ingesting and parsing HL7 messages for downstream clinical and operational workflows.',
+      'Mentored and onboarded new engineers on legacy system architecture and HL7/FHIR standards.',
+      'Architected and led migration of legacy microservices to Apache NiFi, reducing operational overhead and improving pipeline reliability.',
+      'Implemented alerting and monitoring in Dynatrace with automated failover workflows.',
     ],
   },
   {
@@ -68,8 +106,8 @@ const EXPERIENCE: ExperienceItem[] = [
       'Built a full-stack React Native operations app to manage daily delivery workflows.',
       'Optimized route planning, cutting delivery time by up to 3 hours per day.',
       'Replaced spreadsheet-heavy operations with a centralized mobile system.',
-      'Owned the lifecycle from design and implementation to App Store and Google Play deployment.',
-      'Maintained and upgraded the application through multiple major versions.',
+      'Owned lifecycle from design and implementation to App Store and Google Play deployment.',
+      'Maintained and upgraded application through multiple major versions.',
     ],
   },
 ];
@@ -77,29 +115,74 @@ const EXPERIENCE: ExperienceItem[] = [
 const SKILL_GROUPS: SkillGroup[] = [
   {
     label: 'Languages',
-    values: ['C#', 'Java', 'SQL', 'Python', 'JavaScript', 'TypeScript'],
+    values: [
+      { label: 'C#', Icon: Braces },
+      { label: 'Java', Icon: Binary },
+      { label: 'SQL', Icon: Database },
+      { label: 'Python', Icon: Code2 },
+      { label: 'JavaScript', Icon: TerminalSquare },
+      { label: 'TypeScript', Icon: Code2 },
+    ],
   },
   {
     label: 'Cloud + Platform',
-    values: ['AWS', 'GCP', 'Azure AD', 'Linux', 'CI/CD', 'Terraform'],
+    values: [
+      { label: 'AWS', Icon: Cloud },
+      { label: 'GCP', Icon: Globe },
+      { label: 'Azure AD', Icon: KeyRound },
+      { label: 'Linux', Icon: HardDrive },
+      { label: 'CI/CD', Icon: RefreshCcw },
+      { label: 'Terraform', Icon: Workflow },
+      { label: 'Docker', Icon: Container },
+    ],
   },
   {
     label: 'Architecture + Systems',
     values: [
-      'Microservices',
-      'SQS/SNS + Kafka',
-      'CQRS',
-      'Datadog',
-      'Dynatrace',
+      { label: 'Microservices', Icon: Container },
+      { label: 'SQS/SNS + Kafka', Icon: Radio },
+      { label: 'CQRS', Icon: GitBranch },
+      { label: 'Datadog', Icon: Network },
+      { label: 'Dynatrace', Icon: Layers },
+      { label: 'MassTransit', Icon: Truck },
     ],
   },
   {
     label: 'Frontend + APIs',
-    values: ['React', 'React Native', 'GraphQL', 'REST API', 'OAuth', 'RBAC'],
+    values: [
+      { label: 'React', Icon: LayoutGrid },
+      { label: 'React Native', Icon: Smartphone },
+      { label: 'GraphQL', Icon: Network },
+      { label: 'REST API', Icon: Server },
+      { label: 'OAuth', Icon: ShieldCheck },
+      { label: 'RBAC', Icon: Wrench },
+      { label: 'Entity Framework', Icon: Disc3 },
+    ],
   },
 ];
 
 const PROJECTS: ProjectItem[] = [
+  {
+    title: 'HL7Kit / HL7Kit.Fhir',
+    period: 'Open Source',
+    description:
+      'Strongly typed HL7 v2 parser for .NET with full segment coverage, dynamic delimiter handling, Z-segment support, and FHIR R4 conversion. Published on NuGet.',
+    href: 'https://github.com/tcmarkfeld/HL7Kit',
+  },
+  {
+    title: 'Conductor',
+    period: 'Open Source',
+    description:
+      'CLI for .NET teams on AWS that generates least-privilege IAM policies and Terraform resources from MassTransit, SQS, and SNS configuration. Published on NuGet.',
+    href: 'https://github.com/tcmarkfeld/Conductor',
+  },
+  {
+    title: 'PriceTime',
+    period: 'Open Source',
+    description:
+      'Price-time priority matching engine for .NET with Kafka-driven order submission, trade execution, and real-time order book management.',
+    href: 'https://github.com/tcmarkfeld/PriceTime',
+  },
   {
     title: 'UA Lacrosse Website (MVC)',
     period: 'Jan 2022 - May 2022',
@@ -128,6 +211,23 @@ const SCROLL_MARKERS: ScrollMarker[] = [
 ];
 
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
+const HERO_CONTACTS = [
+  {
+    label: 'Email',
+    href: 'mailto:timmarkfeld@gmail.com',
+    Icon: Mail,
+  },
+  {
+    label: 'GitHub',
+    href: 'https://github.com/tcmarkfeld',
+    Icon: Github,
+  },
+  {
+    label: 'LinkedIn',
+    href: 'https://linkedin.com/in/timothy-markfeld',
+    Icon: Linkedin,
+  },
+] as const;
 
 function useScrollMetrics() {
   const [scrollY, setScrollY] = useState<number>(0);
@@ -179,14 +279,8 @@ function Reveal({
 
 export const Home = () => {
   const { scrollY, progress } = useScrollMetrics();
-  const orbitRotation = useMemo(() => scrollY * 0.08, [scrollY]);
-  const gridShift = useMemo(() => scrollY * 0.06, [scrollY]);
   const auroraOneShift = useMemo(() => scrollY * 0.05, [scrollY]);
   const auroraTwoShift = useMemo(() => scrollY * -0.04, [scrollY]);
-  const sideProjectsShift = useMemo(
-    () => Math.sin(scrollY * 0.0048) * 8,
-    [scrollY],
-  );
   const experienceProgress = useMemo(
     () => clamp01((progress - 0.18) / 0.24),
     [progress],
@@ -229,8 +323,19 @@ export const Home = () => {
 
   return (
     <main className="site-shell">
+      <div className="bg-vignette" />
+      <div
+        className="bg-mesh"
+        style={{ transform: `translate3d(0, ${scrollY * -0.02}px, 0)` }}
+      />
       <div className="scanline" />
       <div className="noise" />
+      <div
+        className="bg-dots"
+        style={{
+          transform: `translate3d(${scrollY * -0.05}px, ${scrollY * -0.07}px, 0)`,
+        }}
+      />
       <div
         className="aurora aurora-one"
         style={{ transform: `translate3d(0, ${auroraOneShift}px, 0)` }}
@@ -266,21 +371,6 @@ export const Home = () => {
       </nav>
 
       <section className="hero section">
-        <div
-          className="hero-grid"
-          style={{ transform: `translateY(${gridShift}px)` }}
-        />
-        <div
-          className="hero-orbit"
-          style={{
-            transform: `translate(-50%, -50%) rotate(${orbitRotation}deg) scale(${1 + progress * 0.07})`,
-          }}
-        >
-          <div className="ring-large ring" />
-          <div className="ring-small ring" />
-          <div className="ring-dot" />
-        </div>
-
         <Reveal>
           <p className="eyebrow">
             Software Engineer • Distributed Systems • Product Builder
@@ -320,6 +410,33 @@ export const Home = () => {
             </article>
           </div>
         </Reveal>
+
+        <Reveal delay={360}>
+          <div className="hero-contact-row" aria-label="Contact links">
+            {HERO_CONTACTS.map((contact) => (
+              <a
+                className="hero-contact-link"
+                href={contact.href}
+                key={contact.label}
+                rel="noreferrer"
+                target={contact.href.startsWith('http') ? '_blank' : undefined}
+              >
+                <contact.Icon aria-hidden="true" size={14} strokeWidth={2} />
+                {contact.label}
+              </a>
+            ))}
+          </div>
+        </Reveal>
+
+        <Reveal delay={420}>
+          <a
+            className="hero-scroll-cue"
+            href="#experience"
+            aria-label="Scroll down"
+          >
+            <ChevronDown aria-hidden="true" size={18} strokeWidth={2} />
+          </a>
+        </Reveal>
       </section>
 
       <section className="section" id="experience">
@@ -342,12 +459,7 @@ export const Home = () => {
               delay={80 * index}
               key={`${item.company}-${item.dateRange}`}
             >
-              <article
-                className="timeline-card"
-                style={{
-                  transform: `translate3d(0, ${Math.sin(scrollY * 0.004 + index * 0.85) * 10}px, 0)`,
-                }}
-              >
+              <article className="timeline-card">
                 <header>
                   <p className="role">{item.title}</p>
                   <h3>{item.company}</h3>
@@ -377,19 +489,14 @@ export const Home = () => {
           }
         />
         <Reveal>
-          <div>
+          <div className="tech-ribbon-container">
             <h2 className="section-title">Core Stack</h2>
             <p className="section-copy">
               Strong background in backend systems, modern frontend delivery,
               and cloud-native operations.
             </p>
             <div className="tech-ribbon-shell">
-              <div
-                className="tech-ribbon"
-                style={{
-                  transform: `translate3d(${-120 + stackProgress * 120}px, 0, 0)`,
-                }}
-              >
+              <div className="tech-ribbon">
                 DISTRIBUTED SYSTEMS • MICROSERVICES • GRAPHQL • REACT • AI
                 INTEGRATION • SQS/SNS
               </div>
@@ -400,16 +507,14 @@ export const Home = () => {
         <div className="skills-grid">
           {SKILL_GROUPS.map((group, index) => (
             <Reveal delay={100 * index} key={group.label}>
-              <article
-                className="skill-card"
-                style={{
-                  transform: `translate3d(0, ${Math.sin(scrollY * 0.0048 + index * 1.2) * 8}px, 0)`,
-                }}
-              >
+              <article className="skill-card">
                 <h3>{group.label}</h3>
                 <div className="chips">
-                  {group.values.map((value) => (
-                    <span key={value}>{value}</span>
+                  {group.values.map(({ label, Icon }) => (
+                    <span className="chip-item" key={label}>
+                      <Icon aria-hidden="true" size={14} strokeWidth={2} />
+                      {label}
+                    </span>
                   ))}
                 </div>
               </article>
@@ -441,15 +546,20 @@ export const Home = () => {
         <div className="projects-grid">
           {PROJECTS.map((project, index) => (
             <Reveal delay={120 * index} key={project.title}>
-              <article
-                className="project-card"
-                style={{
-                  transform: `translate3d(0, ${sideProjectsShift}px, 0)`,
-                }}
-              >
+              <article className="project-card">
                 <h3>{project.title}</h3>
                 <p className="meta">{project.period}</p>
                 <p>{project.description}</p>
+                {project.href ? (
+                  <a
+                    className="project-link"
+                    href={project.href}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    View repository
+                  </a>
+                ) : null}
               </article>
             </Reveal>
           ))}
@@ -480,12 +590,7 @@ export const Home = () => {
         </Reveal>
 
         <Reveal delay={120}>
-          <article
-            className="education-card"
-            style={{
-              transform: `translate3d(0, ${Math.sin(scrollY * 0.0042 + 2.2) * 8}px, 0)`,
-            }}
-          >
+          <article className="education-card">
             <h3>University of Alabama</h3>
             <p>Master’s in Management Information Systems • 4.0 / 4.0</p>
             <p>
@@ -498,10 +603,14 @@ export const Home = () => {
 
       <footer className="site-footer">
         <p>Timothy Markfeld</p>
-        <div className='footer-grouping'>
+        <div className="footer-grouping">
           <a href="mailto:timmarkfeld@gmail.com">timmarkfeld@gmail.com</a>
-          <a href="https://github.com/tcmarkfeld" target='_blank'>GitHub</a>
-          <a href="https://linkedin.com/in/timothy-markfeld" target='_blank'>LinkedIn</a>
+          <a href="https://github.com/tcmarkfeld" target="_blank">
+            GitHub
+          </a>
+          <a href="https://linkedin.com/in/timothy-markfeld" target="_blank">
+            LinkedIn
+          </a>
         </div>
       </footer>
     </main>
