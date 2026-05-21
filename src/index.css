@@ -610,6 +610,24 @@ a {
   line-height: 1.6;
 }
 
+.project-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: var(--space-3);
+}
+
+.project-badge-link {
+  display: inline-flex;
+  align-self: flex-start;
+}
+
+.project-badge {
+  height: 20px;
+  width: auto;
+  display: block;
+}
+
 .project-link {
   display: inline-block;
   align-self: flex-start;

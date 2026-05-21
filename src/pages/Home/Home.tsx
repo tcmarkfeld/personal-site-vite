@@ -7,6 +7,7 @@ import {
   Container,
   Database,
   Disc3,
+  Download,
   GitBranch,
   Github,
   Globe,
@@ -49,6 +50,11 @@ type ProjectItem = {
   period: string;
   description: string;
   href?: string;
+  nugetBadges?: {
+    href: string;
+    badgeSrc: string;
+    label: string;
+  }[];
 };
 
 type SkillGroup = {
@@ -59,6 +65,13 @@ type SkillGroup = {
 type SkillTag = {
   label: string;
   Icon: LucideIcon;
+};
+
+type HeroContact = {
+  label: string;
+  href: string;
+  Icon: LucideIcon;
+  download?: string;
 };
 
 type ScrollMarker = {
@@ -168,6 +181,20 @@ const PROJECTS: ProjectItem[] = [
     description:
       'Strongly typed HL7 v2 parser for .NET with full segment coverage, dynamic delimiter handling, Z-segment support, and FHIR R4 conversion. Published on NuGet.',
     href: 'https://github.com/tcmarkfeld/HL7Kit',
+    nugetBadges: [
+      {
+        href: 'https://www.nuget.org/packages/HL7Kit',
+        badgeSrc:
+          'https://img.shields.io/nuget/v/HL7Kit?style=flat-square&label=HL7Kit',
+        label: 'HL7Kit NuGet badge',
+      },
+      {
+        href: 'https://www.nuget.org/packages/HL7Kit.Fhir',
+        badgeSrc:
+          'https://img.shields.io/nuget/v/HL7Kit.Fhir?style=flat-square&label=HL7Kit.Fhir',
+        label: 'HL7Kit.Fhir NuGet badge',
+      },
+    ],
   },
   {
     title: 'Conductor',
@@ -175,6 +202,14 @@ const PROJECTS: ProjectItem[] = [
     description:
       'CLI for .NET teams on AWS that generates least-privilege IAM policies and Terraform resources from MassTransit, SQS, and SNS configuration. Published on NuGet.',
     href: 'https://github.com/tcmarkfeld/Conductor',
+    nugetBadges: [
+      {
+        href: 'https://www.nuget.org/packages/Conductor.Tool',
+        badgeSrc:
+          'https://img.shields.io/nuget/v/Conductor.Tool?style=flat-square&label=Conductor.Tool',
+        label: 'Conductor.Tool NuGet badge',
+      },
+    ],
   },
   {
     title: 'PriceTime',
@@ -211,7 +246,13 @@ const SCROLL_MARKERS: ScrollMarker[] = [
 ];
 
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
-const HERO_CONTACTS = [
+const HERO_CONTACTS: HeroContact[] = [
+  {
+    label: 'Download Resume',
+    href: '/MarkfeldTimothyResume.pdf',
+    Icon: Download,
+    download: 'MarkfeldTimothyResume.pdf',
+  },
   {
     label: 'Email',
     href: 'mailto:timmarkfeld@gmail.com',
@@ -227,7 +268,7 @@ const HERO_CONTACTS = [
     href: 'https://linkedin.com/in/timothy-markfeld',
     Icon: Linkedin,
   },
-] as const;
+];
 
 function useScrollMetrics() {
   const [scrollY, setScrollY] = useState<number>(0);
@@ -388,25 +429,23 @@ export const Home = () => {
 
         <Reveal delay={220}>
           <p className="hero-copy">
-            I design and operate full-stack systems with a passion for clean and
-            performant code. From message-driven workers, reliable APIs, and
-            automation pipelines that hold up under real-world load.
+            I design and operate full-stack systems - from message-driven workers and reliable APIs to AI automation pipelines - built to hold up under real-world load.
           </p>
         </Reveal>
 
         <Reveal delay={300}>
           <div className="hero-stats">
             <article>
-              <h2>200+</h2>
-              <p>.NET services managed in production ecosystems</p>
+              <h2>1,500+</h2>
+              <p>PRs merged in under 14 months</p>
             </article>
             <article>
-              <h2>1,000s</h2>
-              <p>automated jobs processed daily with retries + observability</p>
+              <h2>1M+</h2>
+              <p>daily events processed across HIPAA-regulated systems</p>
             </article>
             <article>
-              <h2>Full Stack</h2>
-              <p>from distributed workers and APIs to React and mobile apps</p>
+              <h2>97.8%</h2>
+              <p>on-call incident acknowledgment rate, 13s MTTA</p>
             </article>
           </div>
         </Reveal>
@@ -420,6 +459,7 @@ export const Home = () => {
                 key={contact.label}
                 rel="noreferrer"
                 target={contact.href.startsWith('http') ? '_blank' : undefined}
+                download={contact.download}
               >
                 <contact.Icon aria-hidden="true" size={14} strokeWidth={2} />
                 {contact.label}
@@ -497,8 +537,8 @@ export const Home = () => {
             </p>
             <div className="tech-ribbon-shell">
               <div className="tech-ribbon">
-                DISTRIBUTED SYSTEMS • MICROSERVICES • GRAPHQL • REACT • AI
-                INTEGRATION • SQS/SNS
+                DISTRIBUTED SYSTEMS • MICROSERVICES • .NET • GRAPHQL • REACT • AI
+                INTEGRATION • SQS/SNS • KAFKA
               </div>
             </div>
           </div>
@@ -540,7 +580,7 @@ export const Home = () => {
           }}
         />
         <Reveal>
-          <h2 className="section-title">Side Projects</h2>
+          <h2 className="section-title">Projects</h2>
         </Reveal>
 
         <div className="projects-grid">
@@ -550,6 +590,25 @@ export const Home = () => {
                 <h3>{project.title}</h3>
                 <p className="meta">{project.period}</p>
                 <p>{project.description}</p>
+                {project.nugetBadges?.length ? (
+                  <div className="project-badge-row">
+                    {project.nugetBadges.map((badge) => (
+                      <a
+                        className="project-badge-link"
+                        href={badge.href}
+                        key={badge.href}
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        <img
+                          alt={badge.label}
+                          className="project-badge"
+                          src={badge.badgeSrc}
+                        />
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
                 {project.href ? (
                   <a
                     className="project-link"
