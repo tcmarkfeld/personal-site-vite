@@ -93,7 +93,7 @@ const EXPERIENCE: ExperienceItem[] = [
       'Engineered end-to-end AI-driven content pipelines integrating LLMs, fact-checking, media generation, and automated WordPress publishing.',
       'Led architecture cleanup and large-scale refactors, introducing CQRS patterns to improve long-term maintainability.',
       'Conducted daily code reviews, maintaining code quality standards and mentoring junior engineers on architecture and best practices.',
-      'Active on-call responder with 97.8% incident acknowledgment rate, 13s MTTA, and 22min MTTR across 45+ production incidents, with zero timeout escalations.',
+      'Active on-call responder with 97.8% incident acknowledgment rate, 13s mean time-to-acknowledge, and 22min mean time-to-resolve across 45+ production incidents, with zero timeout escalations.',
       'Partnered with Product and Design to define technical requirements and drive architecture decisions across multiple concurrent initiatives.',
     ],
   },
@@ -445,7 +445,7 @@ export const Home = () => {
             </article>
             <article>
               <h2>97.8%</h2>
-              <p>on-call incident acknowledgment rate, 13s MTTA</p>
+              <p>on-call incident acknowledgment rate, 13s mean time-to-acknowledge</p>
             </article>
           </div>
         </Reveal>
