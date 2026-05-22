@@ -37,14 +37,6 @@ import {
   type PropsWithChildren,
 } from 'react';
 
-type ExperienceItem = {
-  title: string;
-  company: string;
-  location: string;
-  dateRange: string;
-  bullets: string[];
-};
-
 type ProjectItem = {
   title: string;
   period: string;
@@ -80,50 +72,6 @@ type ScrollMarker = {
   start: number;
   end: number;
 };
-
-const EXPERIENCE: ExperienceItem[] = [
-  {
-    title: 'Senior Software Engineer',
-    company: 'FirmPilot',
-    location: 'Nashville, TN',
-    dateRange: 'Apr 2025 - Present',
-    bullets: [
-      'Built and owned fault-tolerant message-driven worker systems with retry logic and full observability for content, social media, and backlink automation workflows.',
-      'Designed and implemented secure GraphQL APIs and React/Next.js TypeScript frontends with optimized database access patterns, maintaining p99 query latency under 25ms across multi-tenant workloads.',
-      'Engineered end-to-end AI-driven content pipelines integrating LLMs, fact-checking, media generation, and automated WordPress publishing.',
-      'Led architecture cleanup and large-scale refactors, introducing CQRS patterns to improve long-term maintainability.',
-      'Conducted daily code reviews, maintaining code quality standards and mentoring junior engineers on architecture and best practices.',
-      'Active on-call responder with 97.8% incident acknowledgment rate, 13s mean time-to-acknowledge, and 22min mean time-to-resolve across 45+ production incidents, with zero timeout escalations.',
-      'Partnered with Product and Design to define technical requirements and drive architecture decisions across multiple concurrent initiatives.',
-    ],
-  },
-  {
-    title: 'Data Integration Engineer II',
-    company: 'HCA Healthcare',
-    location: 'Nashville, TN',
-    dateRange: 'Sep 2023 - Apr 2025',
-    bullets: [
-      'Managed a system of 200+ HIPAA-regulated .NET microservices processing 1M+ daily events via Kafka and file-based ingestion across 10 SQL databases.',
-      'Integrated with FHIR standards and external EHRs, ingesting and parsing HL7 messages for downstream clinical and operational workflows.',
-      'Mentored and onboarded new engineers on legacy system architecture and HL7/FHIR standards.',
-      'Architected and led migration of legacy microservices to Apache NiFi, reducing operational overhead and improving pipeline reliability.',
-      'Implemented alerting and monitoring in Dynatrace with automated failover workflows.',
-    ],
-  },
-  {
-    title: 'Lead Developer & Manager (Seasonal)',
-    company: 'Corolla Ice Delivery',
-    location: 'Corolla, NC',
-    dateRange: 'May 2020 - Aug 2023',
-    bullets: [
-      'Built a full-stack React Native operations app to manage daily delivery workflows.',
-      'Optimized route planning, cutting delivery time by up to 3 hours per day.',
-      'Replaced spreadsheet-heavy operations with a centralized mobile system.',
-      'Owned lifecycle from design and implementation to App Store and Google Play deployment.',
-      'Maintained and upgraded application through multiple major versions.',
-    ],
-  },
-];
 
 const SKILL_GROUPS: SkillGroup[] = [
   {
@@ -429,7 +377,9 @@ export const Home = () => {
 
         <Reveal delay={220}>
           <p className="hero-copy">
-            I design and operate full-stack systems - from message-driven workers and reliable APIs to AI automation pipelines - built to hold up under real-world load.
+            I design and operate full-stack systems - from message-driven
+            workers and reliable APIs to AI automation pipelines - built to hold
+            up under real-world load.
           </p>
         </Reveal>
 
@@ -445,7 +395,10 @@ export const Home = () => {
             </article>
             <article>
               <h2>97.8%</h2>
-              <p>on-call incident acknowledgment rate, 13s mean time-to-acknowledge</p>
+              <p>
+                on-call incident acknowledgment rate, 13s mean
+                time-to-acknowledge
+              </p>
             </article>
           </div>
         </Reveal>
@@ -490,32 +443,59 @@ export const Home = () => {
           }
         />
         <Reveal>
-          <h2 className="section-title">Experience Timeline</h2>
+          <h2 className="section-title">About Me</h2>
         </Reveal>
 
-        <div className="timeline">
-          {EXPERIENCE.map((item, index) => (
-            <Reveal
-              delay={80 * index}
-              key={`${item.company}-${item.dateRange}`}
-            >
-              <article className="timeline-card">
-                <header>
-                  <p className="role">{item.title}</p>
-                  <h3>{item.company}</h3>
-                  <p className="meta">
-                    {item.location} • {item.dateRange}
-                  </p>
-                </header>
-                <ul>
-                  {item.bullets.map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
-                  ))}
-                </ul>
-              </article>
-            </Reveal>
-          ))}
-        </div>
+        <Reveal delay={100}>
+          <article className="timeline-card about-card">
+            <div className="about-layout">
+              <div>
+                <p className="about-copy">
+                  I'm currently a Senior Software Engineer at{' '}
+                  <a
+                    href="https://firmpilot.com/"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    FirmPilot
+                  </a>
+                  , working across both backend and frontend. A lot of my work
+                  has been building our GraphQL API, AI-driven workflows for
+                  publishing, SEO, social media, PPC, and WordPress automation,
+                  as well as onboarding systems.
+                </p>
+                <p className="about-copy">
+                  Before FirmPilot, I was at{' '}
+                  <a
+                    href="https://www.hcahealthcare.com/"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    HCA Healthcare
+                  </a>{' '}
+                  taking legacy .NET microservices and re-architecting them into
+                  Apache NiFi, while making the system faster and more
+                  observable. My team was in charge of processing high-volume
+                  Kafka events and HL7/FHIR data for clinical workflows.
+                </p>
+                <p className="about-copy">
+                  I enjoy taking messy workflows and turning them into clean,
+                  maintainable systems with strong observability and clear
+                  ownership. I care about practical engineering, shipping useful
+                  products, and helping teams move faster without sacrificing
+                  quality.
+                </p>
+              </div>
+              <div className="about-headshot-wrap">
+                <img
+                  alt="Timothy Markfeld headshot"
+                  className="about-headshot"
+                  src="/headshot.png"
+                />
+              </div>
+            </div>
+          </article>
+        </Reveal>
       </section>
 
       <section className="section split-layout stack-section" id="stack">
@@ -537,8 +517,8 @@ export const Home = () => {
             </p>
             <div className="tech-ribbon-shell">
               <div className="tech-ribbon">
-                DISTRIBUTED SYSTEMS • MICROSERVICES • .NET • GRAPHQL • REACT • AI
-                INTEGRATION • SQS/SNS • KAFKA
+                DISTRIBUTED SYSTEMS • MICROSERVICES • .NET • GRAPHQL • REACT •
+                AI INTEGRATION • SQS/SNS • KAFKA
               </div>
             </div>
           </div>
