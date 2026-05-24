@@ -197,9 +197,9 @@ const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
 const HERO_CONTACTS: HeroContact[] = [
   {
     label: 'Download Resume',
-    href: '/MarkfeldTimothyResume.pdf',
+    href: '/Timothy_Markfeld_Resume.pdf',
     Icon: Download,
-    download: 'MarkfeldTimothyResume.pdf',
+    download: 'Timothy_Markfeld_Resume.pdf',
   },
   {
     label: 'Email',
