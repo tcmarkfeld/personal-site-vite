@@ -17,6 +17,7 @@ import {
   LayoutGrid,
   Linkedin,
   Mail,
+  Menu,
   Network,
   Radio,
   RefreshCcw,
@@ -27,6 +28,7 @@ import {
   Truck,
   Workflow,
   Wrench,
+  X,
   type LucideIcon,
 } from 'lucide-react';
 import {
@@ -57,6 +59,16 @@ type SkillGroup = {
 type SkillTag = {
   label: string;
   Icon: LucideIcon;
+};
+
+type WorkExperienceItem = {
+  company: string;
+  role: string;
+  period: string;
+  location: string;
+  summary: string;
+  highlights: string[];
+  href: string;
 };
 
 type HeroContact = {
@@ -119,6 +131,53 @@ const SKILL_GROUPS: SkillGroup[] = [
       { label: 'RBAC', Icon: Wrench },
       { label: 'Entity Framework', Icon: Disc3 },
     ],
+  },
+];
+
+const WORK_EXPERIENCE: WorkExperienceItem[] = [
+  {
+    company: 'FirmPilot',
+    role: 'Senior Software Engineer',
+    period: 'Apr 2025 - Present',
+    location: 'Nashville, TN',
+    summary:
+      'Full-stack engineering across AI automation, secure GraphQL APIs, event-driven workers, and multi-tenant SaaS systems.',
+    highlights: [
+      'Built fault-tolerant worker systems on AWS SQS/SNS, ECS, RDS, and Parameter Store for content, social, and backlink automation.',
+      'Designed GraphQL APIs and React/Next.js frontends with database access patterns keeping p99 query latency under 25ms.',
+      'Engineered AI-driven content pipelines spanning LLMs, fact-checking, media generation, and automated WordPress publishing.',
+      'Reviewed and merged 1,500+ PRs while mentoring engineers on architecture, maintainability, and production quality.',
+    ],
+    href: 'https://firmpilot.com/',
+  },
+  {
+    company: 'HCA Healthcare',
+    role: 'Data Integration Engineer II',
+    period: 'Sep 2023 - Apr 2025',
+    location: 'Nashville, TN',
+    summary:
+      'Healthcare integration platform work across HIPAA-regulated .NET services, interoperability standards, and cloud migration.',
+    highlights: [
+      'Managed 200+ .NET microservices processing over 1M daily events across clinical integration workflows.',
+      'Integrated external EHR systems using FHIR APIs, HL7 messaging, IHE standards, IBM MQ, and Kafka event processing.',
+      'Led migration from legacy integration services to Apache NiFi with Terraform, Azure AD, and Google Cloud Platform.',
+      'Implemented Dynatrace monitoring, alerting, and automated failover workflows for platform reliability.',
+    ],
+    href: 'https://www.hcahealthcare.com/',
+  },
+  {
+    company: 'Corolla Ice Delivery',
+    role: 'Manager and Lead Developer',
+    period: 'May 2020 - Aug 2022',
+    location: 'Corolla, NC',
+    summary:
+      'Seasonal operations and product work for a delivery business, spanning route optimization, customer management, and mobile delivery workflows.',
+    highlights: [
+      'Designed and developed a full-stack mobile app to manage deliveries and customer information.',
+      'Built a sorting algorithm that grouped deliveries by neighborhood and address to optimize each daily driver route.',
+      'Developed the mobile app in React Native, the website in React, the backend in Node.js, and the database in MySQL.',
+    ],
+    href: 'https://corollaicedelivery.com/',
   },
 ];
 
@@ -187,10 +246,10 @@ const PROJECTS: ProjectItem[] = [
 ];
 
 const SCROLL_MARKERS: ScrollMarker[] = [
-  { id: 'experience', label: 'Experience', start: 0.18, end: 0.42 },
-  { id: 'stack', label: 'Stack', start: 0.42, end: 0.61 },
-  { id: 'projects', label: 'Projects', start: 0.61, end: 0.82 },
-  { id: 'education', label: 'Education', start: 0.82, end: 1 },
+  { id: 'about', label: 'About', start: 0.14, end: 0.38 },
+  { id: 'experience', label: 'Experience', start: 0.38, end: 0.58 },
+  { id: 'projects', label: 'Projects', start: 0.58, end: 0.82 },
+  { id: 'education', label: 'Education', start: 0.86, end: 1 },
 ];
 
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
@@ -267,23 +326,26 @@ function Reveal({
 }
 
 export const Home = () => {
+  const [selectedExperienceIndex, setSelectedExperienceIndex] =
+    useState<number>(0);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState<boolean>(false);
   const { scrollY, progress } = useScrollMetrics();
   const auroraOneShift = useMemo(() => scrollY * 0.05, [scrollY]);
   const auroraTwoShift = useMemo(() => scrollY * -0.04, [scrollY]);
-  const experienceProgress = useMemo(
-    () => clamp01((progress - 0.18) / 0.24),
+  const aboutProgress = useMemo(
+    () => clamp01((progress - 0.14) / 0.24),
     [progress],
   );
-  const stackProgress = useMemo(
-    () => clamp01((progress - 0.42) / 0.19),
+  const experienceProgress = useMemo(
+    () => clamp01((progress - 0.38) / 0.2),
     [progress],
   );
   const projectProgress = useMemo(
-    () => clamp01((progress - 0.61) / 0.21),
+    () => clamp01((progress - 0.58) / 0.24),
     [progress],
   );
   const educationProgress = useMemo(
-    () => clamp01((progress - 0.82) / 0.18),
+    () => clamp01((progress - 0.86) / 0.14),
     [progress],
   );
 
@@ -311,7 +373,7 @@ export const Home = () => {
   }, []);
 
   return (
-    <main className="site-shell">
+    <main className="site-shell" id="top">
       <div className="bg-vignette" />
       <div
         className="bg-mesh"
@@ -337,27 +399,49 @@ export const Home = () => {
         className="scroll-progress"
         style={{ transform: `scaleX(${progress})` }}
       />
-      <nav className="scroll-rail" aria-label="Section progress">
-        {SCROLL_MARKERS.map((marker) => {
-          const markerProgress = clamp01(
-            (progress - marker.start) / (marker.end - marker.start),
-          );
-
-          return (
-            <a className="rail-item" href={`#${marker.id}`} key={marker.id}>
-              <span className="rail-label">{marker.label}</span>
-              <span className="rail-dot-track">
-                <span
-                  className="rail-dot-fill"
-                  style={{
-                    transform: `scaleY(${markerProgress})`,
-                  }}
-                />
-              </span>
-            </a>
-          );
-        })}
-      </nav>
+      <header className="site-header">
+        <div className="nav-bar">
+          <a className="nav-logo-link" href="#top" aria-label="Back to top">
+            {'<TM/>'}
+          </a>
+          <button
+            className="mobile-nav-toggle"
+            type="button"
+            aria-label={
+              isMobileNavOpen ? 'Close navigation' : 'Open navigation'
+            }
+            aria-expanded={isMobileNavOpen}
+            aria-controls="section-navigation"
+            onClick={() => setIsMobileNavOpen((current) => !current)}
+          >
+            {isMobileNavOpen ? (
+              <X aria-hidden="true" size={18} strokeWidth={2} />
+            ) : (
+              <Menu aria-hidden="true" size={18} strokeWidth={2} />
+            )}
+          </button>
+          <nav
+            className="scroll-rail"
+            id="section-navigation"
+            aria-label="Section progress"
+            data-open={isMobileNavOpen}
+          >
+            {SCROLL_MARKERS.map((marker, index) => (
+              <a
+                className="rail-item"
+                href={`#${marker.id}`}
+                key={marker.id}
+                onClick={() => setIsMobileNavOpen(false)}
+              >
+                <span className="rail-number">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <span className="rail-label">{marker.label}</span>
+              </a>
+            ))}
+          </nav>
+        </div>
+      </header>
 
       <section className="hero section">
         <Reveal>
@@ -422,22 +506,18 @@ export const Home = () => {
         </Reveal>
 
         <Reveal delay={420}>
-          <a
-            className="hero-scroll-cue"
-            href="#experience"
-            aria-label="Scroll down"
-          >
+          <a className="hero-scroll-cue" href="#about" aria-label="Scroll down">
             <ChevronDown aria-hidden="true" size={18} strokeWidth={2} />
           </a>
         </Reveal>
       </section>
 
-      <section className="section" id="experience">
+      <section className="section" id="about">
         <div
           className="section-glow"
           style={
             {
-              opacity: 0.12 + experienceProgress * 0.36,
+              opacity: 0.12 + aboutProgress * 0.36,
               transform: `translate3d(0, ${scrollY * 0.03}px, 0)`,
             } as CSSProperties
           }
@@ -496,51 +576,124 @@ export const Home = () => {
             </div>
           </article>
         </Reveal>
+
+        <div className="about-stack-block">
+          <Reveal delay={180}>
+            <div className="terminal-card">
+              <div className="terminal-header" aria-hidden="true">
+                <span className="terminal-dot terminal-dot-red" />
+                <span className="terminal-dot terminal-dot-yellow" />
+                <span className="terminal-dot terminal-dot-green" />
+                <span className="terminal-title">core-stack</span>
+              </div>
+              <div className="terminal-body">
+                <div className="terminal-prompt">
+                  <span>$</span> fetch core-stack
+                </div>
+                <h3 className="section-subtitle">Core Stack</h3>
+
+                <div className="skills-grid">
+                  {SKILL_GROUPS.map((group, index) => (
+                    <Reveal delay={100 * index} key={group.label}>
+                      <article className="skill-card">
+                        <h3>{group.label}</h3>
+                        <div className="chips">
+                          {group.values.map(({ label, Icon }) => (
+                            <span className="chip-item" key={label}>
+                              <Icon
+                                aria-hidden="true"
+                                size={14}
+                                strokeWidth={2}
+                              />
+                              {label}
+                            </span>
+                          ))}
+                        </div>
+                      </article>
+                    </Reveal>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </div>
       </section>
 
-      <section className="section split-layout stack-section" id="stack">
+      <section className="section" id="experience">
         <div
           className="section-glow"
           style={
             {
-              opacity: 0.12 + stackProgress * 0.34,
-              transform: `translate3d(0, ${scrollY * 0.026}px, 0)`,
+              opacity: 0.12 + experienceProgress * 0.38,
+              transform: `translate3d(0, ${scrollY * 0.028}px, 0)`,
             } as CSSProperties
           }
         />
         <Reveal>
-          <div className="tech-ribbon-container">
-            <h2 className="section-title">Core Stack</h2>
+          <div>
+            <h2 className="section-title">Work Experience</h2>
             <p className="section-copy">
-              Strong background in backend systems, modern frontend delivery,
-              and cloud-native operations.
+              A timeline of production engineering work across SaaS automation
+              and healthcare integration platforms.
             </p>
-            <div className="tech-ribbon-shell">
-              <div className="tech-ribbon">
-                DISTRIBUTED SYSTEMS • MICROSERVICES • .NET • GRAPHQL • REACT •
-                AI INTEGRATION • SQS/SNS • KAFKA
-              </div>
-            </div>
           </div>
         </Reveal>
 
-        <div className="skills-grid">
-          {SKILL_GROUPS.map((group, index) => (
-            <Reveal delay={100 * index} key={group.label}>
-              <article className="skill-card">
-                <h3>{group.label}</h3>
-                <div className="chips">
-                  {group.values.map(({ label, Icon }) => (
-                    <span className="chip-item" key={label}>
-                      <Icon aria-hidden="true" size={14} strokeWidth={2} />
-                      {label}
-                    </span>
-                  ))}
-                </div>
-              </article>
-            </Reveal>
-          ))}
-        </div>
+        <Reveal delay={120}>
+          <div className="work-panel">
+            <div className="work-list" aria-label="Work experience roles">
+              {WORK_EXPERIENCE.map((experience, index) => (
+                <button
+                  className="work-tab"
+                  type="button"
+                  aria-pressed={selectedExperienceIndex === index}
+                  key={experience.company}
+                  onClick={() => setSelectedExperienceIndex(index)}
+                >
+                  <span>{experience.company}</span>
+                  <small>{experience.period}</small>
+                </button>
+              ))}
+            </div>
+
+            <div className="work-detail-stack">
+              {WORK_EXPERIENCE.map((experience, index) => (
+                <article
+                  className="work-detail"
+                  aria-hidden={selectedExperienceIndex !== index}
+                  key={experience.company}
+                >
+                  <div className="work-detail-header">
+                    <div>
+                      <h3>{experience.role}</h3>
+                      <p>{experience.company}</p>
+                    </div>
+                    <div className="work-meta">
+                      <span>{experience.period}</span>
+                      <span>{experience.location}</span>
+                    </div>
+                  </div>
+                  <p className="work-summary">{experience.summary}</p>
+                  <h4>Highlights</h4>
+                  <ul>
+                    {experience.highlights.map((highlight) => (
+                      <li key={highlight}>{highlight}</li>
+                    ))}
+                  </ul>
+                  <a
+                    className="work-company-link"
+                    href={experience.href}
+                    rel="noreferrer"
+                    target="_blank"
+                    tabIndex={selectedExperienceIndex === index ? 0 : -1}
+                  >
+                    View company
+                  </a>
+                </article>
+              ))}
+            </div>
+          </div>
+        </Reveal>
       </section>
 
       <section className="section" id="projects">
