@@ -4,6 +4,8 @@ import {
   Cloud,
   Code2,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   Container,
   Database,
   Disc3,
@@ -34,6 +36,7 @@ import {
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
   type CSSProperties,
   type PropsWithChildren,
@@ -69,6 +72,12 @@ type WorkExperienceItem = {
   summary: string;
   highlights: string[];
   href: string;
+  gallery?: WorkGalleryImage[];
+};
+
+type WorkGalleryImage = {
+  alt: string;
+  src: string;
 };
 
 type HeroContact = {
@@ -178,6 +187,20 @@ const WORK_EXPERIENCE: WorkExperienceItem[] = [
       'Developed the mobile app in React Native, the website in React, the backend in Node.js, and the database in MySQL.',
     ],
     href: 'https://corollaicedelivery.com/',
+    gallery: [
+      {
+        alt: 'Corolla Ice Delivery today page',
+        src: '/ice-delivery-today-page.png',
+      },
+      {
+        alt: 'Corolla Ice Delivery add delivery page',
+        src: '/ice-delivery-add-page.png',
+      },
+      {
+        alt: 'Corolla Ice Delivery all deliveries page',
+        src: '/ice-delivery-all-deliveries-page.png',
+      },
+    ],
   },
 ];
 
@@ -321,6 +344,92 @@ function Reveal({
   return (
     <div className="reveal" style={{ transitionDelay: `${delay}ms` }}>
       {children}
+    </div>
+  );
+}
+
+function WorkGallery({
+  images,
+  isActive,
+}: {
+  images: WorkGalleryImage[];
+  isActive: boolean;
+}) {
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState<boolean>(false);
+  const [canScrollRight, setCanScrollRight] = useState<boolean>(false);
+
+  const updateScrollState = () => {
+    const gallery = galleryRef.current;
+
+    if (!gallery) {
+      return;
+    }
+
+    const maxScrollLeft = gallery.scrollWidth - gallery.clientWidth;
+    setCanScrollLeft(gallery.scrollLeft > 8);
+    setCanScrollRight(gallery.scrollLeft < maxScrollLeft - 8);
+  };
+
+  const scrollGallery = (direction: -1 | 1) => {
+    const gallery = galleryRef.current;
+
+    if (!gallery) {
+      return;
+    }
+
+    gallery.scrollBy({
+      behavior: 'smooth',
+      left: direction * Math.min(gallery.clientWidth * 0.72, 320),
+    });
+  };
+
+  useEffect(() => {
+    if (!isActive) {
+      return;
+    }
+
+    updateScrollState();
+    window.addEventListener('resize', updateScrollState);
+
+    return () => {
+      window.removeEventListener('resize', updateScrollState);
+    };
+  }, [isActive]);
+
+  return (
+    <div className="iphone-gallery-wrap">
+      {canScrollLeft ? (
+        <button
+          className="gallery-scroll-button gallery-scroll-button-left"
+          type="button"
+          aria-label="Scroll gallery left"
+          onClick={() => scrollGallery(-1)}
+        >
+          <ChevronLeft aria-hidden="true" size={18} strokeWidth={2} />
+        </button>
+      ) : null}
+      <div
+        className="iphone-gallery"
+        ref={galleryRef}
+        onScroll={updateScrollState}
+      >
+        {images.map((image) => (
+          <figure className="iphone-frame" key={image.src}>
+            <img alt={image.alt} src={image.src} />
+          </figure>
+        ))}
+      </div>
+      {canScrollRight ? (
+        <button
+          className="gallery-scroll-button gallery-scroll-button-right"
+          type="button"
+          aria-label="Scroll gallery right"
+          onClick={() => scrollGallery(1)}
+        >
+          <ChevronRight aria-hidden="true" size={18} strokeWidth={2} />
+        </button>
+      ) : null}
     </div>
   );
 }
@@ -680,6 +789,15 @@ export const Home = () => {
                       <li key={highlight}>{highlight}</li>
                     ))}
                   </ul>
+                  {experience.gallery?.length ? (
+                    <div className="work-gallery">
+                      <h4>Gallery</h4>
+                      <WorkGallery
+                        images={experience.gallery}
+                        isActive={selectedExperienceIndex === index}
+                      />
+                    </div>
+                  ) : null}
                   <a
                     className="work-company-link"
                     href={experience.href}

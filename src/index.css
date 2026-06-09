@@ -698,6 +698,7 @@ a {
   margin-top: var(--space-5);
   display: grid;
   grid-template-columns: minmax(220px, 0.36fr) 1fr;
+  min-width: 0;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 20px;
@@ -762,11 +763,13 @@ a {
 
 .work-detail-stack {
   display: grid;
+  min-width: 0;
 }
 
 .work-detail {
   grid-area: 1 / 1;
   min-height: 0;
+  min-width: 0;
   padding: var(--space-5);
   opacity: 1;
   pointer-events: auto;
@@ -860,6 +863,142 @@ a {
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 14px rgba(95, 207, 163, 0.48);
+}
+
+.work-gallery {
+  margin-top: var(--space-4);
+  min-width: 0;
+}
+
+.work-gallery h4 {
+  margin-top: 0;
+}
+
+.iphone-gallery-wrap {
+  position: relative;
+}
+
+.iphone-gallery {
+  display: flex;
+  gap: var(--space-3);
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: var(--space-1) var(--space-3) var(--space-2) 0;
+  scroll-snap-type: x proximity;
+  scrollbar-color: rgba(95, 207, 163, 0.64) rgba(255, 255, 255, 0.1);
+  scrollbar-width: thin;
+}
+
+.gallery-scroll-button {
+  position: absolute;
+  top: 50%;
+  z-index: 4;
+  display: inline-flex;
+  width: 2rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  color: var(--accent);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.18),
+    rgba(95, 207, 163, 0.1) 42%,
+    rgba(8, 8, 8, 0.38)
+  );
+  backdrop-filter: blur(16px) saturate(1.35);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+    0 10px 30px rgba(0, 0, 0, 0.34),
+    0 0 24px rgba(95, 207, 163, 0.14);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.gallery-scroll-button-left {
+  left: 0.35rem;
+}
+
+.gallery-scroll-button-right {
+  right: 0.35rem;
+}
+
+.gallery-scroll-button:hover,
+.gallery-scroll-button:focus-visible {
+  border-color: rgba(255, 255, 255, 0.34);
+  color: #8dd9bb;
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.24),
+    rgba(95, 207, 163, 0.16) 42%,
+    rgba(8, 8, 8, 0.46)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.1),
+    0 12px 34px rgba(0, 0, 0, 0.38),
+    0 0 32px rgba(95, 207, 163, 0.22);
+  transform: translateY(-50%) scale(1.04);
+}
+
+.gallery-scroll-button:focus-visible {
+  outline: 2px solid rgba(95, 207, 163, 0.52);
+  outline-offset: 3px;
+}
+
+.iphone-gallery::-webkit-scrollbar {
+  height: 8px;
+}
+
+.iphone-gallery::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.iphone-gallery::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(95, 207, 163, 0.64);
+}
+
+.iphone-frame {
+  position: relative;
+  flex: 0 0 150px;
+  margin: 0;
+  aspect-ratio: 9 / 19.5;
+  overflow: hidden;
+  border: 7px solid #050505;
+  border-radius: 28px;
+  background: #050505;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 14px 34px rgba(0, 0, 0, 0.4);
+  scroll-snap-align: start;
+}
+
+.iphone-frame::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 31px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.iphone-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 21px;
+  object-fit: cover;
 }
 
 .work-company-link {
