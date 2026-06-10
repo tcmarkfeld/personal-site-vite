@@ -15,6 +15,7 @@ import {
   Globe,
   HardDrive,
   KeyRound,
+  ListChecks,
   Layers,
   LayoutGrid,
   Linkedin,
@@ -87,6 +88,12 @@ type HeroContact = {
   download?: string;
 };
 
+type OperatingProfileItem = {
+  label: string;
+  detail: string;
+  Icon: LucideIcon;
+};
+
 type ScrollMarker = {
   id: string;
   label: string;
@@ -150,12 +157,12 @@ const WORK_EXPERIENCE: WorkExperienceItem[] = [
     period: 'Apr 2025 - Present',
     location: 'Nashville, TN',
     summary:
-      'Full-stack engineering across AI automation, secure GraphQL APIs, event-driven workers, and multi-tenant SaaS systems.',
+      'Senior engineering ownership across distributed workers, AI automation, secure GraphQL APIs, and multi-tenant SaaS systems.',
     highlights: [
-      'Built fault-tolerant worker systems on AWS SQS/SNS, ECS, RDS, and Parameter Store for content, social, and backlink automation.',
-      'Designed GraphQL APIs and React/Next.js frontends with database access patterns keeping p99 query latency under 25ms.',
-      'Engineered AI-driven content pipelines spanning LLMs, fact-checking, media generation, and automated WordPress publishing.',
-      'Reviewed and merged 1,500+ PRs while mentoring engineers on architecture, maintainability, and production quality.',
+      'Built and owned fault-tolerant distributed worker systems on AWS SQS/SNS, ECS, RDS, Parameter Store, and Secrets Manager for content, social media, and backlink automation workflows.',
+      'Designed secure GraphQL APIs and React/Next.js applications, maintaining p99 query latency below 25ms across multi-tenant workloads with RBAC and OAuth integrations.',
+      'Engineered AI-driven content pipelines integrating LLMs, fact-checking, media generation, and automated WordPress publishing across hundreds of client sites.',
+      'Merged 1,500+ PRs across backend, frontend, and infrastructure while mentoring engineers, leading CQRS refactors, and supporting production on-call response.',
     ],
     href: 'https://firmpilot.com/',
   },
@@ -165,12 +172,12 @@ const WORK_EXPERIENCE: WorkExperienceItem[] = [
     period: 'Sep 2023 - Apr 2025',
     location: 'Nashville, TN',
     summary:
-      'Healthcare integration platform work across HIPAA-regulated .NET services, interoperability standards, and cloud migration.',
+      'Healthcare integration platform work across HIPAA-regulated .NET services, clinical interoperability standards, and cloud migration.',
     highlights: [
-      'Managed 200+ .NET microservices processing over 1M daily events across clinical integration workflows.',
-      'Integrated external EHR systems using FHIR APIs, HL7 messaging, IHE standards, IBM MQ, and Kafka event processing.',
-      'Led migration from legacy integration services to Apache NiFi with Terraform, Azure AD, and Google Cloud Platform.',
-      'Implemented Dynatrace monitoring, alerting, and automated failover workflows for platform reliability.',
+      'Owned and supported 200+ HIPAA-regulated .NET microservices processing over 1M daily events across clinical integration workflows.',
+      'Integrated external EHR systems using FHIR APIs, HL7 messaging, and IHE interoperability standards for clinical data exchange.',
+      'Led migration of legacy healthcare integration services to Apache NiFi with Terraform provisioning, Azure AD integration, and Google Cloud Platform deployment.',
+      'Implemented Dynatrace monitoring, alerting, and automated failover workflows while mentoring engineers on platform architecture and HL7/FHIR integration patterns.',
     ],
     href: 'https://www.hcahealthcare.com/',
   },
@@ -207,7 +214,7 @@ const WORK_EXPERIENCE: WorkExperienceItem[] = [
 const PROJECTS: ProjectItem[] = [
   {
     title: 'HL7Kit / HL7Kit.Fhir',
-    period: 'Open Source',
+    period: '',
     description:
       'Strongly typed HL7 v2 parser for .NET with full segment coverage, dynamic delimiter handling, Z-segment support, and FHIR R4 conversion. Published on NuGet.',
     href: 'https://github.com/tcmarkfeld/HL7Kit',
@@ -228,7 +235,7 @@ const PROJECTS: ProjectItem[] = [
   },
   {
     title: 'Conductor',
-    period: 'Open Source',
+    period: '',
     description:
       'CLI for .NET teams on AWS that generates least-privilege IAM policies and Terraform resources from MassTransit, SQS, and SNS configuration. Published on NuGet.',
     href: 'https://github.com/tcmarkfeld/Conductor',
@@ -243,11 +250,14 @@ const PROJECTS: ProjectItem[] = [
   },
   {
     title: 'PriceTime',
-    period: 'Open Source',
+    period: '',
     description:
       'Price-time priority matching engine for .NET with Kafka-driven order submission, trade execution, and real-time order book management.',
     href: 'https://github.com/tcmarkfeld/PriceTime',
   },
+];
+
+const EARLIER_WORK: ProjectItem[] = [
   {
     title: 'UA Lacrosse Website (MVC)',
     period: 'Jan 2022 - May 2022',
@@ -269,8 +279,8 @@ const PROJECTS: ProjectItem[] = [
 ];
 
 const SCROLL_MARKERS: ScrollMarker[] = [
-  { id: 'about', label: 'About', start: 0.14, end: 0.38 },
-  { id: 'experience', label: 'Experience', start: 0.38, end: 0.58 },
+  { id: 'experience', label: 'Experience', start: 0.14, end: 0.38 },
+  { id: 'about', label: 'About', start: 0.38, end: 0.58 },
   { id: 'projects', label: 'Projects', start: 0.58, end: 0.82 },
   { id: 'education', label: 'Education', start: 0.86, end: 1 },
 ];
@@ -297,6 +307,29 @@ const HERO_CONTACTS: HeroContact[] = [
     label: 'LinkedIn',
     href: 'https://linkedin.com/in/timothy-markfeld',
     Icon: Linkedin,
+  },
+];
+
+const OPERATING_PROFILE: OperatingProfileItem[] = [
+  {
+    label: 'Production Owner',
+    detail: 'On-call, incident response, and reliability ownership',
+    Icon: ShieldCheck,
+  },
+  {
+    label: 'Architecture Cleanup',
+    detail: 'CQRS refactors and long-term maintainability work',
+    Icon: GitBranch,
+  },
+  {
+    label: 'Review + Mentorship',
+    detail: 'Daily code reviews across backend, frontend, and infra',
+    Icon: ListChecks,
+  },
+  {
+    label: 'Distributed Systems',
+    detail: 'Workers, queues, APIs, observability, and cloud delivery',
+    Icon: Workflow,
   },
 ];
 
@@ -441,11 +474,11 @@ export const Home = () => {
   const { scrollY, progress } = useScrollMetrics();
   const auroraOneShift = useMemo(() => scrollY * 0.05, [scrollY]);
   const auroraTwoShift = useMemo(() => scrollY * -0.04, [scrollY]);
-  const aboutProgress = useMemo(
+  const experienceProgress = useMemo(
     () => clamp01((progress - 0.14) / 0.24),
     [progress],
   );
-  const experienceProgress = useMemo(
+  const aboutProgress = useMemo(
     () => clamp01((progress - 0.38) / 0.2),
     [progress],
   );
@@ -555,7 +588,7 @@ export const Home = () => {
       <section className="hero section">
         <Reveal>
           <p className="eyebrow">
-            Software Engineer • Distributed Systems • Product Builder
+            Senior Software Engineer • Distributed Systems • AI Automation
           </p>
         </Reveal>
 
@@ -563,16 +596,17 @@ export const Home = () => {
           <h1 className="hero-title">
             Timothy Markfeld
             <span>
-              Building systems that stay fast, resilient, and useful at scale.
+              Building production platforms that stay fast, resilient, and
+              useful at scale.
             </span>
           </h1>
         </Reveal>
 
         <Reveal delay={220}>
           <p className="hero-copy">
-            I design and operate full-stack systems - from message-driven
-            workers and reliable APIs to AI automation pipelines - built to hold
-            up under real-world load.
+            Senior Software Engineer designing cloud-native systems, secure
+            APIs, event-driven workers, and AI automation pipelines for
+            production workloads.
           </p>
         </Reveal>
 
@@ -597,6 +631,20 @@ export const Home = () => {
         </Reveal>
 
         <Reveal delay={360}>
+          <div className="operating-profile" aria-label="Operating profile">
+            {OPERATING_PROFILE.map(({ label, detail, Icon }) => (
+              <article className="operating-profile-item" key={label}>
+                <Icon aria-hidden="true" size={16} strokeWidth={2} />
+                <div>
+                  <h2>{label}</h2>
+                  <p>{detail}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </Reveal>
+
+        <Reveal delay={420}>
           <div className="hero-contact-row" aria-label="Contact links">
             {HERO_CONTACTS.map((contact) => (
               <a
@@ -614,10 +662,110 @@ export const Home = () => {
           </div>
         </Reveal>
 
-        <Reveal delay={420}>
-          <a className="hero-scroll-cue" href="#about" aria-label="Scroll down">
+        <Reveal delay={480}>
+          <a
+            className="hero-scroll-cue"
+            href="#experience"
+            aria-label="Scroll down"
+          >
             <ChevronDown aria-hidden="true" size={18} strokeWidth={2} />
           </a>
+        </Reveal>
+      </section>
+
+      <section className="section" id="experience">
+        <div
+          className="section-glow"
+          style={
+            {
+              opacity: 0.12 + experienceProgress * 0.38,
+              transform: `translate3d(0, ${scrollY * 0.028}px, 0)`,
+            } as CSSProperties
+          }
+        />
+        <Reveal>
+          <div className="section-heading-row">
+            <div>
+              <h2 className="section-title">Work Experience</h2>
+              <p className="section-copy">
+                A timeline of production engineering work across SaaS
+                automation and healthcare integration platforms.
+              </p>
+            </div>
+            <a
+              className="section-resume-link"
+              href="/Timothy_Markfeld_Resume.pdf"
+              download="Timothy_Markfeld_Resume.pdf"
+            >
+              <Download aria-hidden="true" size={15} strokeWidth={2} />
+              Download resume
+            </a>
+          </div>
+        </Reveal>
+
+        <Reveal delay={120}>
+          <div className="work-panel">
+            <div className="work-list" aria-label="Work experience roles">
+              {WORK_EXPERIENCE.map((experience, index) => (
+                <button
+                  className="work-tab"
+                  type="button"
+                  aria-pressed={selectedExperienceIndex === index}
+                  key={experience.company}
+                  onClick={() => setSelectedExperienceIndex(index)}
+                >
+                  <span>{experience.company}</span>
+                  <small>{experience.period}</small>
+                </button>
+              ))}
+            </div>
+
+            <div className="work-detail-stack">
+              {WORK_EXPERIENCE.map((experience, index) => (
+                <article
+                  className="work-detail"
+                  aria-hidden={selectedExperienceIndex !== index}
+                  key={experience.company}
+                >
+                  <div className="work-detail-header">
+                    <div>
+                      <h3>{experience.role}</h3>
+                      <p>{experience.company}</p>
+                    </div>
+                    <div className="work-meta">
+                      <span>{experience.period}</span>
+                      <span>{experience.location}</span>
+                    </div>
+                  </div>
+                  <p className="work-summary">{experience.summary}</p>
+                  <h4>Highlights</h4>
+                  <ul>
+                    {experience.highlights.map((highlight) => (
+                      <li key={highlight}>{highlight}</li>
+                    ))}
+                  </ul>
+                  {experience.gallery?.length ? (
+                    <div className="work-gallery">
+                      <h4>Gallery</h4>
+                      <WorkGallery
+                        images={experience.gallery}
+                        isActive={selectedExperienceIndex === index}
+                      />
+                    </div>
+                  ) : null}
+                  <a
+                    className="work-company-link"
+                    href={experience.href}
+                    rel="noreferrer"
+                    target="_blank"
+                    tabIndex={selectedExperienceIndex === index ? 0 : -1}
+                  >
+                    View company
+                  </a>
+                </article>
+              ))}
+            </div>
+          </div>
         </Reveal>
       </section>
 
@@ -648,10 +796,12 @@ export const Home = () => {
                   >
                     FirmPilot
                   </a>
-                  , working across both backend and frontend. A lot of my work
-                  has been building our GraphQL API, AI-driven workflows for
-                  publishing, SEO, social media, PPC, and WordPress automation,
-                  as well as onboarding systems.
+                  , building GraphQL APIs, React/Next.js applications, AWS
+                  worker systems, and event-based microservices for AI-powered
+                  legal marketing workflows. The work spans LLM-driven
+                  marketing content generation, SEO/GEO automation, WordPress
+                  publishing, multi-tenant performance, RBAC/OAuth integrations,
+                  and production incident response.
                 </p>
                 <p className="about-copy">
                   Before FirmPilot, I was at{' '}
@@ -728,92 +878,6 @@ export const Home = () => {
         </div>
       </section>
 
-      <section className="section" id="experience">
-        <div
-          className="section-glow"
-          style={
-            {
-              opacity: 0.12 + experienceProgress * 0.38,
-              transform: `translate3d(0, ${scrollY * 0.028}px, 0)`,
-            } as CSSProperties
-          }
-        />
-        <Reveal>
-          <div>
-            <h2 className="section-title">Work Experience</h2>
-            <p className="section-copy">
-              A timeline of production engineering work across SaaS automation
-              and healthcare integration platforms.
-            </p>
-          </div>
-        </Reveal>
-
-        <Reveal delay={120}>
-          <div className="work-panel">
-            <div className="work-list" aria-label="Work experience roles">
-              {WORK_EXPERIENCE.map((experience, index) => (
-                <button
-                  className="work-tab"
-                  type="button"
-                  aria-pressed={selectedExperienceIndex === index}
-                  key={experience.company}
-                  onClick={() => setSelectedExperienceIndex(index)}
-                >
-                  <span>{experience.company}</span>
-                  <small>{experience.period}</small>
-                </button>
-              ))}
-            </div>
-
-            <div className="work-detail-stack">
-              {WORK_EXPERIENCE.map((experience, index) => (
-                <article
-                  className="work-detail"
-                  aria-hidden={selectedExperienceIndex !== index}
-                  key={experience.company}
-                >
-                  <div className="work-detail-header">
-                    <div>
-                      <h3>{experience.role}</h3>
-                      <p>{experience.company}</p>
-                    </div>
-                    <div className="work-meta">
-                      <span>{experience.period}</span>
-                      <span>{experience.location}</span>
-                    </div>
-                  </div>
-                  <p className="work-summary">{experience.summary}</p>
-                  <h4>Highlights</h4>
-                  <ul>
-                    {experience.highlights.map((highlight) => (
-                      <li key={highlight}>{highlight}</li>
-                    ))}
-                  </ul>
-                  {experience.gallery?.length ? (
-                    <div className="work-gallery">
-                      <h4>Gallery</h4>
-                      <WorkGallery
-                        images={experience.gallery}
-                        isActive={selectedExperienceIndex === index}
-                      />
-                    </div>
-                  ) : null}
-                  <a
-                    className="work-company-link"
-                    href={experience.href}
-                    rel="noreferrer"
-                    target="_blank"
-                    tabIndex={selectedExperienceIndex === index ? 0 : -1}
-                  >
-                    View company
-                  </a>
-                </article>
-              ))}
-            </div>
-          </div>
-        </Reveal>
-      </section>
-
       <section className="section" id="projects">
         <div
           className="section-glow"
@@ -824,14 +888,14 @@ export const Home = () => {
             } as CSSProperties
           }
         />
-        <div
-          className="project-beam"
-          style={{
-            transform: `translate3d(${-26 + projectProgress * 52}%, 0, 0)`,
-          }}
-        />
         <Reveal>
-          <h2 className="section-title">Projects</h2>
+          <div>
+            <h2 className="section-title">Open Source + Systems Work</h2>
+            <p className="section-copy">
+              Focused projects that map to backend platform, healthcare
+              interoperability, and cloud infrastructure work.
+            </p>
+          </div>
         </Reveal>
 
         <div className="projects-grid">
@@ -874,6 +938,21 @@ export const Home = () => {
             </Reveal>
           ))}
         </div>
+
+        <Reveal delay={360}>
+          <div className="earlier-work">
+            <h3 className="section-subtitle">Earlier Work</h3>
+            <div className="earlier-work-grid">
+              {EARLIER_WORK.map((project) => (
+                <article className="earlier-work-card" key={project.title}>
+                  <h4>{project.title}</h4>
+                  <p className="meta">{project.period}</p>
+                  <p>{project.description}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </Reveal>
       </section>
 
       <section
