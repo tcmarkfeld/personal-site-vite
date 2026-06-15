@@ -29,7 +29,6 @@ import {
 } from 'lucide-react';
 import {
   useEffect,
-  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -53,6 +52,7 @@ import {
 } from 'react-icons/si';
 import { TbBrandCSharp } from 'react-icons/tb';
 import type { IconBaseProps, IconType } from 'react-icons';
+import { clamp01, getTimelineColor, revealSection, revealVisibleElements } from '@/lib/utils';
 
 type ProjectItem = {
   title: string;
@@ -121,8 +121,8 @@ const Hl7Icon: IconType = ({
   title,
   'aria-hidden': ariaHidden,
 }: IconBaseProps) => {
-  const iconSize = typeof size === 'number' ? `${size}px` : size;
-  const fontSize = typeof size === 'number' ? `${size * 0.38}px` : '0.7em';
+  const iconSize = `${size}px`;
+  const fontSize = `${(size as number) * 0.38}px`;
 
   return (
     <span
@@ -325,39 +325,6 @@ const COMMAND_CONNECT_LINKS: CommandConnectLink[] = [
   },
 ];
 
-const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1);
-
-const TIMELINE_COLOR_STOPS = [
-  { progress: 0, red: 230, green: 184, blue: 0 },
-  { progress: 0.46, red: 82, green: 136, blue: 246 },
-  { progress: 1, red: 95, green: 207, blue: 163 },
-] as const;
-
-function getTimelineColor(progress: number) {
-  const clampedProgress = clamp01(progress);
-  const upperStop =
-    TIMELINE_COLOR_STOPS.find((stop) => stop.progress >= clampedProgress) ??
-    TIMELINE_COLOR_STOPS[TIMELINE_COLOR_STOPS.length - 1];
-  const lowerStopIndex = Math.max(
-    TIMELINE_COLOR_STOPS.indexOf(upperStop) - 1,
-    0,
-  );
-  const lowerStop = TIMELINE_COLOR_STOPS[lowerStopIndex];
-  const stopRange = Math.max(upperStop.progress - lowerStop.progress, 0.01);
-  const stopProgress = (clampedProgress - lowerStop.progress) / stopRange;
-  const red = Math.round(
-    lowerStop.red + (upperStop.red - lowerStop.red) * stopProgress,
-  );
-  const green = Math.round(
-    lowerStop.green + (upperStop.green - lowerStop.green) * stopProgress,
-  );
-  const blue = Math.round(
-    lowerStop.blue + (upperStop.blue - lowerStop.blue) * stopProgress,
-  );
-
-  return `rgb(${red}, ${green}, ${blue})`;
-}
-
 const HERO_MARQUEE_ITEMS = [
   'Production Engineering',
   'Distributed Systems',
@@ -465,57 +432,24 @@ function updateMouseGlow(event: ReactMouseEvent<HTMLElement>) {
   );
 }
 
-function revealVisibleElements() {
-  const viewportHeight = window.innerHeight;
-
-  document.querySelectorAll<HTMLElement>('.reveal').forEach((element) => {
-    if (element.classList.contains('reveal-visible')) {
-      return;
-    }
-
-    const rect = element.getBoundingClientRect();
-    const isNearViewport = rect.top < viewportHeight * 1.12 && rect.bottom > 0;
-
-    if (isNearViewport) {
-      element.classList.add('reveal-visible');
-    }
-  });
-}
-
 export const Home = () => {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState<boolean>(false);
+  const [activeSectionId, setActiveSectionId] = useState<string>('top');
   const [contextMenuPosition, setContextMenuPosition] =
     useState<ContextMenuPosition | null>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
   const [timelineProgress, setTimelineProgress] = useState<number>(0);
   const [timelineCapOffset, setTimelineCapOffset] = useState<number>(0);
   const { scrollY, progress } = useScrollMetrics();
-  const auroraOneShift = useMemo(() => scrollY * 0.05, [scrollY]);
-  const auroraTwoShift = useMemo(() => scrollY * -0.04, [scrollY]);
-  const aboutProgress = useMemo(
-    () => clamp01((progress - 0.12) / 0.18),
-    [progress],
-  );
-  const experienceProgress = useMemo(
-    () => clamp01((progress - 0.3) / 0.2),
-    [progress],
-  );
-  const skillsProgress = useMemo(
-    () => clamp01((progress - 0.5) / 0.16),
-    [progress],
-  );
-  const projectProgress = useMemo(
-    () => clamp01((progress - 0.66) / 0.2),
-    [progress],
-  );
-  const educationProgress = useMemo(
-    () => clamp01((progress - 0.86) / 0.14),
-    [progress],
-  );
-  const timelineCapColor = useMemo(
-    () => getTimelineColor(timelineProgress),
-    [timelineProgress],
-  );
+
+  const auroraOneShift = scrollY * 0.05;
+  const auroraTwoShift = scrollY * -0.04;
+  const aboutProgress = clamp01((progress - 0.12) / 0.18);
+  const experienceProgress = clamp01((progress - 0.3) / 0.2);
+  const skillsProgress = clamp01((progress - 0.5) / 0.16);
+  const projectProgress = clamp01((progress - 0.66) / 0.2);
+  const educationProgress = clamp01((progress - 0.86) / 0.14);
+  const timelineCapColor = getTimelineColor(timelineProgress);
 
   useEffect(() => {
     const revealElements = Array.from(
@@ -588,6 +522,50 @@ export const Home = () => {
   }, []);
 
   useEffect(() => {
+    let frameId = 0;
+    const sectionIds = COMMAND_PAGE_LINKS.map((link) => link.id);
+
+    const updateActiveSection = () => {
+      if (frameId !== 0) {
+        return;
+      }
+
+      frameId = window.requestAnimationFrame(() => {
+        const activationLine = window.innerHeight * 0.36;
+        let nextActiveSection = 'top';
+
+        sectionIds.forEach((sectionId) => {
+          const section = document.getElementById(sectionId);
+
+          if (!section) {
+            return;
+          }
+
+          if (section.getBoundingClientRect().top <= activationLine) {
+            nextActiveSection = sectionId;
+          }
+        });
+
+        setActiveSectionId(nextActiveSection);
+        frameId = 0;
+      });
+    };
+
+    updateActiveSection();
+    window.addEventListener('scroll', updateActiveSection, { passive: true });
+    window.addEventListener('resize', updateActiveSection);
+
+    return () => {
+      if (frameId !== 0) {
+        window.cancelAnimationFrame(frameId);
+      }
+
+      window.removeEventListener('scroll', updateActiveSection);
+      window.removeEventListener('resize', updateActiveSection);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!contextMenuPosition) {
       return;
     }
@@ -628,11 +606,12 @@ export const Home = () => {
     });
   };
 
-  const handlePageNavigation = () => {
+  const handlePageNavigation = (sectionId: string) => {
+    setActiveSectionId(sectionId);
     setIsMobileNavOpen(false);
     window.requestAnimationFrame(() => {
-      revealVisibleElements();
-      window.setTimeout(revealVisibleElements, 220);
+      revealSection(sectionId);
+      window.setTimeout(() => revealSection(sectionId), 220);
     });
   };
 
@@ -675,7 +654,13 @@ export const Home = () => {
           </a>
           <nav className="nav-pill" aria-label="Primary navigation">
             {COMMAND_PAGE_LINKS.slice(0, 5).map((link) => (
-              <a href={`#${link.id}`} key={link.id} onClick={handlePageNavigation}>
+              <a
+                aria-current={activeSectionId === link.id ? 'page' : undefined}
+                data-active={activeSectionId === link.id}
+                href={`#${link.id}`}
+                key={link.id}
+                onClick={() => handlePageNavigation(link.id)}
+              >
                 {link.label}
               </a>
             ))}
@@ -738,7 +723,7 @@ export const Home = () => {
                 className="command-menu-card"
                 href={`#${id}`}
                 key={id}
-                onClick={handlePageNavigation}
+                onClick={() => handlePageNavigation(id)}
               >
                 <Icon aria-hidden="true" size={19} strokeWidth={2} />
                 {label}
@@ -959,7 +944,11 @@ export const Home = () => {
               <h3>AI automation systems for legal marketing workflows</h3>
               <p className="about-copy">
                 At{' '}
-                <a href="https://firmpilot.com/" rel="noreferrer" target="_blank">
+                <a
+                  href="https://firmpilot.com/"
+                  rel="noreferrer"
+                  target="_blank"
+                >
                   FirmPilot
                 </a>
                 , I work on LLM-driven content generation, SEO/GEO automation,
@@ -997,12 +986,11 @@ export const Home = () => {
                       className="tennessee-route"
                       d="M134 58 C210 61 285 57 357 59 C395 60 431 57 466 48"
                     />
-                    <text x="238" y="85">Tennessee</text>
+                    <text x="238" y="85">
+                      Tennessee
+                    </text>
                   </svg>
-                  <span
-                    className="tennessee-pin"
-                    aria-label="Nashville marker"
-                  >
+                  <span className="tennessee-pin" aria-label="Nashville marker">
                     <span />
                   </span>
                 </div>

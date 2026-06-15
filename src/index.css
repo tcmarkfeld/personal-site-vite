@@ -111,11 +111,13 @@ a {
 }
 
 .nav-pill a {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 5.6rem;
   padding: 0.7rem 1rem;
+  overflow: hidden;
   border-radius: 999px;
   color: var(--ink-muted);
   font-size: 0.92rem;
@@ -127,11 +129,51 @@ a {
     transform 0.2s ease;
 }
 
+.nav-pill a::before,
+.nav-pill a::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity 0.22s ease;
+}
+
+.nav-pill a::before {
+  top: 0.18rem;
+  width: 2.15rem;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow:
+    0 0 10px rgba(95, 207, 163, 0.86),
+    0 0 22px rgba(95, 207, 163, 0.42);
+}
+
+.nav-pill a::after {
+  top: -0.65rem;
+  width: 3.8rem;
+  height: 2.4rem;
+  border-radius: 999px;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(95, 207, 163, 0.4),
+    transparent 68%
+  );
+}
+
 .nav-pill a:hover,
-.nav-pill a:focus-visible {
+.nav-pill a:focus-visible,
+.nav-pill a[data-active='true'] {
   color: var(--ink);
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-1px);
+}
+
+.nav-pill a[data-active='true']::before,
+.nav-pill a[data-active='true']::after {
+  opacity: 1;
 }
 
 .command-menu-trigger {
@@ -195,7 +237,11 @@ a {
   inset: 0;
   z-index: 35;
   background:
-    radial-gradient(circle at 50% 100%, rgba(95, 207, 163, 0.08), transparent 34%),
+    radial-gradient(
+      circle at 50% 100%,
+      rgba(95, 207, 163, 0.08),
+      transparent 34%
+    ),
     rgba(0, 0, 0, 0.46);
   backdrop-filter: blur(3px);
   opacity: 0;
@@ -1210,8 +1256,16 @@ a {
   overflow: hidden;
   border-radius: 12px;
   background:
-    radial-gradient(circle at 46% 50%, rgba(95, 207, 163, 0.1), transparent 46%),
-    linear-gradient(135deg, rgba(95, 207, 163, 0.045), rgba(255, 255, 255, 0.015));
+    radial-gradient(
+      circle at 46% 50%,
+      rgba(95, 207, 163, 0.1),
+      transparent 46%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(95, 207, 163, 0.045),
+      rgba(255, 255, 255, 0.015)
+    );
 }
 
 .tennessee-map svg {
@@ -1527,7 +1581,8 @@ a {
   height: 1rem;
   border-radius: 999px;
   background: var(--timeline-cap-color);
-  box-shadow: 0 0 24px color-mix(in srgb, var(--timeline-cap-color) 58%, transparent);
+  box-shadow: 0 0 24px
+    color-mix(in srgb, var(--timeline-cap-color) 58%, transparent);
   opacity: var(--timeline-progress);
   transform: translate(-50%, -50%);
   will-change: top, opacity;
@@ -2372,8 +2427,7 @@ a {
     var(--project-color) 10%,
     rgba(255, 255, 255, 0.04)
   );
-  box-shadow: 0 0 28px
-    color-mix(in srgb, var(--project-color) 18%, transparent);
+  box-shadow: 0 0 28px color-mix(in srgb, var(--project-color) 18%, transparent);
 }
 
 .project-heading {
@@ -2493,7 +2547,10 @@ a {
 
 .site-footer {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(7rem, 0.45fr) minmax(6rem, 0.35fr);
+  grid-template-columns: minmax(0, 1.5fr) minmax(7rem, 0.45fr) minmax(
+      6rem,
+      0.35fr
+    );
   gap: var(--space-4);
   max-width: 1120px;
   margin: var(--space-3) auto 0;
