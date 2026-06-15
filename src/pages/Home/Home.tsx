@@ -216,7 +216,7 @@ const WORK_EXPERIENCE: WorkExperienceItem[] = [
 const PROJECTS: ProjectItem[] = [
   {
     title: 'HL7Kit / HL7Kit.Fhir',
-    period: '.NET • HL7 • FHIR • NuGet',
+    period: '.NET • HL7 • FHIR',
     description:
       'Strongly typed HL7 v2 parser for .NET with full segment coverage, dynamic delimiter handling, Z-segment support, and FHIR R4 conversion. Published on NuGet.',
     href: 'https://github.com/tcmarkfeld/HL7Kit',
@@ -256,7 +256,7 @@ const PROJECTS: ProjectItem[] = [
   },
   {
     title: 'PriceTime',
-    period: '.NET • Kafka • Matching Engine',
+    period: '.NET • Kafka',
     description:
       'Price-time priority matching engine for .NET with Kafka-driven order submission, trade execution, and real-time order book management.',
     href: 'https://github.com/tcmarkfeld/PriceTime',
@@ -465,6 +465,23 @@ function updateMouseGlow(event: ReactMouseEvent<HTMLElement>) {
   );
 }
 
+function revealVisibleElements() {
+  const viewportHeight = window.innerHeight;
+
+  document.querySelectorAll<HTMLElement>('.reveal').forEach((element) => {
+    if (element.classList.contains('reveal-visible')) {
+      return;
+    }
+
+    const rect = element.getBoundingClientRect();
+    const isNearViewport = rect.top < viewportHeight * 1.12 && rect.bottom > 0;
+
+    if (isNearViewport) {
+      element.classList.add('reveal-visible');
+    }
+  });
+}
+
 export const Home = () => {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState<boolean>(false);
   const [contextMenuPosition, setContextMenuPosition] =
@@ -513,10 +530,11 @@ export const Home = () => {
           }
         });
       },
-      { threshold: 0.15, rootMargin: '0px 0px -10% 0px' },
+      { threshold: 0.01, rootMargin: '0px 0px 12% 0px' },
     );
 
     revealElements.forEach((element) => observer.observe(element));
+    revealVisibleElements();
 
     return () => {
       observer.disconnect();
@@ -610,6 +628,14 @@ export const Home = () => {
     });
   };
 
+  const handlePageNavigation = () => {
+    setIsMobileNavOpen(false);
+    window.requestAnimationFrame(() => {
+      revealVisibleElements();
+      window.setTimeout(revealVisibleElements, 220);
+    });
+  };
+
   return (
     <main
       className="site-shell"
@@ -649,7 +675,7 @@ export const Home = () => {
           </a>
           <nav className="nav-pill" aria-label="Primary navigation">
             {COMMAND_PAGE_LINKS.slice(0, 5).map((link) => (
-              <a href={`#${link.id}`} key={link.id}>
+              <a href={`#${link.id}`} key={link.id} onClick={handlePageNavigation}>
                 {link.label}
               </a>
             ))}
@@ -712,7 +738,7 @@ export const Home = () => {
                 className="command-menu-card"
                 href={`#${id}`}
                 key={id}
-                onClick={() => setIsMobileNavOpen(false)}
+                onClick={handlePageNavigation}
               >
                 <Icon aria-hidden="true" size={19} strokeWidth={2} />
                 {label}
