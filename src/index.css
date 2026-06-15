@@ -25,8 +25,14 @@
   box-sizing: border-box;
 }
 
+html {
+  min-height: 100%;
+  background: var(--bg);
+}
+
 body {
   margin: 0;
+  min-height: 100dvh;
   background: radial-gradient(
     circle at 25% 0%,
     #121212 0%,
@@ -35,6 +41,11 @@ body {
   );
   color: var(--ink);
   font-family: 'Inter', sans-serif;
+}
+
+#root {
+  min-height: 100dvh;
+  background: transparent;
 }
 
 a {
