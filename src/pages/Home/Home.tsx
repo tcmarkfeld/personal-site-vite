@@ -372,11 +372,35 @@ const ABOUT_STATS: AboutStatItem[] = [
   },
 ];
 
-function useScrollMetrics() {
+function useIsMobileViewport() {
+  const [isMobileViewport, setIsMobileViewport] = useState<boolean>(false);
+
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 960px)');
+    const updateViewport = () => setIsMobileViewport(query.matches);
+
+    updateViewport();
+    query.addEventListener('change', updateViewport);
+
+    return () => {
+      query.removeEventListener('change', updateViewport);
+    };
+  }, []);
+
+  return isMobileViewport;
+}
+
+function useScrollMetrics(isEnabled: boolean) {
   const [scrollY, setScrollY] = useState<number>(0);
   const [progress, setProgress] = useState<number>(0);
 
   useEffect(() => {
+    if (!isEnabled) {
+      setScrollY(0);
+      setProgress(0);
+      return;
+    }
+
     let frameId = 0;
 
     const handleScroll = () => {
@@ -404,7 +428,7 @@ function useScrollMetrics() {
       }
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [isEnabled]);
 
   return { scrollY, progress };
 }
@@ -440,7 +464,8 @@ export const Home = () => {
   const timelineRef = useRef<HTMLDivElement>(null);
   const [timelineProgress, setTimelineProgress] = useState<number>(0);
   const [timelineCapOffset, setTimelineCapOffset] = useState<number>(0);
-  const { scrollY, progress } = useScrollMetrics();
+  const isMobileViewport = useIsMobileViewport();
+  const { scrollY, progress } = useScrollMetrics(!isMobileViewport);
 
   const auroraOneShift = scrollY * 0.05;
   const auroraTwoShift = scrollY * -0.04;
@@ -476,6 +501,11 @@ export const Home = () => {
   }, []);
 
   useEffect(() => {
+    if (isMobileViewport) {
+      setTimelineProgress(1);
+      return;
+    }
+
     let frameId = 0;
 
     const updateTimelineProgress = () => {
@@ -519,9 +549,13 @@ export const Home = () => {
       window.removeEventListener('scroll', updateTimelineProgress);
       window.removeEventListener('resize', updateTimelineProgress);
     };
-  }, []);
+  }, [isMobileViewport]);
 
   useEffect(() => {
+    if (isMobileViewport) {
+      return;
+    }
+
     let frameId = 0;
     const sectionIds = COMMAND_PAGE_LINKS.map((link) => link.id);
 
@@ -563,7 +597,7 @@ export const Home = () => {
       window.removeEventListener('scroll', updateActiveSection);
       window.removeEventListener('resize', updateActiveSection);
     };
-  }, []);
+  }, [isMobileViewport]);
 
   useEffect(() => {
     if (!contextMenuPosition) {
@@ -623,7 +657,9 @@ export const Home = () => {
 
       section.scrollIntoView({ block: 'start', behavior: 'auto' });
       window.history.replaceState(null, '', `#${sectionId}`);
-      revealVisibleElements();
+      if (!isMobileViewport) {
+        revealVisibleElements();
+      }
     }, 80);
   };
 

@@ -2859,6 +2859,11 @@ a {
     overflow-y: auto;
     padding: var(--space-3);
     border-radius: 22px;
+    backdrop-filter: none;
+  }
+
+  .command-menu-overlay {
+    backdrop-filter: none;
   }
 
   .command-menu-grid,
