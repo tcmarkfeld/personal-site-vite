@@ -2763,6 +2763,12 @@ a {
 }
 
 @media (max-width: 960px) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
   .site-header {
     justify-content: center;
   }

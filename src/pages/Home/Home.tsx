@@ -52,7 +52,7 @@ import {
 } from 'react-icons/si';
 import { TbBrandCSharp } from 'react-icons/tb';
 import type { IconBaseProps, IconType } from 'react-icons';
-import { clamp01, getTimelineColor, revealSection, revealVisibleElements } from '@/lib/utils';
+import { clamp01, getTimelineColor, revealVisibleElements } from '@/lib/utils';
 
 type ProjectItem = {
   title: string;
@@ -606,13 +606,25 @@ export const Home = () => {
     });
   };
 
-  const handlePageNavigation = (sectionId: string) => {
+  const handlePageNavigation = (
+    event: ReactMouseEvent<HTMLAnchorElement>,
+    sectionId: string,
+  ) => {
+    event.preventDefault();
     setActiveSectionId(sectionId);
     setIsMobileNavOpen(false);
-    window.requestAnimationFrame(() => {
-      revealSection(sectionId);
-      window.setTimeout(() => revealSection(sectionId), 220);
-    });
+
+    window.setTimeout(() => {
+      const section = document.getElementById(sectionId);
+
+      if (!section) {
+        return;
+      }
+
+      section.scrollIntoView({ block: 'start', behavior: 'auto' });
+      window.history.replaceState(null, '', `#${sectionId}`);
+      revealVisibleElements();
+    }, 80);
   };
 
   return (
@@ -659,7 +671,7 @@ export const Home = () => {
                 data-active={activeSectionId === link.id}
                 href={`#${link.id}`}
                 key={link.id}
-                onClick={() => handlePageNavigation(link.id)}
+                onClick={(event) => handlePageNavigation(event, link.id)}
               >
                 {link.label}
               </a>
@@ -723,7 +735,7 @@ export const Home = () => {
                 className="command-menu-card"
                 href={`#${id}`}
                 key={id}
-                onClick={() => handlePageNavigation(id)}
+                onClick={(event) => handlePageNavigation(event, id)}
               >
                 <Icon aria-hidden="true" size={19} strokeWidth={2} />
                 {label}
