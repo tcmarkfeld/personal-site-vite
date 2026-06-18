@@ -94,8 +94,6 @@ type AboutStatItem = {
   label: string;
   color: string;
   Icon: LucideIcon;
-  orbitDelay: string;
-  reverseOrbitDelay: string;
 };
 
 type CommandPageLink = {
@@ -141,7 +139,7 @@ const SKILLS: SkillItem[] = [
   { label: '.NET', Icon: SiDotnet, color: '#6d4aff' },
   { label: 'TypeScript', Icon: SiTypescript, color: '#3178c6' },
   { label: 'React', Icon: SiReact, color: '#61dafb' },
-  { label: 'Next.js', Icon: SiNextdotjs, color: '#f5f5f5' },
+  { label: 'Next.js', Icon: SiNextdotjs, color: '#171513' },
   { label: 'GraphQL', Icon: SiGraphql, color: '#e10098' },
   { label: 'AWS', Icon: FaAws, color: '#ff9900' },
   { label: 'GCP', Icon: SiGooglecloud, color: '#4285f4' },
@@ -272,7 +270,7 @@ const EARLIER_WORK: ProjectItem[] = [
     description:
       'Built an MVC website for the University of Alabama lacrosse team with Stripe-powered secure payments.',
     Icon: FolderGit2,
-    color: '#5fcfa3',
+    color: '#25596a',
   },
   {
     title: 'RateMyProfessor Data Analysis (Python)',
@@ -288,7 +286,7 @@ const EARLIER_WORK: ProjectItem[] = [
     description:
       'Developed a React Native app enabling appointment booking and educational resource access.',
     Icon: Smartphone,
-    color: '#e6b800',
+    color: '#8a6418',
   },
 ];
 
@@ -343,32 +341,24 @@ const ABOUT_STATS: AboutStatItem[] = [
     label: 'PRs merged',
     color: '#db5f8d',
     Icon: ListChecks,
-    orbitDelay: '-0.8s',
-    reverseOrbitDelay: '-2.6s',
   },
   {
     value: '3+',
     label: 'years of experience',
     color: '#5288f6',
     Icon: CalendarDays,
-    orbitDelay: '-2.2s',
-    reverseOrbitDelay: '-4.1s',
   },
   {
     value: '1M+',
     label: 'daily events processed',
     color: '#5fcfa3',
     Icon: Database,
-    orbitDelay: '-3.7s',
-    reverseOrbitDelay: '-1.4s',
   },
   {
     value: '97.8%',
     label: 'incident acknowledgment rate',
     color: '#f5a524',
     Icon: ShieldCheck,
-    orbitDelay: '-5.1s',
-    reverseOrbitDelay: '-6.3s',
   },
 ];
 
@@ -391,12 +381,10 @@ function useIsMobileViewport() {
 }
 
 function useScrollMetrics(isEnabled: boolean) {
-  const [scrollY, setScrollY] = useState<number>(0);
   const [progress, setProgress] = useState<number>(0);
 
   useEffect(() => {
     if (!isEnabled) {
-      setScrollY(0);
       setProgress(0);
       return;
     }
@@ -413,7 +401,6 @@ function useScrollMetrics(isEnabled: boolean) {
         const scrollHeight = document.documentElement.scrollHeight;
         const windowHeight = window.innerHeight;
         const maxScrollable = Math.max(scrollHeight - windowHeight, 1);
-        setScrollY(nextY);
         setProgress(Math.min(Math.max(nextY / maxScrollable, 0), 1));
         frameId = 0;
       });
@@ -430,7 +417,7 @@ function useScrollMetrics(isEnabled: boolean) {
     };
   }, [isEnabled]);
 
-  return { scrollY, progress };
+  return { progress };
 }
 
 function Reveal({
@@ -444,18 +431,6 @@ function Reveal({
   );
 }
 
-function updateMouseGlow(event: ReactMouseEvent<HTMLElement>) {
-  const rect = event.currentTarget.getBoundingClientRect();
-  event.currentTarget.style.setProperty(
-    '--glow-x',
-    `${event.clientX - rect.left}px`,
-  );
-  event.currentTarget.style.setProperty(
-    '--glow-y',
-    `${event.clientY - rect.top}px`,
-  );
-}
-
 export const Home = () => {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState<boolean>(false);
   const [activeSectionId, setActiveSectionId] = useState<string>('top');
@@ -465,15 +440,7 @@ export const Home = () => {
   const [timelineProgress, setTimelineProgress] = useState<number>(0);
   const [timelineCapOffset, setTimelineCapOffset] = useState<number>(0);
   const isMobileViewport = useIsMobileViewport();
-  const { scrollY, progress } = useScrollMetrics(!isMobileViewport);
-
-  const auroraOneShift = scrollY * 0.05;
-  const auroraTwoShift = scrollY * -0.04;
-  const aboutProgress = clamp01((progress - 0.12) / 0.18);
-  const experienceProgress = clamp01((progress - 0.3) / 0.2);
-  const skillsProgress = clamp01((progress - 0.5) / 0.16);
-  const projectProgress = clamp01((progress - 0.66) / 0.2);
-  const educationProgress = clamp01((progress - 0.86) / 0.14);
+  const { progress } = useScrollMetrics(!isMobileViewport);
   const timelineCapColor = getTimelineColor(timelineProgress);
 
   useEffect(() => {
@@ -501,11 +468,6 @@ export const Home = () => {
   }, []);
 
   useEffect(() => {
-    if (isMobileViewport) {
-      setTimelineProgress(1);
-      return;
-    }
-
     let frameId = 0;
 
     const updateTimelineProgress = () => {
@@ -670,27 +632,6 @@ export const Home = () => {
       onClick={closeContextMenu}
       onContextMenu={openContextMenu}
     >
-      <div className="bg-vignette" />
-      <div
-        className="bg-mesh"
-        style={{ transform: `translate3d(0, ${scrollY * -0.02}px, 0)` }}
-      />
-      <div className="scanline" />
-      <div className="noise" />
-      <div
-        className="bg-dots"
-        style={{
-          transform: `translate3d(${scrollY * -0.05}px, ${scrollY * -0.07}px, 0)`,
-        }}
-      />
-      <div
-        className="aurora aurora-one"
-        style={{ transform: `translate3d(0, ${auroraOneShift}px, 0)` }}
-      />
-      <div
-        className="aurora aurora-two"
-        style={{ transform: `translate3d(0, ${auroraTwoShift}px, 0)` }}
-      />
       <div
         className="scroll-progress"
         style={{ transform: `scaleX(${progress})` }}
@@ -900,6 +841,12 @@ export const Home = () => {
       ) : null}
 
       <section className="hero section">
+        <div className="hero-grid" aria-hidden="true" />
+        <div className="hero-orbit" aria-hidden="true">
+          <span className="ring ring-large" />
+          <span className="ring ring-small" />
+          <span className="ring-dot" />
+        </div>
         <div className="hero-center">
           <Reveal>
             <p className="hero-intro">Hi, I'm</p>
@@ -912,6 +859,13 @@ export const Home = () => {
           <Reveal delay={180}>
             <p className="hero-role">
               Senior Software Engineer • Distributed Systems • AI Automation
+            </p>
+          </Reveal>
+
+          <Reveal delay={220}>
+            <p className="hero-summary">
+              I turn complex backend workflows into production software that is
+              fast, observable, and maintainable.
             </p>
           </Reveal>
 
@@ -942,25 +896,13 @@ export const Home = () => {
       </section>
 
       <section className="section" id="about">
-        <div
-          className="section-glow"
-          style={
-            {
-              opacity: 0.12 + aboutProgress * 0.36,
-              transform: `translate3d(0, ${scrollY * 0.03}px, 0)`,
-            } as CSSProperties
-          }
-        />
         <Reveal>
           <h2 className="section-title">About Me</h2>
         </Reveal>
 
         <Reveal delay={100}>
           <div className="about-bento">
-            <article
-              className="about-card about-profile-card"
-              onMouseMove={updateMouseGlow}
-            >
+            <article className="about-card about-profile-card">
               <div className="about-profile-header">
                 <img
                   alt="Timothy Markfeld headshot"
@@ -984,10 +926,7 @@ export const Home = () => {
               </p>
             </article>
 
-            <article
-              className="about-card about-focus-card"
-              onMouseMove={updateMouseGlow}
-            >
+            <article className="about-card about-focus-card">
               <p className="about-kicker">Currently Building</p>
               <h3>AI automation systems for legal marketing workflows</h3>
               <p className="about-copy">
@@ -1045,10 +984,7 @@ export const Home = () => {
               </div>
             </article>
 
-            <article
-              className="about-card about-platform-card"
-              onMouseMove={updateMouseGlow}
-            >
+            <article className="about-card about-platform-card">
               <div className="about-card-icon">
                 <Workflow aria-hidden="true" size={20} strokeWidth={2} />
               </div>
@@ -1068,26 +1004,18 @@ export const Home = () => {
               </p>
             </article>
 
-            <article
-              className="about-card about-stats-card"
-              onMouseMove={updateMouseGlow}
-            >
+            <article className="about-card about-stats-card">
               {ABOUT_STATS.map(({ Icon, ...stat }) => (
                 <div
                   className="about-stat"
                   key={stat.label}
-                  onMouseMove={updateMouseGlow}
                   style={
                     {
                       '--stat-color': stat.color,
-                      '--stat-orbit-delay': stat.orbitDelay,
-                      '--stat-reverse-orbit-delay': stat.reverseOrbitDelay,
                     } as CSSProperties
                   }
                 >
                   <div className="about-stat-orbit" aria-hidden="true">
-                    <span className="about-stat-dot about-stat-dot-one" />
-                    <span className="about-stat-dot about-stat-dot-two" />
                     <strong>{stat.value}</strong>
                   </div>
                   <span className="about-stat-label">
@@ -1102,15 +1030,6 @@ export const Home = () => {
       </section>
 
       <section className="section" id="experience">
-        <div
-          className="section-glow"
-          style={
-            {
-              opacity: 0.12 + experienceProgress * 0.38,
-              transform: `translate3d(0, ${scrollY * 0.028}px, 0)`,
-            } as CSSProperties
-          }
-        />
         <Reveal>
           <div className="section-heading-row">
             <div>
@@ -1182,15 +1101,6 @@ export const Home = () => {
       </section>
 
       <section className="section" id="skills">
-        <div
-          className="section-glow"
-          style={
-            {
-              opacity: 0.12 + skillsProgress * 0.36,
-              transform: `translate3d(0, ${scrollY * 0.026}px, 0)`,
-            } as CSSProperties
-          }
-        />
         <Reveal>
           <h2 className="section-title skills-title">Skills</h2>
         </Reveal>
@@ -1211,15 +1121,6 @@ export const Home = () => {
       </section>
 
       <section className="section" id="projects">
-        <div
-          className="section-glow"
-          style={
-            {
-              opacity: 0.12 + projectProgress * 0.38,
-              transform: `translate3d(0, ${scrollY * 0.024}px, 0)`,
-            } as CSSProperties
-          }
-        />
         <Reveal>
           <div>
             <h2 className="section-title">Projects</h2>
@@ -1233,7 +1134,7 @@ export const Home = () => {
                 className="project-card"
                 style={
                   {
-                    '--project-color': project.color ?? '#5fcfa3',
+                    '--project-color': project.color ?? '#2f6f83',
                   } as CSSProperties
                 }
               >
@@ -1289,7 +1190,7 @@ export const Home = () => {
                   key={project.title}
                   style={
                     {
-                      '--project-color': project.color ?? '#5fcfa3',
+                      '--project-color': project.color ?? '#2f6f83',
                     } as CSSProperties
                   }
                 >
@@ -1314,15 +1215,6 @@ export const Home = () => {
         className="section split-layout education-section"
         id="education"
       >
-        <div
-          className="section-glow"
-          style={
-            {
-              opacity: 0.12 + educationProgress * 0.42,
-              transform: `translate3d(0, ${scrollY * 0.022}px, 0)`,
-            } as CSSProperties
-          }
-        />
         <Reveal>
           <div>
             <h2 className="section-title">Education</h2>
