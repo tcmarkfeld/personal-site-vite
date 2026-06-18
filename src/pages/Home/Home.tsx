@@ -2,7 +2,6 @@ import {
   Activity,
   ArrowUp,
   Code2,
-  CalendarDays,
   ChevronDown,
   Command,
   CornerUpLeft,
@@ -13,7 +12,6 @@ import {
   GraduationCap,
   Github,
   Home as HomeIcon,
-  ListChecks,
   Linkedin,
   Mail,
   Menu,
@@ -87,13 +85,6 @@ type WorkExperienceItem = {
   href: string;
   Icon: LucideIcon;
   accent: WorkExperienceAccent;
-};
-
-type AboutStatItem = {
-  value: string;
-  label: string;
-  color: string;
-  Icon: LucideIcon;
 };
 
 type CommandPageLink = {
@@ -333,33 +324,6 @@ const HERO_MARQUEE_ITEMS = [
   'Event-Driven Workers',
   'Healthcare Integration',
   'Observability First',
-];
-
-const ABOUT_STATS: AboutStatItem[] = [
-  {
-    value: '1,500+',
-    label: 'PRs merged',
-    color: '#db5f8d',
-    Icon: ListChecks,
-  },
-  {
-    value: '3+',
-    label: 'years of experience',
-    color: '#5288f6',
-    Icon: CalendarDays,
-  },
-  {
-    value: '1M+',
-    label: 'daily events processed',
-    color: '#5fcfa3',
-    Icon: Database,
-  },
-  {
-    value: '97.8%',
-    label: 'incident acknowledgment rate',
-    color: '#f5a524',
-    Icon: ShieldCheck,
-  },
 ];
 
 function useIsMobileViewport() {
@@ -849,7 +813,7 @@ export const Home = () => {
         </div>
         <div className="hero-center">
           <Reveal>
-            <p className="hero-intro">Hi, I'm</p>
+            <p className="hero-intro">~/profile/init</p>
           </Reveal>
 
           <Reveal delay={120}>
@@ -1004,27 +968,6 @@ export const Home = () => {
               </p>
             </article>
 
-            <article className="about-card about-stats-card">
-              {ABOUT_STATS.map(({ Icon, ...stat }) => (
-                <div
-                  className="about-stat"
-                  key={stat.label}
-                  style={
-                    {
-                      '--stat-color': stat.color,
-                    } as CSSProperties
-                  }
-                >
-                  <div className="about-stat-orbit" aria-hidden="true">
-                    <strong>{stat.value}</strong>
-                  </div>
-                  <span className="about-stat-label">
-                    <Icon aria-hidden="true" size={17} strokeWidth={2} />
-                    {stat.label}
-                  </span>
-                </div>
-              ))}
-            </article>
           </div>
         </Reveal>
       </section>
