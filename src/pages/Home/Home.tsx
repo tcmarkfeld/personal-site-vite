@@ -1,3 +1,4 @@
+import { BorderBeam } from 'border-beam';
 import {
   Activity,
   ArrowUp,
@@ -15,10 +16,12 @@ import {
   Linkedin,
   Mail,
   Menu,
+  Moon,
   Smartphone,
   ShieldCheck,
   BriefcaseBusiness,
   RotateCw,
+  Sun,
   Truck,
   UserRound,
   Workflow,
@@ -33,6 +36,7 @@ import {
   type MouseEvent as ReactMouseEvent,
   type PropsWithChildren,
 } from 'react';
+import { flushSync } from 'react-dom';
 import { FaAws, FaDatabase, FaHospital, FaJava } from 'react-icons/fa';
 import {
   SiApachekafka,
@@ -70,9 +74,14 @@ type SkillItem = {
   label: string;
   Icon: IconType;
   color: string;
+  darkColor?: string;
 };
 
 type WorkExperienceAccent = 'emerald' | 'blue' | 'pink';
+type ThemeMode = 'light' | 'dark';
+type ThemeTransitionDocument = Document & {
+  startViewTransition?: (updateCallback: () => void) => unknown;
+};
 
 type WorkExperienceItem = {
   company: string;
@@ -130,7 +139,12 @@ const SKILLS: SkillItem[] = [
   { label: '.NET', Icon: SiDotnet, color: '#6d4aff' },
   { label: 'TypeScript', Icon: SiTypescript, color: '#3178c6' },
   { label: 'React', Icon: SiReact, color: '#61dafb' },
-  { label: 'Next.js', Icon: SiNextdotjs, color: '#171513' },
+  {
+    label: 'Next.js',
+    Icon: SiNextdotjs,
+    color: '#171513',
+    darkColor: '#e8e1d5',
+  },
   { label: 'GraphQL', Icon: SiGraphql, color: '#e10098' },
   { label: 'AWS', Icon: FaAws, color: '#ff9900' },
   { label: 'GCP', Icon: SiGooglecloud, color: '#4285f4' },
@@ -326,6 +340,24 @@ const HERO_MARQUEE_ITEMS = [
   'Observability First',
 ];
 
+const THEME_STORAGE_KEY = 'site-theme';
+
+function getInitialThemeMode(): ThemeMode {
+  if (typeof window === 'undefined') {
+    return 'light';
+  }
+
+  const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
+
+  if (storedTheme === 'light' || storedTheme === 'dark') {
+    return storedTheme;
+  }
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light';
+}
+
 function useIsMobileViewport() {
   const [isMobileViewport, setIsMobileViewport] = useState<boolean>(false);
 
@@ -398,6 +430,7 @@ function Reveal({
 export const Home = () => {
   const [isMobileNavOpen, setIsMobileNavOpen] = useState<boolean>(false);
   const [activeSectionId, setActiveSectionId] = useState<string>('top');
+  const [themeMode, setThemeMode] = useState<ThemeMode>(getInitialThemeMode);
   const [contextMenuPosition, setContextMenuPosition] =
     useState<ContextMenuPosition | null>(null);
   const timelineRef = useRef<HTMLDivElement>(null);
@@ -406,6 +439,27 @@ export const Home = () => {
   const isMobileViewport = useIsMobileViewport();
   const { progress } = useScrollMetrics(!isMobileViewport);
   const timelineCapColor = getTimelineColor(timelineProgress);
+  const nextThemeMode: ThemeMode = themeMode === 'light' ? 'dark' : 'light';
+
+  const toggleThemeMode = () => {
+    const updateThemeMode = () => {
+      flushSync(() => setThemeMode(nextThemeMode));
+    };
+    const transitionDocument = document as ThemeTransitionDocument;
+
+    if (!transitionDocument.startViewTransition) {
+      updateThemeMode();
+      return;
+    }
+
+    transitionDocument.startViewTransition(updateThemeMode);
+  };
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = themeMode;
+    document.documentElement.style.colorScheme = themeMode;
+    window.localStorage.setItem(THEME_STORAGE_KEY, themeMode);
+  }, [themeMode]);
 
   useEffect(() => {
     const revealElements = Array.from(
@@ -605,43 +659,61 @@ export const Home = () => {
           <a className="nav-logo-link" href="#top" aria-label="Back to top">
             {'<TM/>'}
           </a>
-          <nav className="nav-pill" aria-label="Primary navigation">
-            {COMMAND_PAGE_LINKS.slice(0, 5).map((link) => (
-              <a
-                aria-current={activeSectionId === link.id ? 'page' : undefined}
-                data-active={activeSectionId === link.id}
-                href={`#${link.id}`}
-                key={link.id}
-                onClick={(event) => handlePageNavigation(event, link.id)}
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-          <button
-            className="command-menu-trigger"
-            type="button"
-            aria-label={
-              isMobileNavOpen ? 'Close navigation menu' : 'Open navigation menu'
-            }
-            aria-expanded={isMobileNavOpen}
-            aria-controls="command-navigation"
-            onClick={() => setIsMobileNavOpen((current) => !current)}
+          <BorderBeam
+            className="nav-pill-beam"
+            colorVariant="sunset"
+            size="pulse-outside"
+            theme={themeMode}
           >
-            <Command
-              className="command-menu-trigger-desktop-icon"
-              aria-hidden="true"
-              size={21}
-              strokeWidth={2.2}
-            />
-            <Menu
-              className="command-menu-trigger-mobile-icon"
-              aria-hidden="true"
-              size={18}
-              strokeWidth={2.2}
-            />
-            <span>Tap to Explore</span>
-          </button>
+            <nav className="nav-pill" aria-label="Primary navigation">
+              {COMMAND_PAGE_LINKS.slice(0, 5).map((link) => (
+                <a
+                  aria-current={
+                    activeSectionId === link.id ? 'page' : undefined
+                  }
+                  data-active={activeSectionId === link.id}
+                  href={`#${link.id}`}
+                  key={link.id}
+                  onClick={(event) => handlePageNavigation(event, link.id)}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+          </BorderBeam>
+          <BorderBeam
+            colorVariant="sunset"
+            className="command-menu-trigger-beam"
+            size="pulse-outside"
+            theme={themeMode}
+          >
+            <button
+              className="command-menu-trigger"
+              type="button"
+              aria-label={
+                isMobileNavOpen
+                  ? 'Close navigation menu'
+                  : 'Open navigation menu'
+              }
+              aria-expanded={isMobileNavOpen}
+              aria-controls="command-navigation"
+              onClick={() => setIsMobileNavOpen((current) => !current)}
+            >
+              <Command
+                className="command-menu-trigger-desktop-icon"
+                aria-hidden="true"
+                size={21}
+                strokeWidth={2.2}
+              />
+              <Menu
+                className="command-menu-trigger-mobile-icon"
+                aria-hidden="true"
+                size={18}
+                strokeWidth={2.2}
+              />
+              <span>Tap to Explore</span>
+            </button>
+          </BorderBeam>
         </div>
       </header>
       <div
@@ -665,6 +737,36 @@ export const Home = () => {
             onClick={() => setIsMobileNavOpen(false)}
           >
             <X aria-hidden="true" size={17} strokeWidth={2.2} />
+          </button>
+        </div>
+
+        <div className="command-menu-section">
+          <p>Theme</p>
+          <button
+            className="theme-toggle"
+            type="button"
+            aria-label={`Switch to ${nextThemeMode} theme`}
+            aria-pressed={themeMode === 'dark'}
+            onClick={toggleThemeMode}
+          >
+            <span className="theme-toggle-icon" data-theme={themeMode}>
+              <Sun
+                aria-hidden="true"
+                className="theme-toggle-sun"
+                size={18}
+                strokeWidth={2.1}
+              />
+              <Moon
+                aria-hidden="true"
+                className="theme-toggle-moon"
+                size={18}
+                strokeWidth={2.1}
+              />
+            </span>
+            <span className="theme-toggle-copy">
+              <strong>{themeMode === 'dark' ? 'Dark' : 'Light'}</strong>
+              <span>Switch to {nextThemeMode}</span>
+            </span>
           </button>
         </div>
 
@@ -807,8 +909,8 @@ export const Home = () => {
       <section className="hero section">
         <div className="hero-grid" aria-hidden="true" />
         <div className="hero-orbit" aria-hidden="true">
-          <span className="ring ring-large" />
-          <span className="ring ring-small" />
+          <span className="ring-large ring" />
+          <span className="ring-small ring" />
           <span className="ring-dot" />
         </div>
         <div className="hero-center">
@@ -961,7 +1063,6 @@ export const Home = () => {
                 HIPAA-regulated .NET microservices.
               </p>
             </article>
-
           </div>
         </Reveal>
       </section>
@@ -1043,11 +1144,16 @@ export const Home = () => {
         </Reveal>
 
         <div className="skills-grid" aria-label="Technical skills">
-          {SKILLS.map(({ label, Icon, color }, index) => (
+          {SKILLS.map(({ label, Icon, color, darkColor }, index) => (
             <Reveal delay={45 * index} key={label}>
               <article
                 className="skill-card"
-                style={{ '--skill-color': color } as CSSProperties}
+                style={
+                  {
+                    '--skill-color-light': color,
+                    '--skill-color-dark': darkColor ?? color,
+                  } as CSSProperties
+                }
               >
                 <Icon aria-hidden="true" size={30} />
                 <h3>{label}</h3>
