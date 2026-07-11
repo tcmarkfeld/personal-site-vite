@@ -1125,9 +1125,9 @@ a {
   line-height: 1.2;
 }
 
-.tennessee-map {
+.florida-map {
   position: relative;
-  min-height: 5.3rem;
+  min-height: 8rem;
   overflow: hidden;
   border-radius: 4px;
   background:
@@ -1143,74 +1143,35 @@ a {
     );
 }
 
-.tennessee-map svg {
+.florida-map svg {
   position: absolute;
-  inset: 0.25rem 0;
+  inset: 0.35rem 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 0.7rem);
   overflow: visible;
 }
 
-.tennessee-shape {
+.florida-map-content {
+  transform: rotate(10deg);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.florida-shape {
   fill: rgba(47, 111, 131, 0.11);
   stroke: rgba(47, 111, 131, 0.72);
   stroke-linejoin: round;
   stroke-width: 3;
 }
 
-.tennessee-route {
-  fill: none;
+.florida-pin-halo {
+  fill: rgba(255, 255, 255, 0.86);
   stroke: rgba(47, 111, 131, 0.34);
-  stroke-dasharray: 6 5;
-  stroke-linecap: round;
   stroke-width: 2;
 }
 
-.tennessee-river {
-  fill: none;
-  stroke: rgba(82, 136, 246, 0.52);
-  stroke-linecap: round;
-  stroke-width: 2.4;
-}
-
-.tennessee-map text {
-  fill: var(--ink-muted);
-  font-family: var(--mono);
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-anchor: middle;
-  text-transform: uppercase;
-}
-
-.tennessee-pin {
-  position: absolute;
-  left: 54%;
-  top: 53%;
-  display: inline-flex;
-  width: 1rem;
-  height: 1rem;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(47, 111, 131, 0.64);
-  border-radius: 0;
-  background: rgba(255, 255, 255, 0.92);
-  transform: translate(-50%, -50%);
-}
-
-.tennessee-pin::before {
-  content: '';
-  position: absolute;
-  inset: -0.52rem;
-  border: 1px solid rgba(47, 111, 131, 0.22);
-  border-radius: inherit;
-}
-
-.tennessee-pin span {
-  width: 0.42rem;
-  height: 0.42rem;
-  border-radius: inherit;
-  background: var(--accent);
+.florida-pin-dot {
+  fill: var(--accent);
 }
 
 .about-card-icon {
@@ -2677,7 +2638,7 @@ a {
     margin-top: var(--space-4);
   }
 
-  .tennessee-map {
+  .florida-map {
     contain: paint;
   }
 
