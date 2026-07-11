@@ -12,12 +12,33 @@
       content="Timothy Markfeld is a Senior Software Engineer specializing in .NET microservices, healthcare data integration, and AI-driven automation pipelines."
     />
     <meta name="robots" content="index,follow" />
-    <meta name="theme-color" content="#faf7f2" />
+    <meta id="theme-color-meta" name="theme-color" content="#faf7f2" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta
       name="apple-mobile-web-app-status-bar-style"
       content="black-translucent"
     />
+    <script>
+      (() => {
+        const storedTheme = window.localStorage.getItem('site-theme');
+        const prefersDark = window.matchMedia(
+          '(prefers-color-scheme: dark)',
+        ).matches;
+        const theme =
+          storedTheme === 'light' || storedTheme === 'dark'
+            ? storedTheme
+            : prefersDark
+              ? 'dark'
+              : 'light';
+        const themeColor = theme === 'dark' ? '#0d0b0a' : '#faf7f2';
+
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+        document
+          .querySelector('meta[name="theme-color"]')
+          ?.setAttribute('content', themeColor);
+      })();
+    </script>
     <link rel="canonical" href="https://timmarkfeld.com/" />
 
     <meta property="og:type" content="website" />

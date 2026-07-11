@@ -341,6 +341,10 @@ const HERO_MARQUEE_ITEMS = [
 ];
 
 const THEME_STORAGE_KEY = 'site-theme';
+const THEME_COLORS: Record<ThemeMode, string> = {
+  light: '#faf7f2',
+  dark: '#0d0b0a',
+};
 
 function getInitialThemeMode(): ThemeMode {
   if (typeof window === 'undefined') {
@@ -458,6 +462,9 @@ export const Home = () => {
   useEffect(() => {
     document.documentElement.dataset.theme = themeMode;
     document.documentElement.style.colorScheme = themeMode;
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', THEME_COLORS[themeMode]);
     window.localStorage.setItem(THEME_STORAGE_KEY, themeMode);
   }, [themeMode]);
 
