@@ -93,7 +93,14 @@ type WorkExperienceItem = {
   skills: string[];
   href: string;
   Icon: LucideIcon;
+  logoSrc: string;
   accent: WorkExperienceAccent;
+};
+
+type TypingStyle = CSSProperties & {
+  '--typing-characters': number;
+  '--typing-delay': string;
+  '--typing-duration': string;
 };
 
 type CommandPageLink = {
@@ -112,6 +119,11 @@ type CommandConnectLink = {
 type ContextMenuPosition = {
   x: number;
   y: number;
+};
+
+type MobileTimelineLine = {
+  height: number;
+  top: number;
 };
 
 const Hl7Icon: IconType = ({
@@ -177,6 +189,7 @@ const WORK_EXPERIENCE: WorkExperienceItem[] = [
     skills: ['.NET', 'GraphQL', 'AWS', 'React', 'Next.js', 'AI'],
     href: 'https://firmpilot.com/',
     Icon: Code2,
+    logoSrc: '/firmpilot_logo.jpg',
     accent: 'pink',
   },
   {
@@ -195,6 +208,7 @@ const WORK_EXPERIENCE: WorkExperienceItem[] = [
     skills: ['.NET', 'FHIR', 'HL7', 'Kafka', 'GCP'],
     href: 'https://www.hcahealthcare.com/',
     Icon: Database,
+    logoSrc: '/hca_logo.jpg',
     accent: 'blue',
   },
   {
@@ -212,6 +226,7 @@ const WORK_EXPERIENCE: WorkExperienceItem[] = [
     skills: ['React Native', 'React', 'Node.js', 'MySQL'],
     href: 'https://corollaicedelivery.com/',
     Icon: Truck,
+    logoSrc: '/corolla_ice_delivery_logo.jpg',
     accent: 'emerald',
   },
 ];
@@ -345,6 +360,10 @@ const THEME_COLORS: Record<ThemeMode, string> = {
   light: '#faf7f2',
   dark: '#0d0b0a',
 };
+const MOBILE_TYPING_STAGGER_MS = 82;
+const MOBILE_TYPING_MS_PER_CHARACTER = 16;
+const MOBILE_TYPING_MIN_MS = 280;
+const MOBILE_TYPING_MAX_MS = 1180;
 
 function getInitialThemeMode(): ThemeMode {
   if (typeof window === 'undefined') {
@@ -420,6 +439,22 @@ function useScrollMetrics(isEnabled: boolean) {
   return { progress };
 }
 
+function getMobileTypingStyle(text: string, index: number): TypingStyle {
+  const duration = Math.min(
+    Math.max(
+      text.length * MOBILE_TYPING_MS_PER_CHARACTER,
+      MOBILE_TYPING_MIN_MS,
+    ),
+    MOBILE_TYPING_MAX_MS,
+  );
+
+  return {
+    '--typing-characters': Math.max(text.length, 1),
+    '--typing-delay': `${index * MOBILE_TYPING_STAGGER_MS}ms`,
+    '--typing-duration': `${duration}ms`,
+  };
+}
+
 function Reveal({
   children,
   delay = 0,
@@ -440,6 +475,11 @@ export const Home = () => {
   const timelineRef = useRef<HTMLDivElement>(null);
   const [timelineProgress, setTimelineProgress] = useState<number>(0);
   const [timelineCapOffset, setTimelineCapOffset] = useState<number>(0);
+  const [mobileTimelineLine, setMobileTimelineLine] =
+    useState<MobileTimelineLine | null>(null);
+  const [expandedExperienceCompany, setExpandedExperienceCompany] = useState<
+    string | null
+  >(null);
   const isMobileViewport = useIsMobileViewport();
   const { progress } = useScrollMetrics(!isMobileViewport);
   const timelineCapColor = getTimelineColor(timelineProgress);
@@ -459,6 +499,12 @@ export const Home = () => {
     transitionDocument.startViewTransition(updateThemeMode);
   };
 
+  const toggleMobileExperience = (company: string) => {
+    setExpandedExperienceCompany((currentCompany) =>
+      currentCompany === company ? null : company,
+    );
+  };
+
   useEffect(() => {
     document.documentElement.dataset.theme = themeMode;
     document.documentElement.style.colorScheme = themeMode;
@@ -467,6 +513,70 @@ export const Home = () => {
       ?.setAttribute('content', THEME_COLORS[themeMode]);
     window.localStorage.setItem(THEME_STORAGE_KEY, themeMode);
   }, [themeMode]);
+
+  useEffect(() => {
+    if (!isMobileViewport) {
+      setExpandedExperienceCompany(null);
+    }
+  }, [isMobileViewport]);
+
+  useEffect(() => {
+    if (!isMobileViewport) {
+      setMobileTimelineLine(null);
+      return;
+    }
+
+    const timeline = timelineRef.current;
+
+    if (!timeline) {
+      return;
+    }
+
+    let frameId = 0;
+    const updateMobileTimelineLine = () => {
+      if (frameId !== 0) {
+        return;
+      }
+
+      frameId = window.requestAnimationFrame(() => {
+        const markerElements = timeline.querySelectorAll<HTMLElement>(
+          '.work-timeline-marker',
+        );
+        const firstMarker = markerElements.item(0);
+        const lastMarker = markerElements.item(markerElements.length - 1);
+
+        if (!firstMarker || !lastMarker) {
+          frameId = 0;
+          return;
+        }
+
+        const timelineRect = timeline.getBoundingClientRect();
+        const firstMarkerRect = firstMarker.getBoundingClientRect();
+        const lastMarkerRect = lastMarker.getBoundingClientRect();
+        const top =
+          firstMarkerRect.top - timelineRect.top + firstMarkerRect.height / 2;
+        const end =
+          lastMarkerRect.top - timelineRect.top + lastMarkerRect.height / 2;
+
+        setMobileTimelineLine({ height: Math.max(end - top, 0), top });
+        frameId = 0;
+      });
+    };
+
+    const resizeObserver = new ResizeObserver(updateMobileTimelineLine);
+    resizeObserver.observe(timeline);
+    updateMobileTimelineLine();
+    window.addEventListener('resize', updateMobileTimelineLine);
+
+    return () => {
+      if (frameId !== 0) {
+        window.cancelAnimationFrame(frameId);
+      }
+
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updateMobileTimelineLine);
+    };
+  }, [expandedExperienceCompany, isMobileViewport]);
 
   useEffect(() => {
     const revealElements = Array.from(
@@ -1094,52 +1204,188 @@ export const Home = () => {
                 '--timeline-cap-offset': `${timelineCapOffset}px`,
                 '--timeline-progress': timelineProgress,
                 '--timeline-remaining': `${(1 - timelineProgress) * 100}%`,
+                '--mobile-timeline-line-height': `${mobileTimelineLine?.height ?? 0}px`,
+                '--mobile-timeline-line-opacity': mobileTimelineLine ? 1 : 0,
+                '--mobile-timeline-line-top': `${mobileTimelineLine?.top ?? 0}px`,
               } as CSSProperties
             }
           >
             <div className="work-timeline-line" aria-hidden="true" />
             <div className="work-timeline-cap" aria-hidden="true" />
             <div className="work-timeline-items">
-              {WORK_EXPERIENCE.map((experience) => (
-                <article
-                  className="work-timeline-item"
-                  data-accent={experience.accent}
-                  key={experience.company}
-                >
-                  <div className="work-timeline-marker" aria-hidden="true">
-                    <experience.Icon size={18} strokeWidth={2} />
-                  </div>
-                  <div className="work-timeline-content">
-                    <p className="work-timeline-period">{experience.period}</p>
-                    <h3>{experience.role}</h3>
-                    <a
-                      className="work-timeline-company"
-                      href={experience.href}
-                      rel="noreferrer"
-                      target="_blank"
-                    >
-                      {experience.company}
-                    </a>
-                    <p className="work-timeline-location">
-                      {experience.location}
-                    </p>
-                    <p className="work-summary">{experience.summary}</p>
-                    <ul>
-                      {experience.highlights.map((highlight) => (
-                        <li key={highlight}>{highlight}</li>
-                      ))}
-                    </ul>
-                    <div
-                      className="work-timeline-skills"
-                      aria-label={`${experience.company} skills`}
-                    >
-                      {experience.skills.map((skill) => (
-                        <span key={skill}>{skill}</span>
-                      ))}
+              {WORK_EXPERIENCE.map((experience) => {
+                const isExperienceExpanded =
+                  expandedExperienceCompany === experience.company;
+                const mobileDetailsId = `experience-${experience.company
+                  .toLowerCase()
+                  .replace(/\s+/g, '-')}-details`;
+
+                return (
+                  <article
+                    className="work-timeline-item"
+                    data-accent={experience.accent}
+                    key={experience.company}
+                  >
+                    <div className="work-timeline-marker" aria-hidden="true">
+                      {!isMobileViewport && (
+                        <img
+                          alt=""
+                          className="work-timeline-logo"
+                          src={experience.logoSrc}
+                        />
+                      )}
                     </div>
-                  </div>
-                </article>
-              ))}
+                    {isMobileViewport ? (
+                      <div className="work-timeline-content">
+                        <button
+                          aria-controls={mobileDetailsId}
+                          aria-expanded={isExperienceExpanded}
+                          className="work-timeline-mobile-trigger"
+                          onClick={() =>
+                            toggleMobileExperience(experience.company)
+                          }
+                          type="button"
+                        >
+                          <span
+                            className="work-timeline-mobile-icon"
+                            aria-hidden="true"
+                          >
+                            <img
+                              alt=""
+                              className="work-timeline-logo"
+                              src={experience.logoSrc}
+                            />
+                          </span>
+                          <span className="work-timeline-mobile-heading">
+                            <span className="work-timeline-mobile-company">
+                              {experience.company}
+                            </span>
+                            <span className="work-timeline-mobile-role">
+                              {experience.role}
+                            </span>
+                          </span>
+                          <ChevronDown
+                            aria-hidden="true"
+                            className="work-timeline-mobile-chevron"
+                            size={18}
+                            strokeWidth={2.4}
+                          />
+                        </button>
+                        {isExperienceExpanded && (
+                          <div
+                            className="work-timeline-mobile-details"
+                            id={mobileDetailsId}
+                          >
+                            <p
+                              className="work-timeline-mobile-meta work-mobile-typing"
+                              style={getMobileTypingStyle(
+                                `${experience.period} - ${experience.location}`,
+                                0,
+                              )}
+                            >
+                              {experience.period} - {experience.location}
+                            </p>
+                            <p
+                              className="work-summary work-mobile-typing"
+                              style={getMobileTypingStyle(
+                                experience.summary,
+                                1,
+                              )}
+                            >
+                              {experience.summary}
+                            </p>
+                            <p
+                              className="work-timeline-mobile-label work-mobile-typing"
+                              style={getMobileTypingStyle(
+                                'Key achievements',
+                                2,
+                              )}
+                            >
+                              Key achievements
+                            </p>
+                            <ul>
+                              {experience.highlights.map(
+                                (highlight, highlightIndex) => (
+                                  <li
+                                    className="work-mobile-typing"
+                                    key={highlight}
+                                    style={getMobileTypingStyle(
+                                      highlight,
+                                      highlightIndex + 3,
+                                    )}
+                                  >
+                                    {highlight}
+                                  </li>
+                                ),
+                              )}
+                            </ul>
+                            <div
+                              className="work-timeline-skills"
+                              aria-label={`${experience.company} skills`}
+                            >
+                              {experience.skills.map((skill, skillIndex) => (
+                                <span
+                                  className="work-mobile-typing"
+                                  key={skill}
+                                  style={getMobileTypingStyle(
+                                    skill,
+                                    skillIndex +
+                                      experience.highlights.length +
+                                      3,
+                                  )}
+                                >
+                                  {skill}
+                                </span>
+                              ))}
+                            </div>
+                            <a
+                              className="work-timeline-mobile-link"
+                              href={experience.href}
+                              rel="noreferrer"
+                              target="_blank"
+                            >
+                              Learn more
+                              <ExternalLink size={14} strokeWidth={2.2} />
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="work-timeline-content">
+                        <p className="work-timeline-period">
+                          {experience.period}
+                        </p>
+                        <h3>{experience.role}</h3>
+                        <a
+                          className="work-timeline-company"
+                          href={experience.href}
+                          rel="noreferrer"
+                          target="_blank"
+                        >
+                          {experience.company}
+                        </a>
+                        <p className="work-timeline-location">
+                          {experience.location}
+                        </p>
+                        <p className="work-summary">{experience.summary}</p>
+                        <ul>
+                          {experience.highlights.map((highlight) => (
+                            <li key={highlight}>{highlight}</li>
+                          ))}
+                        </ul>
+                        <div
+                          className="work-timeline-skills"
+                          aria-label={`${experience.company} skills`}
+                        >
+                          {experience.skills.map((skill) => (
+                            <span key={skill}>{skill}</span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </article>
+                );
+              })}
             </div>
           </div>
         </Reveal>
