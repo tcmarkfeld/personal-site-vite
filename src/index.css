@@ -550,9 +550,11 @@ a {
   z-index: 60;
   width: min(14.4rem, calc(100vw - 2rem));
   padding: 0.48rem;
-  border: 1px solid rgba(47, 111, 131, 0.72);
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, var(--surface-border));
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.96);
+  background: var(--dialog-surface);
+  box-shadow: 0 14px 34px var(--dialog-shadow);
+  backdrop-filter: blur(12px);
   animation: context-menu-in 0.14s ease-out;
 }
 
@@ -602,13 +604,13 @@ a {
 .context-menu-item:hover,
 .context-menu-item:focus-visible {
   color: var(--ink);
-  background: rgba(47, 111, 131, 0.09);
+  background: var(--hover-surface);
   transform: translateX(2px);
 }
 
 .context-menu-item-featured {
   color: var(--ink);
-  background: rgba(47, 111, 131, 0.08);
+  background: var(--subtle-surface);
   font-size: 0.82rem;
 }
 
@@ -625,7 +627,7 @@ a {
 .context-menu-item-featured strong {
   padding: 0.22rem 0.32rem;
   border-radius: 7px;
-  background: rgba(47, 111, 131, 0.14);
+  background: var(--hover-surface);
 }
 
 .context-menu-item kbd {
@@ -636,7 +638,7 @@ a {
 .context-menu-divider {
   height: 1px;
   margin: 0.34rem 0;
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--surface-border-soft);
 }
 
 .scroll-progress {
@@ -760,7 +762,7 @@ a {
   font-family: var(--sans);
   font-size: clamp(3.8rem, 10vw, 8.8rem);
   font-weight: 400;
-  line-height: 0.9;
+  line-height: 1.08;
   letter-spacing: 0;
 }
 
@@ -2648,8 +2650,7 @@ a {
 
   .hero-title {
     max-width: 100%;
-    line-height: 1.02;
-    overflow-wrap: break-word;
+    line-height: 1.36;
   }
 
   .hero-role {
