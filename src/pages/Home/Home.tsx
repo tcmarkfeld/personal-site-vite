@@ -1184,6 +1184,36 @@ export const Home = () => {
         </Reveal>
       </section>
 
+      <Reveal delay={180}>
+        <a className="atlas-preview" href="/chat" id="about-end">
+          <div className="atlas-preview-topbar">
+            <span className="atlas-preview-brand">{'<TM/>'}</span>
+            <span>Experience workspace</span>
+            <ExternalLink aria-hidden="true" size={15} strokeWidth={2} />
+          </div>
+          <div className="atlas-preview-body">
+            <div className="atlas-preview-rail" aria-hidden="true">
+              <span className="is-active">FirmPilot</span>
+              <span>HCA Healthcare</span>
+              <span>Corolla Ice Delivery</span>
+            </div>
+            <div className="atlas-preview-chat">
+              <p className="atlas-preview-thread">Experience thread</p>
+              <h3>FirmPilot</h3>
+              <p className="atlas-preview-user">Walk me through this work.</p>
+              <p>
+                I own production engineering across AI automation, distributed
+                workers, GraphQL APIs, and multi-tenant SaaS systems.
+              </p>
+              <span className="atlas-preview-link">
+                Open interactive experience
+                <ExternalLink aria-hidden="true" size={14} strokeWidth={2.2} />
+              </span>
+            </div>
+          </div>
+        </a>
+      </Reveal>
+
       <section className="section" id="experience">
         <Reveal>
           <div className="section-heading-row">
@@ -1389,6 +1419,7 @@ export const Home = () => {
             </div>
           </div>
         </Reveal>
+
       </section>
 
       <section className="section" id="skills">
