@@ -213,8 +213,8 @@ const WORK_EXPERIENCE: WorkExperienceItem[] = [
   },
   {
     company: 'Corolla Ice Delivery',
-    role: 'Manager and Lead Developer',
-    period: 'May 2020 - Aug 2022',
+    role: 'Full Stack Engineer',
+    period: 'May 2020 - Aug 2023',
     location: 'Corolla, NC',
     summary:
       'Seasonal operations and product work for a delivery business, spanning route optimization, customer management, and mobile delivery workflows.',
