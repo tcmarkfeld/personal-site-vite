@@ -1023,13 +1023,8 @@ export const Home = () => {
         </aside>
       ) : null}
 
-      <section className="hero section">
+      <section className="hero hero-system section">
         <div className="hero-grid" aria-hidden="true" />
-        <div className="hero-orbit" aria-hidden="true">
-          <span className="ring-large ring" />
-          <span className="ring-small ring" />
-          <span className="ring-dot" />
-        </div>
         <div className="hero-center">
           <Reveal>
             <p className="hero-intro">~/profile/init</p>
@@ -1053,6 +1048,28 @@ export const Home = () => {
           </Reveal>
 
           <Reveal delay={260}>
+            <div className="hero-actions">
+              <a className="hero-action hero-action-primary" href="#experience">
+                View work
+              </a>
+              <a className="hero-action" href="/chat">
+                Open experience chat
+              </a>
+            </div>
+          </Reveal>
+
+          <Reveal delay={300}>
+            <div className="hero-system-readout" aria-label="Current focus">
+              <span>
+                <b>01</b> Systems: distributed backend platforms
+              </span>
+              <span>
+                <b>02</b> Focus: AI automation and reliability
+              </span>
+            </div>
+          </Reveal>
+
+          <Reveal delay={340}>
             <div className="hero-marquee-stack" aria-label="Engineering focus">
               <div className="hero-marquee" data-direction="left">
                 <div className="hero-marquee-track">
@@ -1066,7 +1083,7 @@ export const Home = () => {
             </div>
           </Reveal>
 
-          <Reveal delay={360}>
+          <Reveal delay={400}>
             <a
               className="hero-scroll-cue"
               href="#about"
@@ -1078,7 +1095,7 @@ export const Home = () => {
         </div>
       </section>
 
-      <section className="section" id="about">
+      <section className="section system-section about-section" id="about">
         <Reveal>
           <h2 className="section-title">About Me</h2>
         </Reveal>
@@ -1214,7 +1231,7 @@ export const Home = () => {
         </a>
       </Reveal>
 
-      <section className="section" id="experience">
+      <section className="section system-section experience-section" id="experience">
         <Reveal>
           <div className="section-heading-row">
             <div>
@@ -1422,7 +1439,7 @@ export const Home = () => {
 
       </section>
 
-      <section className="section" id="skills">
+      <section className="section system-section skills-section" id="skills">
         <Reveal>
           <h2 className="section-title skills-title">Skills</h2>
         </Reveal>
@@ -1447,7 +1464,7 @@ export const Home = () => {
         </div>
       </section>
 
-      <section className="section" id="projects">
+      <section className="section system-section projects-section" id="projects">
         <Reveal>
           <div>
             <h2 className="section-title">Projects</h2>
@@ -1539,7 +1556,7 @@ export const Home = () => {
       </section>
 
       <section
-        className="section split-layout education-section"
+        className="section system-section split-layout education-section"
         id="education"
       >
         <Reveal>
