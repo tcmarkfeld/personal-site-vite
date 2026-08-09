@@ -1161,6 +1161,20 @@ a {
   background-clip: text;
 }
 
+:root:not([data-theme='dark']) .hero-title,
+:root:not([data-theme='dark']) .section-title,
+:root:not([data-theme='dark']) .section-subtitle {
+  color: transparent;
+  background-image: radial-gradient(
+    circle,
+    var(--ink) 1.25px,
+    transparent 1.5px
+  );
+  background-size: 3px 3px;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
 .hero-role {
   margin: 0;
   color: var(--hero-signal);
