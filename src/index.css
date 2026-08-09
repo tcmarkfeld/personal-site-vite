@@ -4,30 +4,30 @@
 @import 'tw-animate-css';
 
 :root {
-  --bg: #fcfbf8;
+  --bg: #f4f4f4;
   --bg-elevated: #ffffff;
-  --ink: #191814;
-  --ink-muted: rgba(25, 24, 20, 0.72);
-  --ink-faint: rgba(25, 24, 20, 0.48);
-  --line: rgba(25, 24, 20, 0.12);
+  --ink: #111111;
+  --ink-muted: #656565;
+  --ink-faint: #909090;
+  --line: #d9d9d9;
   --accent: #111111;
   --accent-alt: #737373;
   --accent-hover: #000000;
   --panel: rgba(255, 255, 255, 0.72);
-  --grid-line: rgba(25, 24, 20, 0.035);
-  --surface-border: rgba(0, 0, 0, 0.1);
-  --surface-border-soft: rgba(0, 0, 0, 0.08);
-  --nav-surface: rgba(252, 251, 248, 0.88);
-  --control-surface: rgba(255, 255, 255, 0.88);
-  --subtle-surface: rgba(0, 0, 0, 0.04);
-  --hover-surface: rgba(0, 0, 0, 0.06);
-  --menu-overlay-surface: rgba(250, 247, 242, 0.72);
-  --dialog-surface: rgba(255, 255, 255, 0.9);
-  --dialog-sheen: rgba(25, 24, 20, 0.06);
-  --dialog-shadow: rgba(0, 0, 0, 0.15);
-  --inset-highlight: rgba(255, 255, 255, 0.9);
-  --card-surface: rgba(255, 255, 255, 0.8);
-  --card-hover-surface: rgba(255, 255, 255, 0.92);
+  --grid-line: rgba(17, 17, 17, 0.045);
+  --surface-border: #d0d0d0;
+  --surface-border-soft: #e0e0e0;
+  --nav-surface: rgba(244, 244, 244, 0.92);
+  --control-surface: #ffffff;
+  --subtle-surface: #ebebeb;
+  --hover-surface: #e4e4e4;
+  --menu-overlay-surface: rgba(244, 244, 244, 0.8);
+  --dialog-surface: #ffffff;
+  --dialog-sheen: #eeeeee;
+  --dialog-shadow: rgba(0, 0, 0, 0.12);
+  --inset-highlight: #ffffff;
+  --card-surface: #fafafa;
+  --card-hover-surface: #ffffff;
   --theme-transition: 0.34s ease;
   --mono:
     'Geist Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
@@ -45,30 +45,30 @@
 }
 
 :root[data-theme='dark'] {
-  --bg: #0d0b0a;
-  --bg-elevated: #171411;
-  --ink: #e8e1d5;
-  --ink-muted: rgba(232, 225, 213, 0.72);
-  --ink-faint: rgba(232, 225, 213, 0.46);
-  --line: rgba(232, 225, 213, 0.13);
-  --accent: #f4c27a;
-  --accent-alt: #c89d68;
-  --accent-hover: #ffd894;
-  --panel: rgba(23, 20, 17, 0.78);
-  --grid-line: rgba(232, 225, 213, 0.045);
-  --surface-border: rgba(232, 225, 213, 0.13);
-  --surface-border-soft: rgba(232, 225, 213, 0.09);
-  --nav-surface: rgba(18, 16, 14, 0.9);
-  --control-surface: rgba(23, 20, 17, 0.92);
-  --subtle-surface: rgba(232, 225, 213, 0.055);
-  --hover-surface: rgba(232, 225, 213, 0.085);
-  --menu-overlay-surface: rgba(9, 8, 7, 0.78);
-  --dialog-surface: rgba(18, 16, 14, 0.94);
-  --dialog-sheen: rgba(232, 225, 213, 0.045);
+  --bg: #050505;
+  --bg-elevated: #101010;
+  --ink: #f4f4f4;
+  --ink-muted: #ababab;
+  --ink-faint: #707070;
+  --line: #262626;
+  --accent: #f4f4f4;
+  --accent-alt: #8e8e8e;
+  --accent-hover: #ffffff;
+  --panel: #101010;
+  --grid-line: rgba(244, 244, 244, 0.04);
+  --surface-border: #303030;
+  --surface-border-soft: #222222;
+  --nav-surface: rgba(10, 10, 10, 0.94);
+  --control-surface: #181818;
+  --subtle-surface: #161616;
+  --hover-surface: #1e1e1e;
+  --menu-overlay-surface: rgba(5, 5, 5, 0.84);
+  --dialog-surface: #151515;
+  --dialog-sheen: #1c1c1c;
   --dialog-shadow: rgba(0, 0, 0, 0.58);
-  --inset-highlight: rgba(232, 225, 213, 0.06);
-  --card-surface: rgba(23, 20, 17, 0.82);
-  --card-hover-surface: rgba(33, 29, 25, 0.96);
+  --inset-highlight: #1c1c1c;
+  --card-surface: #111111;
+  --card-hover-surface: #191919;
 }
 
 * {
@@ -98,6 +98,16 @@ body {
 #root {
   min-height: 100dvh;
   background: transparent;
+}
+
+.atlas-page.codex-page {
+  filter: grayscale(1);
+}
+
+.nav-pill-beam,
+.command-menu-trigger-beam,
+.project-badge {
+  filter: grayscale(1);
 }
 
 a {
@@ -1136,6 +1146,21 @@ a {
   letter-spacing: 0.01em;
 }
 
+.hero-title,
+.section-title,
+.section-subtitle {
+  color: transparent;
+  background-image: radial-gradient(
+    circle,
+    var(--ink) 1.1px,
+    transparent 1.35px
+  );
+  background-position: 0 1px;
+  background-size: 4px 4px;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
 .hero-role {
   margin: 0;
   color: var(--hero-signal);
@@ -1729,10 +1754,14 @@ a {
   background:
     radial-gradient(
       circle at 46% 50%,
-      rgba(47, 111, 131, 0.1),
+      color-mix(in srgb, var(--ink) 10%, transparent),
       transparent 46%
     ),
-    linear-gradient(135deg, rgba(47, 111, 131, 0.06), rgba(0, 0, 0, 0.02));
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--ink) 5%, transparent),
+      transparent
+    );
 }
 
 .florida-map svg {
@@ -1750,20 +1779,20 @@ a {
 }
 
 .florida-shape {
-  fill: rgba(47, 111, 131, 0.11);
-  stroke: rgba(47, 111, 131, 0.72);
+  fill: color-mix(in srgb, var(--ink) 9%, transparent);
+  stroke: var(--ink-muted);
   stroke-linejoin: round;
   stroke-width: 3;
 }
 
 .florida-pin-halo {
-  fill: rgba(255, 255, 255, 0.86);
-  stroke: rgba(47, 111, 131, 0.34);
+  fill: var(--bg-elevated);
+  stroke: var(--ink-faint);
   stroke-width: 2;
 }
 
 .florida-pin-dot {
-  fill: var(--accent);
+  fill: #ef4444;
 }
 
 .about-card-icon {
@@ -1883,7 +1912,7 @@ a {
   width: 1rem;
   height: 1rem;
   border-radius: 0;
-  background: var(--timeline-cap-color);
+  background: var(--ink);
   opacity: var(--timeline-progress);
   transform: translate(-50%, -50%);
   will-change: top, opacity;
@@ -1896,7 +1925,7 @@ a {
 
 .work-timeline-item {
   --timeline-accent: var(--accent);
-  --timeline-accent-rgb: 47, 111, 131;
+  --timeline-accent-rgb: 21, 21, 21;
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, calc(50% - 2.4rem)) 4.8rem minmax(
@@ -1910,18 +1939,18 @@ a {
 }
 
 .work-timeline-item[data-accent='pink'] {
-  --timeline-accent: #8a6418;
-  --timeline-accent-rgb: 138, 100, 24;
+  --timeline-accent: var(--accent);
+  --timeline-accent-rgb: 21, 21, 21;
 }
 
 .work-timeline-item[data-accent='blue'] {
-  --timeline-accent: #5288f6;
-  --timeline-accent-rgb: 82, 136, 246;
+  --timeline-accent: var(--accent);
+  --timeline-accent-rgb: 21, 21, 21;
 }
 
 .work-timeline-item[data-accent='emerald'] {
-  --timeline-accent: #2f6f83;
-  --timeline-accent-rgb: 47, 111, 131;
+  --timeline-accent: var(--accent);
+  --timeline-accent-rgb: 21, 21, 21;
 }
 
 .work-timeline-marker {
@@ -2706,6 +2735,7 @@ a {
 
 .earlier-work-card {
   --project-color: var(--accent);
+  --project-color: var(--ink-muted) !important;
   display: grid;
   grid-template-columns: 2.5rem minmax(0, 1fr);
   gap: var(--space-2);
@@ -2844,6 +2874,7 @@ a {
   --skill-color: var(--accent);
   --skill-color-light: var(--accent);
   --skill-color-dark: var(--skill-color-light);
+  --skill-color: var(--ink-muted) !important;
   display: grid;
   min-height: 8.2rem;
   height: 100%;
@@ -2906,6 +2937,7 @@ a {
 
 .project-card {
   --project-color: var(--accent);
+  --project-color: var(--ink-muted) !important;
   --project-heading-height: 5.9rem;
   --project-meta-height: 2.45rem;
   --project-description-height: 8rem;
