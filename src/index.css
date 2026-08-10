@@ -4655,6 +4655,15 @@ a {
 }
 
 @media (max-width: 640px) {
+  .hero-title,
+  .section-title,
+  .section-subtitle {
+    color: var(--ink);
+    background-image: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+  }
+
   .section-heading-row,
   .section-heading-row > div,
   .section-title,
