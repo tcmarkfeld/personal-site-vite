@@ -104,8 +104,6 @@ body {
   filter: grayscale(1);
 }
 
-.nav-pill-beam,
-.command-menu-trigger-beam,
 .project-badge {
   filter: grayscale(1);
 }
@@ -123,9 +121,20 @@ a {
 .site-shell {
   counter-reset: content-section;
   position: relative;
+  isolation: isolate;
   overflow-x: clip;
   min-height: 100vh;
   padding: 0 var(--space-3) var(--space-6);
+}
+
+.ascii-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  display: block;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
 }
 
 .atlas-page {
@@ -570,53 +579,66 @@ a {
   width: 100%;
   max-width: 100vw;
   padding: 0.75rem max(var(--space-3), calc((100vw - 1120px) / 2));
-  border-bottom: 1px solid var(--line);
-  background: var(--bg);
   pointer-events: auto;
 }
 
-.nav-pill-beam {
+.nav-pill-shell {
+  --nav-pill-radius: 999px;
   display: inline-flex;
   grid-column: 2;
-  border-radius: 0;
-}
-
-.nav-pill-beam::before,
-.nav-pill-beam::after,
-.nav-pill-beam [data-beam-bloom] {
-  display: none;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--ink) 9%, transparent);
+  border-radius: var(--nav-pill-radius);
+  background: color-mix(in srgb, var(--bg-elevated) 14%, transparent);
+  box-shadow:
+    0 14px 36px color-mix(in srgb, #000 22%, transparent),
+    inset 0 -1px 0 color-mix(in srgb, var(--ink) 5%, transparent);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
 }
 
 .nav-pill {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0;
-  padding: 0;
+  gap: 0.15rem;
+  padding: 0.3rem;
+  overflow: hidden;
   border: 0;
-  border-radius: 0;
+  border-radius: var(--nav-pill-radius);
   background: transparent;
-  backdrop-filter: none;
-  box-shadow: none;
   transition:
     border-color var(--theme-transition),
     background-color var(--theme-transition);
 }
 
+.nav-pill::after {
+  position: absolute;
+  inset: 1px;
+  border-radius: var(--nav-pill-radius);
+  box-shadow: inset 0 0 18px
+    color-mix(in srgb, var(--ink) 3%, transparent);
+  content: '';
+  pointer-events: none;
+}
+
 .nav-pill a {
   position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 5.1rem;
-  padding: 0.55rem 0.85rem;
+  gap: 0.42rem;
+  padding: 0.38rem 0.72rem;
   overflow: visible;
-  border-radius: 0;
+  border: 1px solid transparent;
+  border-radius: var(--nav-pill-radius);
   color: var(--ink-muted);
-  font-family: var(--mono);
-  font-size: 0.68rem;
+  font-family: var(--sans);
+  font-size: 0.82rem;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0;
   text-decoration: none;
   transition:
     background-color 0.2s ease,
@@ -628,23 +650,22 @@ a {
 .nav-pill a:focus-visible,
 .nav-pill a[data-active='true'] {
   color: var(--ink);
-  background: transparent;
-  transform: none;
-  text-decoration: underline;
-  text-underline-offset: 0.32rem;
+  border-color: color-mix(in srgb, var(--ink) 10%, transparent);
+  background: color-mix(in srgb, var(--bg-elevated) 22%, transparent);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--ink) 4%, transparent);
 }
 
-.command-menu-trigger-beam {
+.nav-pill a:hover,
+.nav-pill a:focus-visible {
+  transform: translateY(-1px);
+}
+
+.command-menu-trigger-shell {
   display: inline-flex;
   grid-column: 3;
   justify-self: end;
   border-radius: 0;
-}
-
-.command-menu-trigger-beam::before,
-.command-menu-trigger-beam::after,
-.command-menu-trigger-beam [data-beam-bloom] {
-  display: none;
 }
 
 .command-menu-trigger {
@@ -1149,25 +1170,7 @@ a {
 .hero-title,
 .section-title,
 .section-subtitle {
-  color: transparent;
-  background-image: radial-gradient(
-    circle,
-    var(--ink) 1.1px,
-    transparent 1.35px
-  );
-  background-position: 0 1px;
-  background-size: 4px 4px;
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-:root:not([data-theme='dark']) .hero-title,
-:root:not([data-theme='dark']) .section-title,
-:root:not([data-theme='dark']) .section-subtitle {
   color: var(--ink);
-  background-image: none;
-  -webkit-background-clip: border-box;
-  background-clip: border-box;
 }
 
 .hero-role {
@@ -4214,6 +4217,10 @@ a {
     transition: none;
   }
 
+  .scroll-progress {
+    display: none;
+  }
+
   .site-header {
     justify-content: center;
   }
@@ -4226,51 +4233,70 @@ a {
     background: transparent;
   }
 
-  .nav-logo-link,
-  .nav-pill-beam,
-  .command-menu-trigger-desktop-icon {
+  .nav-logo-link {
     display: none;
   }
 
-  .command-menu-trigger-beam {
-    justify-self: center;
-    pointer-events: auto;
-    border-radius: 6px;
+  .nav-pill-shell {
+    display: inline-flex;
   }
 
-  .command-menu-trigger-beam::before,
-  .command-menu-trigger-beam::after,
-  .command-menu-trigger-beam [data-beam-bloom] {
-    display: block;
+  .nav-pill {
+    display: grid;
+    grid-template-columns: repeat(5, 2.2rem);
+    gap: 0.25rem;
+    padding: 0.35rem;
+  }
+
+  .nav-pill a {
+    width: 2.2rem;
+    height: 2.2rem;
+    gap: 0;
+    padding: 0;
+  }
+
+  .nav-pill-label {
+    display: none;
+  }
+
+  .command-menu-trigger-shell {
+    position: fixed;
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    z-index: 34;
+    pointer-events: auto;
+    border-radius: 999px;
   }
 
   .command-menu-trigger {
     position: relative;
     display: inline-flex;
-    width: auto;
-    min-width: 9.4rem;
-    height: 2.55rem;
+    width: 2.8rem;
+    min-width: 0;
+    height: 2.8rem;
     align-items: center;
     justify-content: center;
-    justify-self: center;
-    gap: 0.45rem;
-    padding: 0 0.86rem;
-    border-color: rgba(47, 111, 131, 0.22);
-    border-radius: 6px;
-    background: var(--control-surface);
+    padding: 0;
+    border-color: color-mix(in srgb, var(--ink) 10%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg-elevated) 14%, transparent);
+    box-shadow:
+      0 12px 30px color-mix(in srgb, #000 28%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
     isolation: isolate;
-    font-size: 0.78rem;
+  }
+
+  .command-menu-trigger-desktop-icon {
+    position: relative;
+    z-index: 1;
+    display: block;
   }
 
   .command-menu-trigger span,
   .command-menu-trigger-mobile-icon {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-  }
-
-  .command-menu-trigger-mobile-icon {
-    color: var(--ink-muted);
+    display: none;
   }
 
   .command-menu-dialog {
@@ -4655,15 +4681,6 @@ a {
 }
 
 @media (max-width: 640px) {
-  .hero-title,
-  .section-title,
-  .section-subtitle {
-    color: var(--ink);
-    background-image: none;
-    -webkit-background-clip: border-box;
-    background-clip: border-box;
-  }
-
   .section-heading-row,
   .section-heading-row > div,
   .section-title,

@@ -1,4 +1,3 @@
-import { BorderBeam } from 'border-beam';
 import {
   Activity,
   ArrowUp,
@@ -54,6 +53,7 @@ import {
 } from 'react-icons/si';
 import { TbBrandCSharp } from 'react-icons/tb';
 import type { IconBaseProps, IconType } from 'react-icons';
+import { AsciiBackground } from '@/components/AsciiBackground';
 import { clamp01, getTimelineColor, revealVisibleElements } from '@/lib/utils';
 
 type ProjectItem = {
@@ -649,10 +649,6 @@ export const Home = () => {
   }, [isMobileViewport]);
 
   useEffect(() => {
-    if (isMobileViewport) {
-      return;
-    }
-
     let frameId = 0;
     const sectionIds = COMMAND_PAGE_LINKS.map((link) => link.id);
 
@@ -694,7 +690,7 @@ export const Home = () => {
       window.removeEventListener('scroll', updateActiveSection);
       window.removeEventListener('resize', updateActiveSection);
     };
-  }, [isMobileViewport]);
+  }, []);
 
   useEffect(() => {
     if (!contextMenuPosition) {
@@ -767,6 +763,7 @@ export const Home = () => {
       onClick={closeContextMenu}
       onContextMenu={openContextMenu}
     >
+      <AsciiBackground />
       <div
         className="scroll-progress"
         style={{ transform: `scaleX(${progress})` }}
@@ -776,34 +773,26 @@ export const Home = () => {
           <a className="nav-logo-link" href="#top" aria-label="Back to top">
             {'<TM/>'}
           </a>
-          <BorderBeam
-            className="nav-pill-beam"
-            colorVariant="sunset"
-            size="pulse-outside"
-            theme={themeMode}
-          >
+          <div className="nav-pill-shell">
             <nav className="nav-pill" aria-label="Primary navigation">
-              {COMMAND_PAGE_LINKS.slice(0, 5).map((link) => (
+              {COMMAND_PAGE_LINKS.slice(0, 5).map(({ id, label, Icon }) => (
                 <a
+                  aria-label={label}
                   aria-current={
-                    activeSectionId === link.id ? 'page' : undefined
+                    activeSectionId === id ? 'page' : undefined
                   }
-                  data-active={activeSectionId === link.id}
-                  href={`#${link.id}`}
-                  key={link.id}
-                  onClick={(event) => handlePageNavigation(event, link.id)}
+                  data-active={activeSectionId === id}
+                  href={`#${id}`}
+                  key={id}
+                  onClick={(event) => handlePageNavigation(event, id)}
                 >
-                  {link.label}
+                  <Icon aria-hidden="true" size={16} strokeWidth={2} />
+                  <span className="nav-pill-label">{label}</span>
                 </a>
               ))}
             </nav>
-          </BorderBeam>
-          <BorderBeam
-            colorVariant="sunset"
-            className="command-menu-trigger-beam"
-            size="pulse-outside"
-            theme={themeMode}
-          >
+          </div>
+          <div className="command-menu-trigger-shell">
             <button
               className="command-menu-trigger"
               type="button"
@@ -830,7 +819,7 @@ export const Home = () => {
               />
               <span>Tap to Explore</span>
             </button>
-          </BorderBeam>
+          </div>
         </div>
       </header>
       <div
