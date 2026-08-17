@@ -741,7 +741,7 @@ export const Home = () => {
     setActiveSectionId(sectionId);
     setIsMobileNavOpen(false);
 
-    window.setTimeout(() => {
+    const navigateToSection = () => {
       const section = document.getElementById(sectionId);
 
       if (!section) {
@@ -753,7 +753,14 @@ export const Home = () => {
       if (!isMobileViewport) {
         revealVisibleElements();
       }
-    }, 80);
+    };
+
+    if (isMobileNavOpen) {
+      window.setTimeout(navigateToSection, 80);
+      return;
+    }
+
+    navigateToSection();
   };
 
   return (
