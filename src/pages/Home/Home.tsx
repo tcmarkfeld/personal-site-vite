@@ -184,7 +184,7 @@ const WORK_EXPERIENCE: WorkExperienceItem[] = [
       'Built and owned fault-tolerant distributed worker systems on AWS SQS/SNS, ECS, RDS, Parameter Store, and Secrets Manager for content, social media, and backlink automation workflows.',
       'Designed secure GraphQL APIs and React/Next.js applications, maintaining p99 query latency below 25ms across multi-tenant workloads with RBAC and OAuth integrations.',
       'Engineered AI-driven content pipelines integrating LLMs, fact-checking, media generation, and automated WordPress publishing across hundreds of client sites.',
-      'Merged 1,500+ PRs across backend, frontend, and infrastructure while mentoring engineers, leading CQRS refactors, and supporting production on-call response.',
+      'Merged 2,000+ PRs across backend, frontend, and infrastructure while mentoring engineers, leading CQRS refactors, and supporting production on-call response.',
     ],
     skills: ['.NET', 'GraphQL', 'AWS', 'React', 'Next.js', 'AI'],
     href: 'https://firmpilot.com/',
