@@ -1175,9 +1175,6 @@ export const Home = () => {
             </article>
 
             <article className="about-card about-platform-card">
-              <div className="about-card-icon">
-                <Workflow aria-hidden="true" size={20} strokeWidth={2} />
-              </div>
               <p className="about-kicker">Platform Background</p>
               <h3>Healthcare integration, cloud migration, and reliability</h3>
               <p className="about-copy">
