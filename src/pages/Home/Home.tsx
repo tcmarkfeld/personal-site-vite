@@ -1043,7 +1043,7 @@ export const Home = () => {
             </p>
           </Reveal>
 
-          <Reveal delay={260}>
+          {/* <Reveal delay={260}>
             <div className="hero-actions">
               <a className="hero-action hero-action-primary" href="#experience">
                 View work
@@ -1052,7 +1052,7 @@ export const Home = () => {
                 Open experience chat
               </a>
             </div>
-          </Reveal>
+          </Reveal> */}
 
           <Reveal delay={300}>
             <div className="hero-system-readout" aria-label="Current focus">
@@ -1194,7 +1194,7 @@ export const Home = () => {
         </Reveal>
       </section>
 
-      <Reveal delay={180}>
+      {/* <Reveal delay={180}>
         <a className="atlas-preview" href="/chat" id="about-end">
           <div className="atlas-preview-topbar">
             <span className="atlas-preview-brand">{'<TM/>'}</span>
@@ -1222,7 +1222,7 @@ export const Home = () => {
             </div>
           </div>
         </a>
-      </Reveal>
+      </Reveal> */}
 
       <section className="section system-section experience-section" id="experience">
         <Reveal>
