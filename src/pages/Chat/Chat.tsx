@@ -355,14 +355,14 @@ export function Chat() {
                   <span>{activeThread.stack.join(' / ')}</span>
                 </div>
             <a href={activeThread.href} rel="noreferrer" target="_blank">
-                  Open thread <ArrowUpRight aria-hidden="true" size={15} />
+                  Visit website <ArrowUpRight aria-hidden="true" size={15} />
                 </a>
               </div>
             )}
           </div>
 
           <div className="codex-composer">
-            <p>Ask about {activeThread.title}</p>
+            <p>Questions about {activeThread.title}?</p>
             <div className="codex-composer-toolbar">
               <div className="codex-composer-actions">
                 <span className="codex-composer-plus" aria-hidden="true">
