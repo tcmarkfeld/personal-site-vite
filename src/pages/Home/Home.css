@@ -347,7 +347,7 @@
 .conductor .project-visual {
   background: #f0b99b;
 }
-.orders .project-visual {
+.monocode .project-visual {
   background: #dfddce;
 }
 .project-number {
@@ -419,22 +419,60 @@
   border: 1px solid;
   font-weight: 400;
 }
-.orders-art {
-  height: 47%;
-  width: 65%;
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  border-bottom: 1px solid;
-  padding-bottom: 9px;
-  transform: skewY(-10deg);
+.monocode-art {
+  width: 76%;
+  border: 1px solid var(--black);
+  background: var(--paper);
+  box-shadow: 6px 6px 0 var(--black);
+  transform: rotate(-6deg);
+  font:
+    10px 'Space Mono',
+    monospace;
 }
-.orders-art i {
-  flex: 1;
+.monocode-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 10px;
+  border-bottom: 1px solid var(--black);
+}
+.monocode-titlebar i {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
   background: var(--black);
 }
-.orders-art i:nth-child(even) {
-  background: var(--orange);
+.monocode-titlebar span {
+  margin-left: auto;
+}
+.monocode-session {
+  display: flex;
+  gap: 14px;
+  padding: 22px 16px;
+}
+.monocode-session > span {
+  color: var(--orange);
+  font-size: 20px;
+}
+.monocode-session > div {
+  flex: 1;
+}
+.monocode-session i {
+  display: block;
+  height: 3px;
+  margin: 7px 0;
+  background: var(--black);
+  opacity: 0.3;
+}
+.monocode-session i:last-child {
+  width: 60%;
+}
+.monocode-queue {
+  padding: 10px 14px;
+  border-top: 1px solid #25251f33;
+}
+.monocode-queue span {
+  color: var(--orange);
 }
 .project-copy {
   display: grid;

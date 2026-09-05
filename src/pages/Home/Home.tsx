@@ -31,13 +31,13 @@ const projects = [
     kind: 'conductor',
   },
   {
-    name: 'PriceTime',
-    category: 'DISTRIBUTED SYSTEMS / OPEN SOURCE',
+    name: 'MonoCode',
+    category: 'DEVELOPER TOOLS / CONTRIBUTOR',
     description:
-      'A price-time priority matching engine with Kafka-driven trade execution.',
-    stack: '.NET / KAFKA',
-    href: 'https://github.com/tcmarkfeld/PriceTime',
-    kind: 'orders',
+      'Contributions to a desktop app for AI coding agents, including work on queued follow-ups and CI.',
+    stack: 'TYPESCRIPT / REACT / TAURI',
+    href: 'https://usemono.dev/',
+    kind: 'monocode',
   },
 ];
 
@@ -398,10 +398,10 @@ export const Home = () => {
             <h2>
               Open-source
               <br />
-              <em>projects.</em>
+              <em>projects &amp; contributions.</em>
             </h2>
             <p>
-              Libraries and tools for .NET developers.
+              Tools I build and contribute to.
               <br />
               Available on GitHub.
             </p>
@@ -441,10 +441,24 @@ export const Home = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="orders-art">
-                      {[38, 65, 47, 82, 57, 93, 72].map((height, i) => (
-                        <i key={i} style={{ height: `${height}%` }} />
-                      ))}
+                    <div className="monocode-art">
+                      <div className="monocode-titlebar">
+                        <i />
+                        <i />
+                        <i />
+                        <span>MonoCode</span>
+                      </div>
+                      <div className="monocode-session">
+                        <span>›_</span>
+                        <div>
+                          <i />
+                          <i />
+                          <i />
+                        </div>
+                      </div>
+                      <div className="monocode-queue">
+                        <span>↳</span> queued follow-up
+                      </div>
                     </div>
                   )}
                 </div>
