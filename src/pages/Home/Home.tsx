@@ -106,7 +106,15 @@ export const Home = () => {
       </a>
       <header className="folio-header">
         <a className="wordmark" href="#top" aria-label="Timothy Markfeld home">
-          tm<span>✳</span>
+          tm
+          <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 2v20M2 12h20M5 5l14 14M5 19 19 5"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            />
+          </svg>
         </a>
         <span className="header-note">
           SOFTWARE ENGINEERING
