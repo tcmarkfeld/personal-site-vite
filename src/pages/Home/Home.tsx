@@ -143,7 +143,6 @@ export const Home = () => {
               </a>
             </div>
           </div>
-          <SystemSchematic className="hero-schematic" />
         </section>
 
         <div className="focus-strip" aria-label="Specialties">
@@ -389,88 +388,3 @@ export const Home = () => {
     </div>
   );
 };
-
-function SystemSchematic({ className }: { className?: string }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className={className}
-      viewBox="0 0 760 760"
-    >
-      <defs>
-        <pattern id="draft-grid" width="10" height="10" patternUnits="userSpaceOnUse">
-          <circle cx="1" cy="1" r=".65" fill="currentColor" />
-        </pattern>
-        <linearGradient id="disk-fill" x1="0" y1="0" x2="1" y2="1">
-          <stop stopColor="currentColor" stopOpacity=".28" />
-          <stop offset="1" stopColor="currentColor" stopOpacity=".06" />
-        </linearGradient>
-      </defs>
-      <rect className="schematic-grid" x="28" y="28" width="704" height="704" />
-      <g className="draft-marks">
-        <path d="M28 58V28h30M702 28h30v30M28 702v30h30M702 732h30v-30" />
-        <path d="M60 82h90M610 82h90M60 680h90M610 680h90" />
-      </g>
-      <g className="schematic-guides">
-        <path d="M380 105v550M235 190v390M525 190v390" />
-        <path d="M235 190h290M235 580h290" />
-      </g>
-      <g className="schematic-layer top-layer">
-        <path d="m257 148 168-76 111 63-168 77Z" />
-        <path d="m257 148 111 64v38l-111-65Z" />
-        <path d="m368 212 168-77v37l-168 78Z" />
-        <path d="m294 150 127-58 77 44-127 59Z" />
-        <path d="m322 151 99-45 51 29-99 46Z" />
-        <path d="m278 183 24-11 20 12-24 11Z" />
-        <circle cx="500" cy="159" r="5" />
-      </g>
-      <g className="schematic-layer service-ring">
-        <ellipse cx="380" cy="320" rx="128" ry="55" />
-        <ellipse cx="380" cy="304" rx="128" ry="55" />
-        <ellipse cx="380" cy="304" rx="49" ry="21" />
-        <path d="M252 304v16c0 30 57 55 128 55s128-25 128-55v-16" />
-        <path d="M299 271c22 12 46 16 70 17M442 286c25-5 44-12 61-23" />
-        {[0, 1, 2, 3, 4, 5].map((index) => {
-          const angle = (index * Math.PI) / 3;
-          const x = 380 + Math.cos(angle) * 92;
-          const y = 304 + Math.sin(angle) * 39;
-          return <circle key={index} cx={x} cy={y} r="7" />;
-        })}
-      </g>
-      <g className="schematic-layer data-disk">
-        <ellipse cx="380" cy="451" rx="139" ry="58" fill="url(#disk-fill)" />
-        <path d="M241 451v22c0 32 62 58 139 58s139-26 139-58v-22" />
-        <ellipse cx="380" cy="473" rx="139" ry="58" />
-        <ellipse cx="380" cy="451" rx="139" ry="58" />
-        <ellipse cx="380" cy="451" rx="43" ry="18" />
-        <ellipse cx="380" cy="451" rx="20" ry="8" />
-        <path d="M380 433v36M241 451h96M423 451h96" />
-      </g>
-      <g className="schematic-layer base-layer">
-        <path d="m249 612 133-61 130 74-133 61Z" />
-        <path d="m249 612 130 74v24l-130-75Z" />
-        <path d="m379 686 133-61v24l-133 61Z" />
-        <path d="m293 614 89-41 86 49-89 41Z" />
-        <path d="M339 620c0-10 18-19 41-19s42 9 42 19-19 19-42 19-41-9-41-19Z" />
-        <circle cx="380" cy="620" r="7" />
-      </g>
-      <g className="schematic-connectors">
-        <path d="M257 168H136v-38M508 304h112v-30M241 451H121v35M512 634h106v42" />
-        <path d="M380 250v38M380 375v58M380 531v20" />
-      </g>
-      <g className="schematic-labels">
-        <text x="58" y="115">FIG.001</text>
-        <text x="58" y="132">INTERFACE LAYER</text>
-        <text x="625" y="262">SERVICE MESH</text>
-        <text x="625" y="278">06 ACTIVE NODES</text>
-        <text x="58" y="476">DISTRIBUTED DATA</text>
-        <text x="58" y="493">EVENT STORE</text>
-        <text x="622" y="691">CLOUD RUNTIME</text>
-        <text x="622" y="708">FAULT TOLERANT</text>
-      </g>
-      <text className="side-label" x="48" y="390" transform="rotate(-90 48 390)">
-        [ SYSTEM ARCHITECTURE / EXPLODED VIEW ]
-      </text>
-    </svg>
-  );
-}

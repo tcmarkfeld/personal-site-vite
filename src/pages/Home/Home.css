@@ -178,15 +178,27 @@
   content: '';
 }
 
+.folio-hero::after {
+  position: absolute;
+  right: 3vw;
+  bottom: -0.18em;
+  color: transparent;
+  font: 400 clamp(8rem, 23vw, 23rem)/1 'Instrument Serif', serif;
+  letter-spacing: -0.08em;
+  -webkit-text-stroke: 1px rgba(var(--ink-rgb), 0.1);
+  content: 'TM';
+  pointer-events: none;
+}
+
 .hero-copy {
   position: relative;
   z-index: 2;
-  width: 48%;
+  width: 100%;
 }
 
 .hero-kicker {
   display: flex;
-  width: 100%;
+  width: min(100%, 760px);
   justify-content: space-between;
   gap: 2rem;
   font: 0.61rem 'Space Mono', monospace;
@@ -195,10 +207,10 @@
 }
 
 .portfolio h1 {
-  max-width: 650px;
+  max-width: 1180px;
   margin-top: clamp(2.4rem, 6vh, 5rem);
   font-family: 'Instrument Serif', Georgia, serif;
-  font-size: clamp(4.6rem, 7vw, 7.4rem);
+  font-size: clamp(5rem, 10vw, 10rem);
   font-weight: 400;
   letter-spacing: -0.055em;
   line-height: 0.78;
@@ -211,7 +223,10 @@
 }
 
 .portfolio h1 em {
-  margin-left: 3vw;
+  margin-left: 8vw;
+  text-shadow:
+    1px 0 rgba(var(--ink-rgb), .18),
+    8px 0 rgba(var(--ink-rgb), .06);
 }
 
 .folio-intro {
@@ -219,7 +234,8 @@
   width: min(100%, 390px);
   gap: 1.4rem;
   margin-top: clamp(2.5rem, 7vh, 5rem);
-  margin-left: min(3vw, 44px);
+  margin-right: 7vw;
+  margin-left: auto;
 }
 
 .folio-intro p {
@@ -246,80 +262,6 @@
 
 .solid-link:hover svg {
   transform: translateY(4px);
-}
-
-.hero-schematic {
-  position: absolute;
-  top: 3.2rem;
-  right: 1.5vw;
-  bottom: auto;
-  width: min(56vw, 760px);
-  height: min(78vw, 760px);
-  color: var(--ink);
-  pointer-events: none;
-}
-
-.hero-schematic path,
-.hero-schematic rect,
-.hero-schematic ellipse,
-.hero-schematic circle {
-  vector-effect: non-scaling-stroke;
-}
-
-.schematic-grid {
-  fill: url('#draft-grid');
-  opacity: 0.2;
-}
-
-.draft-marks,
-.schematic-guides,
-.schematic-layer,
-.schematic-connectors {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1;
-}
-
-.draft-marks {
-  opacity: 0.5;
-}
-
-.schematic-guides {
-  opacity: 0.25;
-  stroke-dasharray: 4 6;
-}
-
-.schematic-layer {
-  stroke-width: 1.2;
-}
-
-.top-layer path,
-.base-layer path {
-  fill: rgba(var(--ink-rgb), 0.025);
-}
-
-.service-ring {
-  animation: schematic-float 5s ease-in-out infinite;
-}
-
-.data-disk {
-  animation: schematic-float 5s ease-in-out -2.5s infinite;
-}
-
-.schematic-connectors {
-  opacity: 0.66;
-  stroke-dasharray: 5 4;
-}
-
-.schematic-labels,
-.side-label {
-  fill: currentColor;
-  font: 8px 'Space Mono', monospace;
-  letter-spacing: 0.08em;
-}
-
-.side-label {
-  opacity: 0.65;
 }
 
 .focus-strip {
@@ -910,11 +852,6 @@
   to { transform: rotate(360deg); }
 }
 
-@keyframes schematic-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-7px); }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .portfolio *,
   .portfolio *::before,
@@ -931,18 +868,7 @@
   }
 
   .folio-hero {
-    min-height: 850px;
-  }
-
-  .hero-copy {
-    width: 52%;
-  }
-
-  .hero-schematic {
-    top: 7rem;
-    right: -12vw;
-    width: 68vw;
-    height: 68vw;
+    min-height: 760px;
   }
 
   .focus-strip {
@@ -1003,7 +929,7 @@
   }
 
   .folio-hero {
-    min-height: 950px;
+    min-height: 720px;
     padding-top: 3rem;
   }
 
@@ -1025,17 +951,6 @@
     width: 88%;
     margin-top: 2.8rem;
     margin-left: 0;
-  }
-
-  .hero-copy {
-    width: 100%;
-  }
-
-  .hero-schematic {
-    top: 410px;
-    right: -13vw;
-    width: 116vw;
-    height: 116vw;
   }
 
   .focus-strip > span {
