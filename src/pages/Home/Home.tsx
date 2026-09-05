@@ -79,7 +79,7 @@ const experience = [
 
 export const Home = () => {
   const [dark, setDark] = useState(
-    () => document.documentElement.dataset.theme === 'dark',
+    false,
   );
 
   useEffect(() => {
@@ -143,12 +143,7 @@ export const Home = () => {
               </a>
             </div>
           </div>
-          <Landscape className="hero-landscape" />
-          <div className="hero-coordinate" aria-hidden="true">
-            <span>27.7676° N</span>
-            <i />
-            <span>82.6403° W</span>
-          </div>
+          <SystemSchematic className="hero-schematic" />
         </section>
 
         <div className="focus-strip" aria-label="Specialties">
@@ -395,47 +390,87 @@ export const Home = () => {
   );
 };
 
-function Landscape({ className }: { className?: string }) {
+function SystemSchematic({ className }: { className?: string }) {
   return (
     <svg
       aria-hidden="true"
       className={className}
-      viewBox="0 0 1440 640"
-      preserveAspectRatio="xMidYMax slice"
+      viewBox="0 0 760 760"
     >
       <defs>
-        <pattern id="hatch" width="11" height="11" patternUnits="userSpaceOnUse">
-          <path d="M-3 11 11-3M4 14 14 4" />
+        <pattern id="draft-grid" width="10" height="10" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r=".65" fill="currentColor" />
         </pattern>
-        <pattern id="water" width="34" height="16" patternUnits="userSpaceOnUse">
-          <path d="M0 8c8-5 17-5 34 0M7 14c6-3 12-3 20 0" />
-        </pattern>
+        <linearGradient id="disk-fill" x1="0" y1="0" x2="1" y2="1">
+          <stop stopColor="currentColor" stopOpacity=".28" />
+          <stop offset="1" stopColor="currentColor" stopOpacity=".06" />
+        </linearGradient>
       </defs>
-      <path className="land-faint" d="M0 427 116 364l83 20 92-97 79 52 118-134 86 72 103-135 104 167 88-93 86 111 95-70 92 90 112-46 116 80v259H0Z" />
-      <path className="land-hatch" d="M0 427 116 364l83 20 92-97 79 52 118-134 86 72 103-135 104 167 88-93 86 111 95-70 92 90 112-46 116 80v118H0Z" />
-      <g className="land-lines">
-        <path d="M0 427 116 364l83 20 92-97 79 52 118-134 86 72 103-135 104 167 88-93 86 111 95-70 92 90 112-46 116 80" />
-        <path d="m77 405 53-89 40 49M248 333l43-92 49 76M449 249l39-86 62 95M635 191l42-112 74 200M833 253l36-91 62 132M1044 272l43-80 83 111M1239 313l42-87 59 136" />
-        <path d="M0 462c190-42 311-15 462 10s278-15 422-2 321 52 556-6" />
+      <rect className="schematic-grid" x="28" y="28" width="704" height="704" />
+      <g className="draft-marks">
+        <path d="M28 58V28h30M702 28h30v30M28 702v30h30M702 732h30v-30" />
+        <path d="M60 82h90M610 82h90M60 680h90M610 680h90" />
       </g>
-      <g className="land-buildings">
-        <path d="M112 417v-71h65v57m-54-57 21-28 22 28m-31 71v-34h20v34M391 405v-83h88v104m-72-104v-35h53v35m-1 20h-21v25h21m-52-25h18v25h-18M916 417v-98h112v126m-95-126v-30h72v30m-53 19h23v30h-23m42-30h18v30h-18M1207 430v-77h80v91m-66-91v-27h50v27" />
-        <path d="M711 416v-113h26V189h25v114h28v121m-67-121h55m-42-114 13-33 13 33m-32 147h39" />
+      <g className="schematic-guides">
+        <path d="M380 105v550M235 190v390M525 190v390" />
+        <path d="M235 190h290M235 580h290" />
       </g>
-      <g className="cypress">
-        {[214, 349, 521, 593, 820, 1097, 1163, 1337].map((x, index) => (
-          <path
-            key={x}
-            d={`M${x} 430c-${12 + (index % 3) * 3}-38 -8-102 4-143 17 47 26 105 6 143Z`}
-          />
-        ))}
+      <g className="schematic-layer top-layer">
+        <path d="m257 148 168-76 111 63-168 77Z" />
+        <path d="m257 148 111 64v38l-111-65Z" />
+        <path d="m368 212 168-77v37l-168 78Z" />
+        <path d="m294 150 127-58 77 44-127 59Z" />
+        <path d="m322 151 99-45 51 29-99 46Z" />
+        <path d="m278 183 24-11 20 12-24 11Z" />
+        <circle cx="500" cy="159" r="5" />
       </g>
-      <rect className="land-water" y="463" width="1440" height="177" />
-      <g className="bridge">
-        <path d="M0 455h1440v30H0Z" />
-        <path d="M0 485h1440M58 455v-22m98 22v-22m98 22v-22m98 22v-22m98 22v-22m98 22v-22m98 22v-22m98 22v-22m98 22v-22m98 22v-22m98 22v-22m98 22v-22m98 22v-22m98 22v-22" />
-        <path d="M170 485c0 98 134 98 134 0m386 0c0 98 134 98 134 0m386 0c0 98 134 98 134 0" />
+      <g className="schematic-layer service-ring">
+        <ellipse cx="380" cy="320" rx="128" ry="55" />
+        <ellipse cx="380" cy="304" rx="128" ry="55" />
+        <ellipse cx="380" cy="304" rx="49" ry="21" />
+        <path d="M252 304v16c0 30 57 55 128 55s128-25 128-55v-16" />
+        <path d="M299 271c22 12 46 16 70 17M442 286c25-5 44-12 61-23" />
+        {[0, 1, 2, 3, 4, 5].map((index) => {
+          const angle = (index * Math.PI) / 3;
+          const x = 380 + Math.cos(angle) * 92;
+          const y = 304 + Math.sin(angle) * 39;
+          return <circle key={index} cx={x} cy={y} r="7" />;
+        })}
       </g>
+      <g className="schematic-layer data-disk">
+        <ellipse cx="380" cy="451" rx="139" ry="58" fill="url(#disk-fill)" />
+        <path d="M241 451v22c0 32 62 58 139 58s139-26 139-58v-22" />
+        <ellipse cx="380" cy="473" rx="139" ry="58" />
+        <ellipse cx="380" cy="451" rx="139" ry="58" />
+        <ellipse cx="380" cy="451" rx="43" ry="18" />
+        <ellipse cx="380" cy="451" rx="20" ry="8" />
+        <path d="M380 433v36M241 451h96M423 451h96" />
+      </g>
+      <g className="schematic-layer base-layer">
+        <path d="m249 612 133-61 130 74-133 61Z" />
+        <path d="m249 612 130 74v24l-130-75Z" />
+        <path d="m379 686 133-61v24l-133 61Z" />
+        <path d="m293 614 89-41 86 49-89 41Z" />
+        <path d="M339 620c0-10 18-19 41-19s42 9 42 19-19 19-42 19-41-9-41-19Z" />
+        <circle cx="380" cy="620" r="7" />
+      </g>
+      <g className="schematic-connectors">
+        <path d="M257 168H136v-38M508 304h112v-30M241 451H121v35M512 634h106v42" />
+        <path d="M380 250v38M380 375v58M380 531v20" />
+      </g>
+      <g className="schematic-labels">
+        <text x="58" y="115">FIG.001</text>
+        <text x="58" y="132">INTERFACE LAYER</text>
+        <text x="625" y="262">SERVICE MESH</text>
+        <text x="625" y="278">06 ACTIVE NODES</text>
+        <text x="58" y="476">DISTRIBUTED DATA</text>
+        <text x="58" y="493">EVENT STORE</text>
+        <text x="622" y="691">CLOUD RUNTIME</text>
+        <text x="622" y="708">FAULT TOLERANT</text>
+      </g>
+      <text className="side-label" x="48" y="390" transform="rotate(-90 48 390)">
+        [ SYSTEM ARCHITECTURE / EXPLODED VIEW ]
+      </text>
     </svg>
   );
 }

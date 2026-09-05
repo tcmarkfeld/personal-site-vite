@@ -1,18 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap');
 
 .portfolio {
-  --paper: #f5f1e6;
-  --ink: #1648bd;
-  --ink-rgb: 22, 72, 189;
-  --muted: #4465a8;
+  --paper: #fdfdfb;
+  --ink: #2452ff;
+  --ink-rgb: 36, 82, 255;
+  --muted: #26396f;
   --line: rgba(var(--ink-rgb), 0.28);
-  --wash: #e9e9df;
+  --wash: #f8f9ff;
   min-height: 100vh;
   overflow: clip;
   color: var(--ink);
-  background:
-    radial-gradient(circle at 70% 5%, rgba(255, 255, 255, 0.92), transparent 32rem),
-    var(--paper);
+  background: var(--paper);
   font-family: 'DM Sans', sans-serif;
   font-weight: 400;
   line-height: 1.5;
@@ -162,20 +160,33 @@
 
 .folio-hero {
   position: relative;
-  min-height: min(820px, calc(100vh - 98px));
+  min-height: max(790px, calc(100vh - 98px));
   padding-top: clamp(3.5rem, 8vh, 6.5rem);
   overflow: hidden;
   border-bottom: 1px solid var(--line);
 }
 
+.folio-hero::before {
+  position: absolute;
+  top: 1.5rem;
+  right: 4.5vw;
+  left: 4.5vw;
+  height: 10px;
+  opacity: 0.42;
+  background-image: radial-gradient(circle, var(--ink) 1px, transparent 1.25px);
+  background-size: 8px 8px;
+  content: '';
+}
+
 .hero-copy {
   position: relative;
   z-index: 2;
+  width: 48%;
 }
 
 .hero-kicker {
   display: flex;
-  width: min(100%, 700px);
+  width: 100%;
   justify-content: space-between;
   gap: 2rem;
   font: 0.61rem 'Space Mono', monospace;
@@ -184,10 +195,10 @@
 }
 
 .portfolio h1 {
-  max-width: 1000px;
+  max-width: 650px;
   margin-top: clamp(2.4rem, 6vh, 5rem);
   font-family: 'Instrument Serif', Georgia, serif;
-  font-size: clamp(4.6rem, 10vw, 10rem);
+  font-size: clamp(4.6rem, 7vw, 7.4rem);
   font-weight: 400;
   letter-spacing: -0.055em;
   line-height: 0.78;
@@ -200,7 +211,7 @@
 }
 
 .portfolio h1 em {
-  margin-left: 8vw;
+  margin-left: 3vw;
 }
 
 .folio-intro {
@@ -208,7 +219,7 @@
   width: min(100%, 390px);
   gap: 1.4rem;
   margin-top: clamp(2.5rem, 7vh, 5rem);
-  margin-left: min(8vw, 110px);
+  margin-left: min(3vw, 44px);
 }
 
 .folio-intro p {
@@ -237,93 +248,86 @@
   transform: translateY(4px);
 }
 
-.hero-landscape {
+.hero-schematic {
   position: absolute;
-  right: -3%;
-  bottom: -1px;
-  width: 78%;
-  height: 61%;
+  top: 3.2rem;
+  right: 1.5vw;
+  bottom: auto;
+  width: min(56vw, 760px);
+  height: min(78vw, 760px);
   color: var(--ink);
   pointer-events: none;
 }
 
-.hero-landscape path,
-.hero-landscape rect {
+.hero-schematic path,
+.hero-schematic rect,
+.hero-schematic ellipse,
+.hero-schematic circle {
   vector-effect: non-scaling-stroke;
 }
 
-.land-faint {
-  fill: rgba(var(--ink-rgb), 0.04);
-  stroke: none;
+.schematic-grid {
+  fill: url('#draft-grid');
+  opacity: 0.2;
 }
 
-.land-hatch {
-  fill: url('#hatch');
-  opacity: 0.3;
-}
-
-#hatch path,
-#water path {
+.draft-marks,
+.schematic-guides,
+.schematic-layer,
+.schematic-connectors {
   fill: none;
   stroke: currentColor;
-  stroke-width: 0.65;
+  stroke-width: 1;
 }
 
-.land-lines,
-.land-buildings,
-.cypress,
-.bridge {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.1;
+.draft-marks {
+  opacity: 0.5;
 }
 
-.land-lines {
-  opacity: 0.52;
+.schematic-guides {
+  opacity: 0.25;
+  stroke-dasharray: 4 6;
 }
 
-.land-buildings {
-  fill: var(--paper);
-  stroke-width: 1.25;
+.schematic-layer {
+  stroke-width: 1.2;
 }
 
-.cypress {
-  fill: rgba(var(--ink-rgb), 0.12);
+.top-layer path,
+.base-layer path {
+  fill: rgba(var(--ink-rgb), 0.025);
 }
 
-.land-water {
-  fill: url('#water');
-  opacity: 0.55;
+.service-ring {
+  animation: schematic-float 5s ease-in-out infinite;
 }
 
-.bridge {
-  fill: var(--paper);
-  stroke-width: 1.25;
+.data-disk {
+  animation: schematic-float 5s ease-in-out -2.5s infinite;
 }
 
-.hero-coordinate {
-  position: absolute;
-  right: 4.5vw;
-  bottom: 1.4rem;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  font: 0.52rem 'Space Mono', monospace;
-  letter-spacing: 0.1em;
+.schematic-connectors {
+  opacity: 0.66;
+  stroke-dasharray: 5 4;
 }
 
-.hero-coordinate i {
-  width: 28px;
-  height: 1px;
-  background: currentColor;
+.schematic-labels,
+.side-label {
+  fill: currentColor;
+  font: 8px 'Space Mono', monospace;
+  letter-spacing: 0.08em;
+}
+
+.side-label {
+  opacity: 0.65;
 }
 
 .focus-strip {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  color: var(--paper);
-  background: var(--ink);
+  color: var(--ink);
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
 }
 
 .focus-strip > span {
@@ -332,7 +336,7 @@
   align-items: flex-end;
   gap: 1rem;
   padding: 1.4rem max(1.4rem, 3vw);
-  border-right: 1px solid rgba(255, 255, 255, 0.24);
+  border-right: 1px solid var(--line);
   font-family: 'Instrument Serif', serif;
   font-size: clamp(1.05rem, 1.6vw, 1.45rem);
 }
@@ -477,13 +481,16 @@
 }
 
 .experience-section {
-  color: var(--paper);
-  background: var(--ink);
+  color: var(--ink);
+  background:
+    radial-gradient(circle, rgba(var(--ink-rgb), .2) .8px, transparent 1px),
+    var(--paper);
+  background-size: 10px 10px;
 }
 
 .experience-section .section-topline,
 .experience-section .job {
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: var(--line);
 }
 
 .experience-section h2 {
@@ -606,10 +613,9 @@
   overflow: hidden;
   color: var(--ink);
   background:
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--line) 1px, transparent 1px),
+    radial-gradient(circle, rgba(var(--ink-rgb), .28) .8px, transparent 1px),
     var(--wash);
-  background-size: 28px 28px;
+  background-size: 9px 9px;
 }
 
 .project-visual::after {
@@ -887,8 +893,9 @@
   display: flex;
   justify-content: space-between;
   padding-block: 1.8rem;
-  color: var(--paper);
-  background: var(--ink);
+  color: var(--ink);
+  background: var(--paper);
+  border-top: 1px solid var(--line);
   font: 0.52rem 'Space Mono', monospace;
   letter-spacing: 0.08em;
 }
@@ -901,6 +908,11 @@
 
 @keyframes slow-spin {
   to { transform: rotate(360deg); }
+}
+
+@keyframes schematic-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -919,12 +931,18 @@
   }
 
   .folio-hero {
-    min-height: 760px;
+    min-height: 850px;
   }
 
-  .hero-landscape {
-    width: 115%;
-    height: 50%;
+  .hero-copy {
+    width: 52%;
+  }
+
+  .hero-schematic {
+    top: 7rem;
+    right: -12vw;
+    width: 68vw;
+    height: 68vw;
   }
 
   .focus-strip {
@@ -933,7 +951,7 @@
 
   .focus-strip > span {
     min-height: 95px;
-    border-bottom: 1px solid rgba(255,255,255,.24);
+    border-bottom: 1px solid var(--line);
   }
 
   .about-layout {
@@ -985,7 +1003,7 @@
   }
 
   .folio-hero {
-    min-height: 710px;
+    min-height: 950px;
     padding-top: 3rem;
   }
 
@@ -1009,15 +1027,15 @@
     margin-left: 0;
   }
 
-  .hero-landscape {
-    right: -55%;
-    width: 190%;
-    height: 43%;
+  .hero-copy {
+    width: 100%;
   }
 
-  .hero-coordinate {
-    right: 6vw;
-    font-size: 0.42rem;
+  .hero-schematic {
+    top: 410px;
+    right: -13vw;
+    width: 116vw;
+    height: 116vw;
   }
 
   .focus-strip > span {
