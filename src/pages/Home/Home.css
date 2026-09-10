@@ -3,11 +3,11 @@
 .portfolio {
   color-scheme: light;
   --paper: #f4f2e9;
-  --black: #25251f;
-  --orange: #f45126;
-  --muted: #626259;
+  --black: #203e3c;
+  --orange: #c95129;
+  --muted: #586c64;
   --border: #25251f33;
-  --surface: #eae8de;
+  --surface: #e7ebe1;
   background: var(--paper);
   color: var(--black);
   font-family: 'DM Sans', Arial, sans-serif;
@@ -17,12 +17,12 @@
 }
 .portfolio[data-theme='dark'] {
   color-scheme: dark;
-  --paper: #1c1d19;
+  --paper: #142528;
   --black: #f4f2e9;
   --orange: #ff784f;
-  --muted: #b6b7aa;
+  --muted: #b4c5bc;
   --border: #f4f2e933;
-  --surface: #272822;
+  --surface: #1c3335;
 }
 .folio-theme-toggle {
   display: inline-flex;
@@ -213,35 +213,6 @@
 .solid-link:hover {
   background: var(--orange);
 }
-.orbital-art {
-  width: 85%;
-  margin-top: -210px;
-  justify-self: end;
-  transform: translateX(6%);
-  pointer-events: none;
-}
-.orbital-art svg {
-  width: 100%;
-  height: auto;
-  overflow: visible;
-}
-.orbit-calibration {
-  transform-origin: 0 0;
-  animation: orbit-turn 120s linear infinite reverse;
-}
-.orbit-runner {
-  transform-origin: 0 0;
-  animation: orbit-turn 18s linear infinite;
-}
-.orbit-runner-1 {
-  animation-duration: 26s;
-  animation-delay: -9s;
-  animation-direction: reverse;
-}
-.orbit-runner-2 {
-  animation-duration: 34s;
-  animation-delay: -21s;
-}
 .art-coordinate {
   display: block;
   text-align: center;
@@ -254,14 +225,6 @@
   justify-content: space-between;
   padding: 16px 0 18px;
   position: relative;
-}
-.hero-caption button {
-  border: 0;
-  background: transparent;
-  font-size: 10px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
 }
 .focus-strip {
   background: var(--black);
@@ -730,14 +693,6 @@
   gap: 10px;
   align-items: center;
 }
-@keyframes orbit-turn {
-  to {
-    transform: rotate(360deg);
-  }
-}
-.motion-paused .orbital-art * {
-  animation-play-state: paused;
-}
 @media (prefers-reduced-motion: reduce) {
   .portfolio *,
   .portfolio *::before,
@@ -757,9 +712,6 @@
   .portfolio h1 {
     margin-top: 24px;
   }
-  .orbital-art {
-    margin-top: -230px;
-  }
 }
 @media (max-width: 900px) {
   .folio-header {
@@ -770,11 +722,6 @@
   }
   .hero-bottom {
     min-height: 330px;
-  }
-  .orbital-art {
-    width: 100%;
-    margin-top: -65px;
-    transform: none;
   }
   .folio-intro {
     width: 100%;
@@ -877,13 +824,6 @@
   .solid-link {
     margin-top: 20px;
   }
-  .orbital-art {
-    position: relative;
-    top: auto;
-    right: auto;
-    width: 100%;
-    margin-top: -8px;
-  }
 
   .hero-caption {
     display: grid;
@@ -893,14 +833,6 @@
     width: 100%;
     font-size: 9px;
     padding: 16px 0;
-  }
-  .hero-caption button {
-    min-height: 44px;
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    gap: 8px;
-    white-space: nowrap;
   }
   .focus-strip {
     display: grid;
@@ -1041,5 +973,173 @@
   }
   .folio-footer > span:nth-child(2) {
     display: none;
+  }
+}
+
+/* Coastal scene: painterly landscape with independently moving layers. */
+.portfolio .folio-hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: clamp(620px, calc(100svh - 160px), 860px);
+  padding-top: 36px;
+  overflow: hidden;
+}
+.coastal-scene {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.coastal-painting {
+  position: absolute;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  inset: 0;
+  object-fit: cover;
+}
+.coastal-painting {
+  transition: filter 0.5s ease;
+}
+.coastal-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    var(--paper) 0%,
+    transparent 22%,
+    transparent 72%,
+    #102f35b3 100%
+  );
+}
+.coastal-motion {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+.coastal-scene[data-ready='true'] .coastal-motion {
+  opacity: 1;
+}
+.coastal-scene[data-ready='true'] .coastal-frond {
+  visibility: hidden;
+}
+.coastal-frond {
+  position: absolute;
+  top: -11%;
+  right: -7%;
+  width: 34%;
+  height: auto;
+  transform-origin: 100% 15%;
+}
+.portfolio .folio-hero h1 {
+  font-size: clamp(60px, 6.6vw, 106px);
+  margin-top: 44px;
+  max-width: 74%;
+}
+.portfolio .hero-bottom {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  position: static;
+  align-items: stretch;
+  min-height: 0;
+}
+.portfolio .folio-intro {
+  padding-top: 25px;
+  width: min(360px, 100%);
+}
+.portfolio .hero-caption {
+  margin-top: auto;
+  padding: 70px 0 24px;
+  align-items: center;
+  width: 100%;
+  color: #fff8e8;
+  text-shadow: 0 1px 5px #102f35;
+}
+.portfolio .focus-strip {
+  background: #203e3c;
+  color: #f4f2e9;
+}
+.portfolio .focus-strip b,
+.portfolio .focus-strip span::before {
+  color: #efa66b;
+}
+.portfolio .contact-section {
+  background: #d88455;
+}
+.portfolio .portrait-frame {
+  background: #cfdbca;
+}
+.portfolio .portrait-frame img {
+  filter: grayscale(0.55);
+}
+.portfolio[data-theme='dark'] .coastal-painting {
+  filter: brightness(0.48) saturate(0.65) hue-rotate(8deg);
+}
+.portfolio[data-theme='dark'] .coastal-shade {
+  background: linear-gradient(
+    180deg,
+    #142528 0%,
+    #14252880 30%,
+    transparent 75%,
+    #142528c9 100%
+  );
+}
+.portfolio[data-theme='dark'] .coastal-frond {
+  filter: brightness(0.55) saturate(0.7);
+}
+@media (max-width: 900px) {
+  .portfolio .folio-hero h1 {
+    font-size: clamp(48px, 7.7vw, 70px);
+  }
+  .coastal-frond {
+    width: 39%;
+  }
+}
+@media (max-width: 600px) {
+  .portfolio .folio-hero {
+    min-height: 700px;
+    padding-top: 25px;
+  }
+  .portfolio .folio-hero h1 {
+    max-width: 100%;
+    margin-top: 42px;
+    font-size: clamp(40px, 10.7vw, 60px);
+  }
+  .portfolio .folio-intro {
+    max-width: 300px;
+    padding-top: 21px;
+  }
+  .portfolio .folio-intro p {
+    font-size: 15px;
+  }
+  .coastal-painting {
+    width: 155%;
+    left: -55%;
+  }
+  .coastal-frond {
+    width: 54%;
+    top: -3%;
+    right: -15%;
+  }
+  .portfolio .hero-caption {
+    padding: 80px 0 20px;
+    gap: 18px;
+    font-size: 8px;
+  }
+  .coastal-shade {
+    background: linear-gradient(
+      180deg,
+      var(--paper) 0%,
+      #f4f2e9e6 20%,
+      #f4f2e980 43%,
+      transparent 64%,
+      #102f35b3 100%
+    );
   }
 }

@@ -10,6 +10,7 @@ import {
   Sun,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { CoastalScene } from '@/components/CoastalScene';
 import './Home.css';
 
 const projects = [
@@ -78,7 +79,6 @@ const experience = [
 ];
 
 export const Home = () => {
-  const [motion, setMotion] = useState(true);
   const [dark, setDark] = useState(
     () => document.documentElement.dataset.theme === 'dark',
   );
@@ -90,17 +90,11 @@ export const Home = () => {
     window.localStorage.setItem('site-theme', theme);
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', dark ? '#1c1d19' : '#f4f2e9');
+      ?.setAttribute('content', dark ? '#142528' : '#f4f2e9');
   }, [dark]);
 
   return (
-    <div
-      className={['portfolio', !motion && 'motion-paused']
-        .filter(Boolean)
-        .join(' ')}
-      data-theme={dark ? 'dark' : 'light'}
-      id="top"
-    >
+    <div className="portfolio" data-theme={dark ? 'dark' : 'light'} id="top">
       <a className="skip-link" href="#main">
         Skip to content
       </a>
@@ -146,6 +140,7 @@ export const Home = () => {
 
       <main id="main">
         <section className="folio-hero" aria-labelledby="hero-title">
+          <CoastalScene dark={dark} />
           <div className="hero-eyebrow">
             <span>
               <i /> TIMOTHY MARKFELD
@@ -164,118 +159,8 @@ export const Home = () => {
                 Explore my work <ArrowDown size={18} />
               </a>
             </div>
-            <div className="orbital-art" aria-hidden="true">
-              <svg viewBox="0 0 600 480" fill="none">
-                <defs>
-                  <radialGradient id="orb-glow" cx="30%" cy="23%" r="80%">
-                    <stop stopColor="#ffe2ad" />
-                    <stop offset=".28" stopColor="#ffad61" />
-                    <stop offset=".6" stopColor="#f45126" />
-                    <stop offset=".88" stopColor="#a82513" />
-                    <stop offset="1" stopColor="#50180f" />
-                  </radialGradient>
-                  <radialGradient id="orb-aura">
-                    <stop stopColor="var(--orange)" stopOpacity=".2" />
-                    <stop
-                      offset="1"
-                      stopColor="var(--orange)"
-                      stopOpacity="0"
-                    />
-                  </radialGradient>
-                  <clipPath id="orb-core-clip">
-                    <circle r="72" />
-                  </clipPath>
-                </defs>
-                <g transform="translate(300 220)">
-                  <circle r="210" fill="url(#orb-aura)" />
-                  <g className="orbit-calibration" stroke="currentColor">
-                    {Array.from({ length: 60 }, (_, i) => (
-                      <path
-                        key={i}
-                        d={`M 0 -${i % 5 === 0 ? 210 : 216} V -220`}
-                        transform={`rotate(${i * 6})`}
-                        opacity={i % 5 === 0 ? '.45' : '.16'}
-                      />
-                    ))}
-                    <circle r="201" strokeDasharray="2 9" opacity=".15" />
-                  </g>
-                  {[-32, 38, 94].map((angle, i) => (
-                    <g
-                      key={angle}
-                      transform={`rotate(${angle}) scale(1 ${0.38 + i * 0.12})`}
-                    >
-                      <circle
-                        r={190 - i * 12}
-                        stroke="currentColor"
-                        opacity=".3"
-                      />
-                      <circle
-                        r={195 - i * 12}
-                        stroke="currentColor"
-                        opacity=".1"
-                      />
-                      <g className={`orbit-runner orbit-runner-${i}`}>
-                        <g transform={i === 1 ? 'scale(1 -1)' : undefined}>
-                          {Array.from({ length: 14 }, (_, segment) => (
-                            <circle
-                              key={segment}
-                              r={190 - i * 12}
-                              pathLength="360"
-                              stroke="var(--orange)"
-                              strokeDasharray="10.5 349.5"
-                              strokeWidth={3.5 - segment * 0.18}
-                              opacity={(1 - segment / 14) ** 2}
-                              transform={`rotate(${-10 * (segment + 1)})`}
-                            />
-                          ))}
-                        </g>
-                        <circle
-                          cx={190 - i * 12}
-                          r={i === 0 ? 9 : 5}
-                          fill="var(--black)"
-                          stroke="var(--orange)"
-                          strokeWidth="3"
-                        />
-                      </g>
-                    </g>
-                  ))}
-                  <circle r="81" stroke="var(--orange)" opacity=".18" />
-                  <circle r="72" fill="url(#orb-glow)" />
-                  <g
-                    clipPath="url(#orb-core-clip)"
-                    transform="rotate(-24)"
-                    stroke="#ffe2ad"
-                    strokeWidth=".6"
-                    opacity=".25"
-                  >
-                    {[-48, -24, 0, 24, 48].map((y) => (
-                      <ellipse key={y} cy={y} rx="74" ry="15" />
-                    ))}
-                    <ellipse rx="28" ry="73" />
-                    <ellipse rx="53" ry="73" />
-                  </g>
-                  {[-32, 38, 94].map((angle, i) => (
-                    <g
-                      key={angle}
-                      transform={`rotate(${angle}) scale(1 ${0.38 + i * 0.12})`}
-                    >
-                      <path
-                        d={`M ${190 - i * 12} 0 A ${190 - i * 12} ${190 - i * 12} 0 0 1 -${190 - i * 12} 0`}
-                        stroke="currentColor"
-                        strokeWidth="1"
-                        opacity=".3"
-                      />
-                    </g>
-                  ))}
-                </g>
-              </svg>
-            </div>
             <div className="hero-caption">
               <span>BASED IN ST. PETERSBURG, FL</span>
-              <button onClick={() => setMotion(!motion)} aria-pressed={!motion}>
-                {motion ? 'Pause' : 'Play'} motion{' '}
-                <span aria-hidden="true">{motion ? 'Ⅱ' : '▷'}</span>
-              </button>
             </div>
           </div>
         </section>
