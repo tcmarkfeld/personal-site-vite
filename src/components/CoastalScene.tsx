@@ -17,6 +17,9 @@ export function CoastalScene({ dark }: { dark: boolean }) {
     const canvas = canvasRef.current;
     const frond = frondRef.current;
     if (!scene || !canvas || !frond) return;
+    // Keep a static scene on Gecko, where scene compositing stalls interaction.
+    if (CSS.supports('-moz-appearance', 'none')) return;
+    scene.dataset.motionMode = 'scene';
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -101,7 +104,13 @@ export function CoastalScene({ dark }: { dark: boolean }) {
         palmHeight,
       );
       ctx.restore();
-      scene.dataset.ready = 'true';
+      if (scene.dataset.ready !== 'true') scene.dataset.ready = 'true';
+    }
+
+    function tick() {
+      timeRef.current += 1 / 24;
+      paint();
+      timer = window.setTimeout(tick, Math.ceil(1000 / 24));
     }
 
     function updateMotion() {
@@ -110,14 +119,7 @@ export function CoastalScene({ dark }: { dark: boolean }) {
       scene!.dataset.active = String(active);
       if (!active) return;
       // A timer avoids waking on every 60/120 Hz display frame.
-      timer = window.setTimeout(
-        () => {
-          timeRef.current += 1 / 24;
-          paint();
-          updateMotion();
-        },
-        Math.ceil(1000 / 24),
-      );
+      timer = window.setTimeout(tick, Math.ceil(1000 / 24));
     }
 
     function resize() {
@@ -171,7 +173,7 @@ export function CoastalScene({ dark }: { dark: boolean }) {
     <div className="coastal-scene" ref={sceneRef} aria-hidden="true">
       <img
         className="coastal-painting"
-        src="/coastal-observatory.jpg"
+        src={dark ? '/coastal-observatory-night.webp' : '/coastal-observatory.jpg'}
         alt=""
         fetchPriority="high"
       />

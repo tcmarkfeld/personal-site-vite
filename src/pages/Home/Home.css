@@ -1001,9 +1001,6 @@
   inset: 0;
   object-fit: cover;
 }
-.coastal-painting {
-  transition: filter 0.5s ease;
-}
 .coastal-shade {
   position: absolute;
   inset: 0;
@@ -1025,7 +1022,7 @@
 .coastal-scene[data-ready='true'] .coastal-motion {
   opacity: 1;
 }
-.coastal-scene[data-ready='true'] .coastal-frond {
+.coastal-scene[data-ready='true'][data-motion-mode='scene'] .coastal-frond {
   visibility: hidden;
 }
 .coastal-frond {
@@ -1078,20 +1075,24 @@
 .portfolio .portrait-frame img {
   filter: grayscale(0.55);
 }
-.portfolio[data-theme='dark'] .coastal-painting {
-  filter: brightness(0.48) saturate(0.65) hue-rotate(8deg);
-}
 .portfolio[data-theme='dark'] .coastal-shade {
   background: linear-gradient(
     180deg,
     #142528 0%,
-    #14252880 30%,
+    transparent 24%,
     transparent 75%,
     #142528c9 100%
   );
 }
 .portfolio[data-theme='dark'] .coastal-frond {
   filter: brightness(0.55) saturate(0.7);
+}
+@supports (-moz-appearance: none) {
+  .portfolio[data-theme] .coastal-frond,
+  .portfolio[data-theme] .portrait-frame img {
+    filter: none;
+    mix-blend-mode: normal;
+  }
 }
 @media (max-width: 900px) {
   .portfolio .folio-hero h1 {
