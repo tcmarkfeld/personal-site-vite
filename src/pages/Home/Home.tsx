@@ -68,11 +68,12 @@ const experience = [
   {
     company: 'Corolla Ice Delivery',
     role: 'Full Stack Engineer',
-    date: 'MAY 2020 — AUG 2023',
-    description:
-      'Built mobile and web tools for customer management, delivery tracking, and optimized driver routes.',
-    detail:
-      'Built the React Native mobile app, React website, Node.js backend, and MySQL database. Grouped deliveries by neighborhood and address to improve daily routes.',
+    date: 'May 2020 - Aug 2023',
+    bullets: [
+      'Owned a React Native delivery app from design through App Store and Google Play that cut daily delivery time by up to 3 hours.',
+      'Replaced manual scheduling with route optimization used in day-to-day operations during peak season.',
+      'Built the supporting React site and Node/MySQL backend so drivers and ops ran on one stack end to end.',
+    ],
     tags: 'React Native · React · Node.js · MySQL',
     href: 'https://corollaicedelivery.com/',
   },
@@ -148,13 +149,16 @@ export const Home = () => {
             <span>SENIOR SOFTWARE ENGINEER</span>
           </div>
           <h1 id="hero-title">
-            Backend systems.
+            Distributed systems.
             <br />
-            <span>AI automation.</span>
+            <span>Production ownership.</span>
           </h1>
           <div className="hero-bottom">
             <div className="folio-intro">
-              <p>I build distributed systems and AI automation software.</p>
+              <p>
+                I build high-throughput backends and keep them reliable after
+                they ship.
+              </p>
               <a className="solid-link" href="#experience">
                 Explore my work <ArrowDown size={18} />
               </a>
@@ -167,13 +171,12 @@ export const Home = () => {
 
         <div className="focus-strip" aria-label="Specialties">
           <span>DISTRIBUTED SYSTEMS</span>
-          <b>✳</b>
+          <b aria-hidden="true">✳</b>
+          <span>AWS</span>
+          <b aria-hidden="true">✳</b>
+          <span>.NET / TYPESCRIPT</span>
+          <b aria-hidden="true">✳</b>
           <span>AI AUTOMATION</span>
-          <b>✳</b>
-          <span>FULL STACK ENGINEERING</span>
-          <b>✳</b>
-          <span>CLOUD INFRASTRUCTURE</span>
-          <b>✳</b>
         </div>
 
         <section className="folio-section about-section-new" id="about">
@@ -252,11 +255,11 @@ export const Home = () => {
             <em>worked.</em>
           </h2>
           <div className="experience-list">
-            {experience.map((job, index) => (
+            {experience.map((job) => (
               <details
                 className="job"
                 key={job.company}
-                open={index === 0 ? true : undefined}
+                open={true}
               >
                 <summary>
                   <span className="job-date">{job.date}</span>
@@ -269,8 +272,18 @@ export const Home = () => {
                   </span>
                 </summary>
                 <div className="job-content">
-                  <p>{job.description}</p>
-                  <p>{job.detail}</p>
+                  {job.bullets ? (
+                    <ul>
+                      {job.bullets.map((bullet) => (
+                        <li key={bullet}>{bullet}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <>
+                      <p>{job.description}</p>
+                      <p>{job.detail}</p>
+                    </>
+                  )}
                   <div>
                     <span>{job.tags}</span>
                     <a href={job.href} target="_blank" rel="noreferrer">
