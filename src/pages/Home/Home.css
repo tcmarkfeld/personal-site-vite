@@ -379,11 +379,17 @@
 .diagram-signal {
   animation: diagram-signal 5s linear infinite;
 }
-.diagram-session {
-  animation: diagram-session 5s ease-in-out infinite;
+.thinking-orb {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
-.diagram-cursor {
-  animation: diagram-cursor 2s steps(1) infinite;
+.diagram-thinking-dot {
+  animation: diagram-thinking-dot 2s ease-in-out infinite;
+}
+.project-diagram .diagram-thinking-label {
+  font-size: 11px;
+  letter-spacing: 0;
 }
 .diagram-motion {
   animation-play-state: paused;
@@ -413,13 +419,9 @@
   90% { transform: translate(0, 167px); opacity: 1; }
   100% { transform: translate(0, 167px); opacity: 0; }
 }
-@keyframes diagram-session {
-  0%, 100% { transform: translate(0, 0); }
-  50% { transform: translate(0, -6px); }
-}
-@keyframes diagram-cursor {
-  0%, 100% { opacity: 1; }
-  60% { opacity: 0; }
+@keyframes diagram-thinking-dot {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
   .diagram-pulse,
@@ -530,15 +532,6 @@
 .job-content p + p {
   color: var(--muted);
   font-size: 13px;
-}
-.job-content ul {
-  list-style: disc;
-  padding-left: 20px;
-  font-size: 15px;
-  line-height: 1.7;
-}
-.job-content li + li {
-  margin-top: 12px;
 }
 .job-content > div {
   display: flex;

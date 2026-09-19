@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { CoastalScene } from '@/components/CoastalScene';
+import { ThinkingOrb } from '@/components/ThinkingOrb';
 import './Home.css';
 
 const projects = [
@@ -69,11 +70,10 @@ const experience = [
     company: 'Corolla Ice Delivery',
     role: 'Full Stack Engineer',
     date: 'May 2020 - Aug 2023',
-    bullets: [
+    description:
       'Owned a React Native delivery app from design through App Store and Google Play that cut daily delivery time by up to 3 hours.',
-      'Replaced manual scheduling with route optimization used in day-to-day operations during peak season.',
-      'Built the supporting React site and Node/MySQL backend so drivers and ops ran on one stack end to end.',
-    ],
+    detail:
+      'Replaced manual scheduling with route optimization used in day-to-day operations during peak season. Built the supporting React site and Node/MySQL backend so drivers and ops ran on one stack end to end.',
     tags: 'React Native · React · Node.js · MySQL',
     href: 'https://corollaicedelivery.com/',
   },
@@ -293,18 +293,8 @@ export const Home = () => {
                   </span>
                 </summary>
                 <div className="job-content">
-                  {job.bullets ? (
-                    <ul>
-                      {job.bullets.map((bullet) => (
-                        <li key={bullet}>{bullet}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <>
-                      <p>{job.description}</p>
-                      <p>{job.detail}</p>
-                    </>
-                  )}
+                  <p>{job.description}</p>
+                  <p>{job.detail}</p>
                   <div>
                     <span>{job.tags}</span>
                     <a href={job.href} target="_blank" rel="noreferrer">
@@ -402,15 +392,45 @@ export const Home = () => {
                         </>
                       ) : (
                         <>
-                          <path className="diagram-guide" d="M150 20v202M30 189h240" />
-                          <path className="diagram-motion diagram-session" d="M98 50h152v112H98Zm-24 24h152v112H74Z" />
-                          <path className="diagram-node" d="M50 98h152v112H50Z" />
-                          <path d="M50 122h152m-140-12h3m6 0h3m6 0h3m129-24h14m-116-24h128" />
-                          <path className="diagram-accent" d="m72 143 12 10-12 10M72 184h62" />
-                          <path className="diagram-accent diagram-motion diagram-cursor" d="M95 163h18" />
-                          <path d="M147 145h36m-36 10h26m-26 10h36" />
-                          <circle className="diagram-solid" cx="242" cy="196" r="15" />
-                          <path d="M235 196h14m-7-7v14" />
+                          <rect className="diagram-node" x="30" y="28" width="240" height="184" rx="4" />
+                          <path d="M30 52h240" />
+                          <defs>
+                            <radialGradient id="terminal-red" cx="35%" cy="25%" r="80%">
+                              <stop stopColor="#ed7068" />
+                              <stop offset="1" stopColor="#d95c55" />
+                            </radialGradient>
+                            <radialGradient id="terminal-yellow" cx="35%" cy="25%" r="80%">
+                              <stop stopColor="#e5bc57" />
+                              <stop offset="1" stopColor="#d2a649" />
+                            </radialGradient>
+                            <radialGradient id="terminal-green" cx="35%" cy="25%" r="80%">
+                              <stop stopColor="#79b87b" />
+                              <stop offset="1" stopColor="#65a469" />
+                            </radialGradient>
+                          </defs>
+                          <g stroke="#000000" strokeOpacity="0.15" strokeWidth="0.6">
+                            <circle cx="43" cy="40" r="3.5" fill="url(#terminal-red)" />
+                            <circle cx="55" cy="40" r="3.5" fill="url(#terminal-yellow)" />
+                            <circle cx="67" cy="40" r="3.5" fill="url(#terminal-green)" />
+                          </g>
+                          <text x="192" y="43">MonoCode</text>
+                          <path className="diagram-accent" d="m44 68 7 6-7 6m13 0h8" />
+                          <foreignObject x="86" y="58" width="128" height="128">
+                            <ThinkingOrb dark={dark} />
+                          </foreignObject>
+                          <text className="diagram-thinking-label" x="110" y="194">Thinking</text>
+                          <g fill="var(--card-accent)" stroke="none">
+                            {[0, 1, 2].map((index) => (
+                              <circle
+                                key={index}
+                                className="diagram-motion diagram-thinking-dot"
+                                cx={174 + index * 8}
+                                cy="191"
+                                r="1.8"
+                                style={{ animationDelay: `${index * 0.25}s` }}
+                              />
+                            ))}
+                          </g>
                         </>
                       )}
                     </svg>
