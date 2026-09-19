@@ -566,7 +566,7 @@
   height: 100%;
   object-fit: cover;
   object-position: center 30%;
-  filter: grayscale(100%);
+  filter: none;
   mix-blend-mode: normal;
 }
 .portrait-frame > span {
@@ -1029,9 +1029,6 @@
 .portfolio .focus-strip b,
 .portfolio .focus-strip span::before {
   color: var(--orange);
-}
-.portfolio .portrait-frame img {
-  filter: grayscale(0.55);
 }
 .portfolio[data-theme='dark'] .coastal-shade {
   background: linear-gradient(
