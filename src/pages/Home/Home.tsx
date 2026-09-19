@@ -9,7 +9,7 @@ import {
   Moon,
   Sun,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CoastalScene } from '@/components/CoastalScene';
 import './Home.css';
 
@@ -80,6 +80,7 @@ const experience = [
 ];
 
 export const Home = () => {
+  const projectsRef = useRef<HTMLDivElement>(null);
   const [dark, setDark] = useState(
     () => document.documentElement.dataset.theme === 'dark',
   );
@@ -91,8 +92,28 @@ export const Home = () => {
     window.localStorage.setItem('site-theme', theme);
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', dark ? '#142528' : '#f4f2e9');
+      ?.setAttribute('content', dark ? '#141414' : '#f4f2e9');
   }, [dark]);
+
+  useEffect(() => {
+    const grid = projectsRef.current;
+    if (!grid) return;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        (entry.target as HTMLElement).dataset.visible = String(entry.isIntersecting);
+      });
+    });
+    const updateVisibility = () => {
+      grid.dataset.paused = String(document.hidden);
+    };
+    grid.querySelectorAll('.project-diagram').forEach((diagram) => observer.observe(diagram));
+    document.addEventListener('visibilitychange', updateVisibility);
+    updateVisibility();
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', updateVisibility);
+    };
+  }, []);
 
   return (
     <div className="portfolio" data-theme={dark ? 'dark' : 'light'} id="top">
@@ -312,7 +333,7 @@ export const Home = () => {
               Available on GitHub.
             </p>
           </div>
-          <div className="project-grid">
+          <div className="project-grid" ref={projectsRef}>
             {projects.map((project, index) => (
               <a
                 className={`project ${project.kind}`}
@@ -321,59 +342,82 @@ export const Home = () => {
                 target="_blank"
                 rel="noreferrer"
               >
-                <div className="project-visual" aria-hidden="true">
-                  <span className="project-number">0{index + 1}</span>
-                  {project.kind === 'parser' ? (
-                    <div className="parser-art">
-                      <span>MSH|^~\&amp;|</span>
-                      <span>PID|1||2048</span>
-                      <div className="parser-convert">↓</div>
-                      <strong>
-                        {'{'} Patient {'}'}
-                      </strong>
-                    </div>
-                  ) : project.kind === 'conductor' ? (
-                    <div className="conductor-art">
-                      <span>APPLICATION</span>
-                      <div className="conductor-lines">
-                        <i />
-                        <i />
-                        <i />
-                      </div>
-                      <div>
-                        <b>IAM</b>
-                        <b>SQS</b>
-                        <b>SNS</b>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="monocode-art">
-                      <div className="monocode-titlebar">
-                        <i />
-                        <i />
-                        <i />
-                        <span>MonoCode</span>
-                      </div>
-                      <div className="monocode-session">
-                        <span>›_</span>
-                        <div>
-                          <i />
-                          <i />
-                          <i />
-                        </div>
-                      </div>
-                      <div className="monocode-queue">
-                        <span>↳</span> queued follow-up
-                      </div>
-                    </div>
-                  )}
+                <div className="project-visual">
+                  <div className="project-heading">
+                    <h3>{project.name}</h3>
+                    <span className="project-number">00{index + 1}</span>
+                  </div>
+                  <div className="project-diagram" aria-hidden="true">
+                    <svg viewBox="0 0 300 240" fill="none" stroke="currentColor" strokeWidth="1.2">
+                      <path className="diagram-corners" d="M8 18V8h10m264 0h10v10M8 222v10h10m264 0h10v-10" />
+                      {project.kind === 'parser' ? (
+                        <>
+                          <path className="diagram-guide" d="M106 120h88" />
+                          <rect className="diagram-node" x="18" y="70" width="88" height="102" rx="4" />
+                          <path d="M18 94h88" />
+                          <text x="29" y="86">HL7</text>
+                          <g className="diagram-record-text">
+                            <text x="26" y="114">MSH|^~\&amp;|</text>
+                            <text x="26" y="128">PID|42||</text>
+                            <text x="26" y="142">DOE^JANE</text>
+                            <text x="26" y="156">PV1|1|O</text>
+                          </g>
+                          <rect className="diagram-node" x="134" y="100" width="32" height="40" rx="3" />
+                          <text x="141" y="155">MAP</text>
+                          <rect className="diagram-node" x="194" y="70" width="88" height="102" rx="4" />
+                          <path d="M194 94h88" />
+                          <text x="205" y="86">FHIR</text>
+                          <g className="diagram-record-text diagram-fhir-json">
+                            <text x="202" y="104">{'{'}</text>
+                            <text x="208" y="114">{'"resourceType":'}</text>
+                            <text x="212" y="124">{'"Patient",'}</text>
+                            <text x="208" y="136">{'"id": "42",'}</text>
+                            <text x="208" y="148">{'"active": true'}</text>
+                            <text x="202" y="160">{'}'}</text>
+                          </g>
+                          <path className="diagram-guide" d="M214 127h14M233 139h14M250 151h14" />
+                          <g className="diagram-accent diagram-fields">
+                            <path className="diagram-motion diagram-field" d="M143 112h14" />
+                            <path className="diagram-motion diagram-field" d="M143 120h14" />
+                            <path className="diagram-motion diagram-field" d="M143 128h14" />
+                          </g>
+                          <text x="34" y="196">MESSAGE</text>
+                          <text x="211" y="196">RESOURCE</text>
+                        </>
+                      ) : project.kind === 'conductor' ? (
+                        <>
+                          <ellipse className="diagram-guide" cx="150" cy="181" rx="113" ry="35" />
+                          <path d="m150 43-94 132 94 35 94-35Zm0 0v167M56 175l94-85 94 85M56 175l94-40 94 40M56 175l94-5 94 5" />
+                          <path className="diagram-accent" d="M150 43v127l94 5-94 35" />
+                          <circle className="diagram-solid" cx="150" cy="43" r="8" />
+                          <circle className="diagram-accent diagram-motion diagram-pulse" cx="150" cy="43" r="11" />
+                          <circle className="diagram-solid diagram-motion diagram-signal" cx="150" cy="43" r="3" />
+                          <circle className="diagram-node" cx="56" cy="175" r="5" />
+                          <circle className="diagram-node" cx="150" cy="210" r="5" />
+                          <circle className="diagram-node" cx="244" cy="175" r="5" />
+                          <text x="134" y="24">APP</text>
+                          <text x="35" y="199">IAM</text>
+                          <text x="139" y="232">SQS</text>
+                          <text x="249" y="199">SNS</text>
+                        </>
+                      ) : (
+                        <>
+                          <path className="diagram-guide" d="M150 20v202M30 189h240" />
+                          <path className="diagram-motion diagram-session" d="M98 50h152v112H98Zm-24 24h152v112H74Z" />
+                          <path className="diagram-node" d="M50 98h152v112H50Z" />
+                          <path d="M50 122h152m-140-12h3m6 0h3m6 0h3m129-24h14m-116-24h128" />
+                          <path className="diagram-accent" d="m72 143 12 10-12 10M72 184h62" />
+                          <path className="diagram-accent diagram-motion diagram-cursor" d="M95 163h18" />
+                          <path d="M147 145h36m-36 10h26m-26 10h36" />
+                          <circle className="diagram-solid" cx="242" cy="196" r="15" />
+                          <path d="M235 196h14m-7-7v14" />
+                        </>
+                      )}
+                    </svg>
+                  </div>
                 </div>
                 <div className="project-copy">
                   <span className="micro">{project.category}</span>
-                  <h3>
-                    {project.name}
-                    <ArrowUpRight size={24} />
-                  </h3>
                   <p>{project.description}</p>
                   <span className="project-stack">{project.stack}</span>
                 </div>
@@ -390,7 +434,8 @@ export const Home = () => {
           </a>
         </section>
 
-        <section className="contact-section" id="contact">
+      </main>
+      <footer className="contact-section" id="contact">
           <div className="section-topline">
             <span>04 / WHAT’S NEXT?</span>
           </div>
@@ -421,13 +466,12 @@ export const Home = () => {
               </a>
             </div>
           </div>
-        </section>
-      </main>
-      <footer className="folio-footer">
-        <span>© {new Date().getFullYear()} TIMOTHY MARKFELD</span>
-        <a href="#top">
-          BACK TO TOP <ArrowUp size={14} />
-        </a>
+        <div className="folio-footer">
+          <span>© {new Date().getFullYear()} TIMOTHY MARKFELD</span>
+          <a href="#top">
+            BACK TO TOP <ArrowUp size={14} />
+          </a>
+        </div>
       </footer>
     </div>
   );
