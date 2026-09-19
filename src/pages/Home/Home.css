@@ -498,6 +498,20 @@
 .job summary::-webkit-details-marker {
   display: none;
 }
+.job-identity {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
+.job-logo {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #fff;
+}
 .job-title {
   display: flex;
   flex-direction: column;
@@ -877,11 +891,17 @@
     grid-column: 1;
     font-size: 9px;
   }
-  .job-title {
+  .job-identity {
     grid-column: 1;
+    gap: 14px;
+  }
+  .job-logo {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
   }
   .job-title strong {
-    font-size: 25px;
+    font-size: 22px;
   }
   .job-toggle {
     grid-column: 2;

@@ -46,6 +46,7 @@ const projects = [
 const experience = [
   {
     company: 'FirmPilot',
+    logo: '/firmpilot_logo.jpg',
     role: 'Senior Software Engineer',
     date: 'APR 2025 — PRESENT',
     description:
@@ -57,6 +58,7 @@ const experience = [
   },
   {
     company: 'HCA Healthcare',
+    logo: '/hca_logo.jpg',
     role: 'Data Integration Engineer II',
     date: 'SEP 2023 — APR 2025',
     description:
@@ -68,6 +70,7 @@ const experience = [
   },
   {
     company: 'Corolla Ice Delivery',
+    logo: '/corolla_ice_delivery_logo.jpg',
     role: 'Full Stack Engineer',
     date: 'May 2020 - Aug 2023',
     description:
@@ -284,9 +287,12 @@ export const Home = () => {
               >
                 <summary>
                   <span className="job-date">{job.date}</span>
-                  <span className="job-title">
-                    <strong>{job.company}</strong>
-                    <span>{job.role}</span>
+                  <span className="job-identity">
+                    <img className="job-logo" src={job.logo} alt="" width="72" height="72" loading="lazy" />
+                    <span className="job-title">
+                      <strong>{job.company}</strong>
+                      <span>{job.role}</span>
+                    </span>
                   </span>
                   <span className="job-toggle" aria-hidden="true">
                     +
