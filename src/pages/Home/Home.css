@@ -556,7 +556,7 @@
   align-items: center;
 }
 .portrait-frame {
-  background: #d6d6c8;
+  background: var(--surface);
   position: relative;
   aspect-ratio: 0.96;
   overflow: hidden;
@@ -567,7 +567,7 @@
   object-fit: cover;
   object-position: center 30%;
   filter: grayscale(100%);
-  mix-blend-mode: multiply;
+  mix-blend-mode: normal;
 }
 .portrait-frame > span {
   position: absolute;
@@ -1029,9 +1029,6 @@
 .portfolio .focus-strip b,
 .portfolio .focus-strip span::before {
   color: var(--orange);
-}
-.portfolio .portrait-frame {
-  background: #cfdbca;
 }
 .portfolio .portrait-frame img {
   filter: grayscale(0.55);
