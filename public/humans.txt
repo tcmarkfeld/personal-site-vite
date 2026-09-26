@@ -1,0 +1,13 @@
+/* TEAM */
+Engineer, designer, and chief ice-delivery router: Timothy Markfeld
+Contact: timmarkfeld [at] gmail.com
+GitHub: https://github.com/tcmarkfeld
+From: St. Petersburg, Florida
+
+/* SITE */
+Built with: React, TypeScript, Vite, TanStack Router
+Fonts: Public Sans, Geist Mono, Caveat
+Weather: Open-Meteo
+Contributions: github-contributions-api.jogruber.de
+Waves: synthesized in your browser with the Web Audio API
+Secrets: try the Konami code, or press Cmd/Ctrl + K

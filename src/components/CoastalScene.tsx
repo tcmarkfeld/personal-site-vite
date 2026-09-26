@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import type { Weather, WeatherEffect } from '@/lib/useStPeteWeather';
 
 const cloudPaths = [
   'M380 350c15-23 41-28 65-16 8-35 55-48 81-18 28-14 60 0 63 23 34-10 64 0 76 20H380Z',
@@ -6,20 +7,28 @@ const cloudPaths = [
   'M900 380c22-20 42-19 59-10 7-32 48-39 69-15 29-20 63-9 73 17 30-10 50 0 62 17H900Z',
 ];
 
-export function CoastalScene({ dark }: { dark: boolean }) {
+type SceneProps = {
+  dark: boolean;
+  effect: WeatherEffect;
+  weather: Weather | null;
+};
+
+export function CoastalScene({ dark, effect, weather }: SceneProps) {
   const sceneRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const frondRef = useRef<HTMLImageElement>(null);
+  const hotspotsRef = useRef<HTMLDivElement>(null);
   const timeRef = useRef(0);
 
   useEffect(() => {
     const scene = sceneRef.current;
     const canvas = canvasRef.current;
     const frond = frondRef.current;
-    if (!scene || !canvas || !frond) return;
+    const hotspots = hotspotsRef.current;
+    if (!scene || !canvas || !frond || !hotspots) return;
     // Keep a static scene on Gecko, where scene compositing stalls interaction.
-    if (CSS.supports('-moz-appearance', 'none')) return;
-    scene.dataset.motionMode = 'scene';
+    const gecko = CSS.supports('-moz-appearance', 'none');
+    if (!gecko) scene.dataset.motionMode = 'scene';
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
@@ -28,6 +37,7 @@ export function CoastalScene({ dark }: { dark: boolean }) {
     const birds = new Path2D('M0 0q7-5 14 0 7-5 14 0m22-12q5-4 10 0 5-4 10 0');
     const palm = document.createElement('canvas');
     palm.width = 0;
+    const wet = effect === 'rain' || effect === 'storm';
     let timer: number | undefined;
     let inView = false;
     let width = 0;
@@ -37,26 +47,107 @@ export function CoastalScene({ dark }: { dark: boolean }) {
     let palmY = 0;
     let palmWidth = 0;
     let palmHeight = 0;
+    // Rain particles: z is depth (0 far, 1 near) and drives size, speed, and
+    // brightness; land is where the drop meets the water.
+    type Drop = { x: number; y: number; z: number; land: number };
+    type Ripple = { x: number; y: number; age: number; size: number };
+    const drops: Drop[] = [];
+    const ripples: Ripple[] = [];
+    let lastTime = timeRef.current;
+    let horizon = 0;
+    let nextFlash = timeRef.current + 1.5 + Math.random() * 3;
+    let flashStart = -10;
+    let bolt: Path2D | null = null;
+
+    function spawnDrop(y: number): Drop {
+      const z = Math.random() ** 1.6;
+      return {
+        x: Math.random() * (width + 120) - 60,
+        y,
+        z,
+        land: horizon + (height - horizon) * (0.1 + z * 0.9),
+      };
+    }
+
+    function seedDrops() {
+      drops.length = 0;
+      ripples.length = 0;
+      if (!wet || !width) return;
+      const density = effect === 'storm' ? 0.0013 : 0.0007;
+      const count = Math.round(width * height * density);
+      for (let i = 0; i < count; i++) {
+        drops.push(spawnDrop(Math.random() * height));
+      }
+    }
+
+    // A jagged bolt from the top of the frame down toward the horizon.
+    function makeBolt() {
+      const path = new Path2D();
+      let x = width * (0.12 + Math.random() * 0.5);
+      let y = 0;
+      path.moveTo(x, y);
+      while (y < horizon) {
+        y += 6 + Math.random() * 12;
+        x += (Math.random() - 0.5) * 16;
+        path.lineTo(x, y);
+        if (Math.random() < 0.12) {
+          let bx = x;
+          let by = y;
+          const lean = Math.random() < 0.5 ? -1 : 1;
+          path.moveTo(bx, by);
+          for (let i = 0; i < 4; i++) {
+            bx += lean * (4 + Math.random() * 8);
+            by += 5 + Math.random() * 8;
+            path.lineTo(bx, by);
+          }
+          path.moveTo(x, y);
+        }
+      }
+      return path;
+    }
+
+    // Two quick strikes, then an afterglow that fades out.
+    function flashLevel(age: number) {
+      if (age < 0) return 0;
+      if (age < 0.08) return 1;
+      if (age < 0.16) return 0.25;
+      if (age < 0.26) return 0.85;
+      return Math.max(0, 0.85 * Math.exp(-(age - 0.26) * 7));
+    }
+
+    // Match the painting's object-fit: cover crop.
+    function layout() {
+      const scale = Math.max(width / 1536, height / 1024);
+      return {
+        scale,
+        x: (width - 1536 * scale) / 2,
+        y: (height - 1024 * scale) / 2,
+      };
+    }
 
     function paint() {
-      if (!ctx || !canvas || !scene || !palm.width || !width) return;
+      if (!ctx || !canvas || !scene || !width || gecko) return;
       const time = timeRef.current;
+      const { scale, x: offsetX, y: offsetY } = layout();
       ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
       ctx.clearRect(0, 0, width, height);
       ctx.save();
-      // Match the painting's cover crop, including the mobile offset.
-      const mobile = width <= 600;
-      const viewportWidth = width * (mobile ? 1.55 : 1);
-      const scale = Math.max(viewportWidth / 1536, height / 1024);
-      ctx.translate(
-        (viewportWidth - 1536 * scale) / 2 - (mobile ? width * 0.55 : 0),
-        (height - 1024 * scale) / 2,
-      );
+      ctx.translate(offsetX, offsetY);
       ctx.scale(scale, scale);
       ctx.save();
       ctx.translate(Math.sin(time / 30) * 45, 0);
+      const heavy = effect !== 'clear';
       const gradient = ctx.createLinearGradient(0, 170, 0, 390);
-      gradient.addColorStop(0, dark ? '#fffdf006' : '#fffdf018');
+      gradient.addColorStop(
+        0,
+        dark
+          ? heavy
+            ? '#fffdf014'
+            : '#fffdf006'
+          : heavy
+            ? '#fffdf050'
+            : '#fffdf018',
+      );
       gradient.addColorStop(1, '#fffdf000');
       ctx.fillStyle = gradient;
       clouds.forEach((path) => ctx.fill(path));
@@ -70,40 +161,175 @@ export function CoastalScene({ dark }: { dark: boolean }) {
         const y = 570 + ((i * 37) % 220);
         const span = 12 + (y - 555) * 0.1;
         ctx.globalAlpha =
-          Math.max(0, Math.sin(time / (1.5 + (i % 3)) + i)) * 0.2;
+          Math.max(0, Math.sin(time / (1.5 + (i % 3)) + i)) *
+          (wet ? 0.08 : 0.2);
         ctx.beginPath();
         ctx.moveTo(x, y);
         ctx.quadraticCurveTo(x + span / 2, y - 1.5, x + span, y);
         ctx.stroke();
       }
       ctx.globalAlpha = 1;
+      if (effect === 'fog') {
+        // Low banks of fog drifting across the horizon.
+        for (let i = 0; i < 3; i++) {
+          const drift = Math.sin(time / (18 + i * 6) + i) * 120;
+          const top = 440 + i * 60;
+          const band = ctx.createLinearGradient(0, top, 0, top + 140);
+          const color = dark ? '#8d9dab' : '#f1efe8';
+          band.addColorStop(0, `${color}00`);
+          band.addColorStop(0.5, `${color}${dark ? '38' : '70'}`);
+          band.addColorStop(1, `${color}00`);
+          ctx.fillStyle = band;
+          ctx.fillRect(-200 + drift, top, 1936, 140);
+        }
+      }
+      if (dark) {
+        // Lamplight in the observatory windows, flickering like it's lived in.
+        const glow = ctx.createRadialGradient(1285, 432, 0, 1285, 432, 150);
+        glow.addColorStop(0, '#ffb25c');
+        glow.addColorStop(1, '#ffb25c00');
+        ctx.globalCompositeOperation = 'screen';
+        ctx.globalAlpha =
+          0.16 + Math.sin(time * 1.3) * 0.04 + Math.sin(time * 3.7) * 0.02;
+        ctx.fillStyle = glow;
+        ctx.fillRect(1135, 282, 300, 300);
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1;
+      }
       ctx.restore();
+      const storm = effect === 'storm';
+      const delta = Math.min(0.1, Math.max(0, time - lastTime));
+      lastTime = time;
+      if (wet) {
+        // Heavier cloud cover up high, thinning toward the water.
+        const sky = ctx.createLinearGradient(0, 0, 0, height);
+        sky.addColorStop(0, storm ? '#0a1220d0' : '#1a2633a0');
+        sky.addColorStop(0.5, storm ? '#0a122080' : '#1a263350');
+        sky.addColorStop(1, storm ? '#0a122050' : '#1a263320');
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, width, height);
+        // Rain haze sitting on the horizon.
+        const haze = ctx.createLinearGradient(0, horizon - 50, 0, horizon + 40);
+        haze.addColorStop(0, '#b8c4ce00');
+        haze.addColorStop(0.55, storm ? '#8f9eab55' : '#c3ccd455');
+        haze.addColorStop(1, '#b8c4ce00');
+        ctx.fillStyle = haze;
+        ctx.fillRect(0, horizon - 50, width, 90);
+      }
+      if (storm) {
+        if (time >= nextFlash && delta > 0) {
+          flashStart = time;
+          bolt = makeBolt();
+          nextFlash = time + 3.5 + Math.random() * 6;
+        }
+        const flash = flashLevel(time - flashStart);
+        if (flash > 0.01) {
+          const glow = ctx.createLinearGradient(0, 0, 0, height);
+          glow.addColorStop(0, `rgba(214, 226, 255, ${0.55 * flash})`);
+          glow.addColorStop(1, `rgba(214, 226, 255, ${0.12 * flash})`);
+          ctx.fillStyle = glow;
+          ctx.fillRect(0, 0, width, height);
+          if (bolt && time - flashStart < 0.4) {
+            ctx.save();
+            ctx.globalAlpha = Math.min(1, flash * 1.2);
+            ctx.strokeStyle = '#f4f7ff';
+            ctx.shadowColor = '#bcd0ff';
+            ctx.shadowBlur = 14;
+            ctx.lineWidth = 1.6;
+            ctx.lineJoin = 'round';
+            ctx.stroke(bolt);
+            ctx.restore();
+          }
+        }
+      }
       ctx.save();
-      // Cross the visible viewport, above the heading, and wrap only offscreen.
-      const birdScale = mobile ? 1 : 0.9;
+      // Cross the frame high in the sky and wrap only offscreen.
+      const birdScale = 0.7;
       const flockWidth = 70 * birdScale;
-      const progress = (time / (mobile ? 26 : 40) + 0.25) % 1;
+      const progress = (time / 30 + 0.25) % 1;
       ctx.translate(
         progress * (width + flockWidth * 2) - flockWidth,
-        (mobile ? 68 : 76) + Math.sin(time / 3) * 2,
+        height * 0.16 + Math.sin(time / 3) * 2,
       );
       ctx.scale(birdScale, birdScale);
       ctx.strokeStyle = dark ? '#9eafa5' : '#355654';
       ctx.lineWidth = 2;
-      ctx.stroke(birds);
+      if (!wet) ctx.stroke(birds);
       ctx.restore();
-      ctx.save();
-      ctx.translate(palmX + palmWidth, palmY + palmHeight * 0.15);
-      ctx.rotate((Math.sin(time / 4) * 3 * Math.PI) / 180);
-      ctx.globalAlpha = mobile ? 0.25 : 0.5;
-      ctx.drawImage(
-        palm,
-        -palmWidth,
-        -palmHeight * 0.15,
-        palmWidth,
-        palmHeight,
-      );
-      ctx.restore();
+      if (palm.width) {
+        ctx.save();
+        ctx.translate(palmX + palmWidth, palmY + palmHeight * 0.15);
+        const gust = wet ? 2.2 : 1;
+        ctx.rotate((Math.sin(time / (4 / gust)) * 3 * gust * Math.PI) / 180);
+        ctx.globalAlpha = 0.5;
+        ctx.drawImage(
+          palm,
+          -palmWidth,
+          -palmHeight * 0.15,
+          palmWidth,
+          palmHeight,
+        );
+        ctx.restore();
+      }
+      if (wet) {
+        const wind =
+          (storm ? 0.3 : 0.12) + Math.sin(time * 0.6) * (storm ? 0.1 : 0.04);
+        const speedBoost = storm ? 1.3 : 1;
+        for (const drop of drops) {
+          const speed = (320 + drop.z * 620) * speedBoost;
+          drop.y += speed * delta;
+          drop.x += speed * delta * wind;
+          if (drop.y >= drop.land) {
+            // Splash only on open water, left of the rocky point.
+            if (drop.z > 0.35 && drop.x < width * 0.6 && ripples.length < 70) {
+              ripples.push({
+                x: drop.x,
+                y: drop.land,
+                age: 0,
+                size: 3 + drop.z * 7,
+              });
+            }
+            Object.assign(drop, spawnDrop(-20 - Math.random() * 60));
+          }
+        }
+        // Batch drops into depth layers: far ones thin and faint, near ones
+        // longer, brighter, and thicker.
+        const color = dark ? '205, 218, 230' : '240, 245, 250';
+        for (let layer = 0; layer < 3; layer++) {
+          ctx.beginPath();
+          ctx.lineWidth = 0.6 + layer * 0.45;
+          ctx.strokeStyle = `rgba(${color}, ${0.16 + layer * 0.14})`;
+          for (const drop of drops) {
+            if (Math.min(2, Math.floor(drop.z * 3)) !== layer) continue;
+            const length = (5 + drop.z * 16) * (storm ? 1.25 : 1);
+            ctx.moveTo(drop.x, drop.y);
+            ctx.lineTo(drop.x - length * wind, drop.y - length);
+          }
+          ctx.stroke();
+        }
+        ctx.lineWidth = 0.8;
+        for (let i = ripples.length - 1; i >= 0; i--) {
+          const ripple = ripples[i];
+          ripple.age += delta;
+          const life = ripple.age / 0.45;
+          if (life >= 1) {
+            ripples.splice(i, 1);
+            continue;
+          }
+          ctx.strokeStyle = `rgba(${color}, ${0.4 * (1 - life)})`;
+          ctx.beginPath();
+          ctx.ellipse(
+            ripple.x,
+            ripple.y,
+            ripple.size * (0.3 + life),
+            ripple.size * (0.3 + life) * 0.3,
+            0,
+            0,
+            Math.PI * 2,
+          );
+          ctx.stroke();
+        }
+      }
       if (scene.dataset.ready !== 'true') scene.dataset.ready = 'true';
     }
 
@@ -115,17 +341,28 @@ export function CoastalScene({ dark }: { dark: boolean }) {
 
     function updateMotion() {
       window.clearTimeout(timer);
-      const active = inView && !document.hidden && !preference.matches;
+      const active =
+        inView && !gecko && !document.hidden && !preference.matches;
       scene!.dataset.active = String(active);
       if (!active) return;
       // A timer avoids waking on every 60/120 Hz display frame.
       timer = window.setTimeout(tick, Math.ceil(1000 / 24));
     }
 
+    function placeHotspots() {
+      const { scale, x, y } = layout();
+      hotspots!.querySelectorAll<HTMLElement>('[data-x]').forEach((spot) => {
+        const left = x + Number(spot.dataset.x) * scale;
+        const top = y + Number(spot.dataset.y) * scale;
+        spot.style.left = `${left}px`;
+        spot.style.top = `${top}px`;
+        spot.hidden = left < 16 || left > width - 16 || top > height - 16;
+      });
+    }
+
     function resize() {
-      if (!scene || !canvas || !frond || !frond.naturalWidth) return;
+      if (!scene || !canvas || !frond) return;
       const bounds = scene.getBoundingClientRect();
-      const leaf = frond.getBoundingClientRect();
       width = bounds.width;
       height = bounds.height;
       if (!width || !height) return;
@@ -133,18 +370,27 @@ export function CoastalScene({ dark }: { dark: boolean }) {
       ratio = Math.min(devicePixelRatio, 1.25, 1440 / width, 1080 / height);
       canvas.width = Math.round(width * ratio);
       canvas.height = Math.round(height * ratio);
-      palmX = leaf.left - bounds.left;
-      palmY = leaf.top - bounds.top;
-      palmWidth = leaf.width;
-      palmHeight = leaf.height;
-      palm.width = Math.min(640, Math.ceil(palmWidth * ratio));
-      palm.height = Math.round(
-        (palm.width * frond.naturalHeight) / frond.naturalWidth,
-      );
-      const cache = palm.getContext('2d');
-      if (!cache) return;
-      cache.filter = dark ? 'brightness(0.55) saturate(0.7)' : 'none';
-      cache.drawImage(frond, 0, 0, palm.width, palm.height);
+      placeHotspots();
+      const fit = layout();
+      horizon = fit.y + 515 * fit.scale;
+      seedDrops();
+      if (gecko) return;
+      if (frond.naturalWidth) {
+        const leaf = frond.getBoundingClientRect();
+        palmX = leaf.left - bounds.left;
+        palmY = leaf.top - bounds.top;
+        palmWidth = leaf.width;
+        palmHeight = leaf.height;
+        palm.width = Math.min(640, Math.ceil(palmWidth * ratio));
+        palm.height = Math.round(
+          (palm.width * frond.naturalHeight) / frond.naturalWidth,
+        );
+        const cache = palm.getContext('2d');
+        if (cache) {
+          cache.filter = dark ? 'brightness(0.55) saturate(0.7)' : 'none';
+          cache.drawImage(frond, 0, 0, palm.width, palm.height);
+        }
+      }
       paint();
     }
 
@@ -167,24 +413,55 @@ export function CoastalScene({ dark }: { dark: boolean }) {
       document.removeEventListener('visibilitychange', updateMotion);
       preference.removeEventListener('change', updateMotion);
     };
-  }, [dark]);
+  }, [dark, effect]);
 
   return (
-    <div className="coastal-scene" ref={sceneRef} aria-hidden="true">
-      <img
-        className="coastal-painting"
-        src={dark ? '/coastal-observatory-night.webp' : '/coastal-observatory.jpg'}
-        alt=""
-        fetchPriority="high"
-      />
-      <img
-        className="coastal-frond"
-        ref={frondRef}
-        src="/coastal-frond.png"
-        alt=""
-      />
-      <div className="coastal-shade" />
-      <canvas className="coastal-motion" ref={canvasRef} />
-    </div>
+    <>
+      <div
+        className="coastal-scene"
+        ref={sceneRef}
+        aria-hidden="true"
+        data-effect={effect}
+      >
+        <img
+          className="coastal-painting"
+          src={
+            dark
+              ? '/coastal-observatory-night.webp'
+              : '/coastal-observatory.webp'
+          }
+          alt=""
+          fetchPriority="high"
+        />
+        <img
+          className="coastal-frond"
+          ref={frondRef}
+          src="/coastal-frond.webp"
+          alt=""
+        />
+        <div className="coastal-shade" />
+        <canvas className="coastal-motion" ref={canvasRef} />
+      </div>
+      <div className="coastal-hotspots" ref={hotspotsRef}>
+        <button
+          className="hotspot"
+          type="button"
+          data-x="1272"
+          data-y="236"
+          aria-describedby="hotspot-station"
+        >
+          <span className="sr-only">Weather station</span>
+          <span className="hotspot-card" id="hotspot-station" role="tooltip">
+            {weather
+              ? `St. Pete right now: ${weather.temperature}°F, ${weather.label}, wind ${weather.wind} mph.`
+              : 'Weather station offline. Ironic, I know.'}
+          </span>
+        </button>
+        <a className="hotspot" href="#hello" data-x="1300" data-y="440">
+          <span className="hotspot-card">Come on in →</span>
+          <span className="sr-only">About me</span>
+        </a>
+      </div>
+    </>
   );
 }

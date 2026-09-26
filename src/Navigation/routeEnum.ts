@@ -1,5 +1,5 @@
 export const ROUTES = {
-  CHAT: '/chat',
+  COROLLA: '/work/corolla',
   HOME: '/',
   NOT_FOUND: '/404',
 } as const;

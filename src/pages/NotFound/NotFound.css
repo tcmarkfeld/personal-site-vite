@@ -1,0 +1,66 @@
+.lost main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+  padding-block: 96px;
+}
+.lost-sea {
+  position: relative;
+  height: 170px;
+  margin-bottom: 28px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: var(--card);
+}
+.lost-boat {
+  position: absolute;
+  bottom: 22px;
+  left: 0;
+  width: 84px;
+  color: var(--strong);
+  animation: lost-drift 22s linear infinite;
+}
+.lost-waves {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  width: 200%;
+  height: 24px;
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 1.5;
+  animation: lost-swell 6s linear infinite;
+}
+.lost-code {
+  color: var(--muted);
+  font: 11px var(--mono);
+}
+.lost h1 {
+  margin: 6px 0 10px;
+  color: var(--strong);
+  font-size: 22px;
+  font-weight: 500;
+}
+.lost-home {
+  align-self: flex-start;
+  margin-top: 22px;
+  padding: 4px 10px;
+  font-size: 13px;
+}
+@keyframes lost-drift {
+  from {
+    transform: translateX(-100px) rotate(-4deg);
+  }
+  50% {
+    transform: translateX(180px) rotate(4deg);
+  }
+  to {
+    transform: translateX(480px) rotate(-4deg);
+  }
+}
+@keyframes lost-swell {
+  to {
+    transform: translateX(-50%);
+  }
+}

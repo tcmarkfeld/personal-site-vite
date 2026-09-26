@@ -15,6 +15,12 @@ const router = createRouter({
   defaultNotFoundComponent: () => <NotFound />,
 });
 
+console.log(
+  '%cHey, you opened the console. You’re my kind of person.%c\nSay hi: timmarkfeld@gmail.com · Try the Konami code on the hero.',
+  'font: 600 14px/1.6 system-ui; color: #dd704b',
+  'font: 12px/1.6 ui-monospace, monospace; color: inherit',
+);
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <RouterProvider router={router} />

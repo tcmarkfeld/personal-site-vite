@@ -1,310 +1,356 @@
+import { Link } from '@tanstack/react-router';
 import {
-  ArrowDown,
+  ArrowRight,
   ArrowUpRight,
-  ArrowUp,
-  Github,
-  Linkedin,
-  Mail,
-  MapPin,
-  Moon,
-  Sun,
+  Check,
+  ChevronDown,
+  Plus,
 } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
+import {
+  HeartIcon,
+  PalmIcon,
+  ServerIcon,
+  SparkleIcon,
+  TruckIcon,
+} from '@/components/BioIcons';
+import { ActivityGraph } from '@/components/ActivityGraph';
 import { CoastalScene } from '@/components/CoastalScene';
-import { ThinkingOrb } from '@/components/ThinkingOrb';
+import { Gallery } from '@/components/Gallery';
+import { SiteFooter } from '@/components/SiteFooter';
+import { SiteHeader } from '@/components/SiteHeader';
+import { ROUTES } from '@/Navigation/routeEnum';
+import { useSiteState } from '@/lib/siteState';
+import { useDarkTheme } from '@/lib/theme';
+import { useReveal } from '@/lib/useReveal';
+import { useStPeteWeather } from '@/lib/useStPeteWeather';
 import './Home.css';
-
-const projects = [
-  {
-    name: 'HL7Kit',
-    category: 'HEALTHCARE / OPEN SOURCE',
-    description: 'A strongly typed HL7 parser with FHIR conversion for .NET.',
-    stack: 'C# / .NET / HL7 / FHIR',
-    href: 'https://github.com/tcmarkfeld/HL7Kit',
-    kind: 'parser',
-  },
-  {
-    name: 'Conductor',
-    category: 'DEVELOPER TOOLS / OPEN SOURCE',
-    description:
-      'Generate least-privilege IAM policies and Terraform from your messaging configuration.',
-    stack: '.NET / AWS / TERRAFORM',
-    href: 'https://github.com/tcmarkfeld/Conductor',
-    kind: 'conductor',
-  },
-  {
-    name: 'MonoCode',
-    category: 'DEVELOPER TOOLS / CONTRIBUTOR',
-    description:
-      'Contributions to a desktop app for AI coding agents, including work on queued follow-ups and CI.',
-    stack: 'TYPESCRIPT / REACT / TAURI',
-    href: 'https://usemono.dev/',
-    kind: 'monocode',
-  },
-];
 
 const experience = [
   {
     company: 'FirmPilot',
     logo: '/firmpilot_logo.jpg',
     role: 'Senior Software Engineer',
-    date: 'APR 2025 — PRESENT',
+    date: '2025 — now',
     description:
       'Building AI-powered marketing platforms: distributed AWS workers, secure GraphQL APIs, and automated content pipelines serving hundreds of client sites.',
     detail:
       'Owned fault-tolerant SQS/SNS worker systems, React and Next.js applications, and multi-tenant APIs with p99 query latency below 25ms. Mentored engineers and supported production incident response.',
-    tags: 'AWS · .NET · GraphQL · React · AI',
+    metric: '<25ms p99 query latency',
     href: 'https://firmpilot.com/',
   },
   {
     company: 'HCA Healthcare',
     logo: '/hca_logo.jpg',
     role: 'Data Integration Engineer II',
-    date: 'SEP 2023 — APR 2025',
+    date: '2023 — 2025',
     description:
       'Connected clinical systems at scale. Supported 200+ HIPAA-regulated microservices processing more than one million events each day.',
     detail:
       'Integrated EHR systems through FHIR, HL7, and IHE standards. Led migration to Apache NiFi with Terraform and Google Cloud, with monitoring and automated failover workflows.',
-    tags: '.NET · FHIR · HL7 · Kafka · GCP',
+    metric: '1M+ events per day',
     href: 'https://www.hcahealthcare.com/',
   },
   {
     company: 'Corolla Ice Delivery',
-    logo: '/corolla_ice_delivery_logo.jpg',
+    logo: '/corolla_ice_delivery_logo.webp',
     role: 'Full Stack Engineer',
-    date: 'May 2020 - Aug 2023',
+    date: '2020 — 2023',
     description:
       'Owned a React Native delivery app from design through App Store and Google Play that cut daily delivery time by up to 3 hours.',
     detail:
       'Replaced manual scheduling with route optimization used in day-to-day operations during peak season. Built the supporting React site and Node/MySQL backend so drivers and ops ran on one stack end to end.',
-    tags: 'React Native · React · Node.js · MySQL',
+    metric: 'Up to 3 hrs saved a day',
     href: 'https://corollaicedelivery.com/',
+    caseStudy: ROUTES.COROLLA,
   },
 ];
 
-export const Home = () => {
-  const projectsRef = useRef<HTMLDivElement>(null);
-  const [dark, setDark] = useState(
-    () => document.documentElement.dataset.theme === 'dark',
-  );
+const details = [
+  { label: 'Building', value: 'AI marketing systems at FirmPilot' },
+  { label: 'Studied', value: 'Master’s & B.S., MIS, University of Alabama' },
+  { label: 'Reach for', value: 'C#/.NET, TypeScript, React, AWS, Terraform' },
+];
+
+const stPeteTime = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'America/New_York',
+  hour: 'numeric',
+  minute: '2-digit',
+});
+
+const casings = [
+  { label: 'Plain', format: (words: string[]) => words.join(' ') },
+  {
+    label: 'camelCase',
+    format: (words: string[]) =>
+      words.map((word, i) => (i ? capitalize(word) : word)).join(''),
+  },
+  {
+    label: 'PascalCase',
+    format: (words: string[]) => words.map(capitalize).join(''),
+  },
+  { label: 'snake_case', format: (words: string[]) => words.join('_') },
+  { label: 'kebab-case', format: (words: string[]) => words.join('-') },
+];
+
+const inks = ['var(--strong)', '#2f6bff', '#dd704b', '#1f9d6b'];
+
+function capitalize(word: string) {
+  return word[0].toUpperCase() + word.slice(1);
+}
+
+// An inline "selected text" chip with a tiny toolbar that re-cases the role.
+function RoleChip() {
+  const [casing, setCasing] = useState(0);
+  const [ink, setInk] = useState(0);
+  const [open, setOpen] = useState(false);
+  const toolbarRef = useRef<HTMLSpanElement>(null);
+  const { label, format } = casings[casing];
 
   useEffect(() => {
-    const theme = dark ? 'dark' : 'light';
-    document.documentElement.dataset.theme = theme;
-    document.documentElement.style.colorScheme = theme;
-    window.localStorage.setItem('site-theme', theme);
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', dark ? '#141414' : '#f4f2e9');
-  }, [dark]);
-
-  useEffect(() => {
-    const grid = projectsRef.current;
-    if (!grid) return;
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        (entry.target as HTMLElement).dataset.visible = String(entry.isIntersecting);
-      });
-    });
-    const updateVisibility = () => {
-      grid.dataset.paused = String(document.hidden);
+    if (!open) return;
+    const close = (event: Event) => {
+      if (event instanceof KeyboardEvent && event.key !== 'Escape') return;
+      if (
+        event instanceof PointerEvent &&
+        toolbarRef.current?.contains(event.target as Node)
+      )
+        return;
+      setOpen(false);
     };
-    grid.querySelectorAll('.project-diagram').forEach((diagram) => observer.observe(diagram));
-    document.addEventListener('visibilitychange', updateVisibility);
-    updateVisibility();
+    document.addEventListener('pointerdown', close);
+    document.addEventListener('keydown', close);
     return () => {
-      observer.disconnect();
-      document.removeEventListener('visibilitychange', updateVisibility);
+      document.removeEventListener('pointerdown', close);
+      document.removeEventListener('keydown', close);
     };
+  }, [open]);
+
+  return (
+    <span className="role-chip">
+      <span
+        className="role-box"
+        data-code={casing > 0}
+        style={{ color: inks[ink] }}
+      >
+        {format(['senior', 'software', 'engineer'])}
+        <i aria-hidden="true" />
+      </span>
+      <span
+        className="role-toolbar"
+        role="toolbar"
+        aria-label="Role styling"
+        ref={toolbarRef}
+      >
+        <button
+          type="button"
+          onClick={() => setOpen(!open)}
+          aria-haspopup="listbox"
+          aria-expanded={open}
+          aria-label={`Casing: ${label}`}
+        >
+          {label} <ChevronDown size={10} aria-hidden="true" />
+        </button>
+        {open && (
+          <span className="role-menu" role="listbox" aria-label="Casing">
+            {casings.map((option, index) => (
+              <button
+                key={option.label}
+                type="button"
+                role="option"
+                aria-selected={index === casing}
+                onClick={() => {
+                  setCasing(index);
+                  setOpen(false);
+                }}
+              >
+                {option.label}
+                {index === casing && <Check size={11} aria-hidden="true" />}
+              </button>
+            ))}
+          </span>
+        )}
+        <button
+          type="button"
+          onClick={() => setInk((ink + 1) % inks.length)}
+          aria-label="Change color"
+        >
+          <span className="role-swatch" style={{ background: inks[ink] }} />
+        </button>
+      </span>
+    </span>
+  );
+}
+
+function Token({
+  children,
+  Icon,
+  tone,
+  order,
+}: {
+  children: string;
+  Icon: () => ReactNode;
+  tone: string;
+  order: number;
+}) {
+  return (
+    <span
+      className="token"
+      style={{ '--tone': tone, '--order': order } as CSSProperties}
+    >
+      {children}
+      <Icon />
+    </span>
+  );
+}
+
+export const Home = () => {
+  const pageRef = useRef<HTMLDivElement>(null);
+  const bioRef = useRef<HTMLElement>(null);
+  const dark = useDarkTheme();
+  const { sky } = useSiteState();
+  const weather = useStPeteWeather();
+  const [localTime, setLocalTime] = useState(() =>
+    stPeteTime.format(new Date()),
+  );
+  const effect = sky === 'live' ? (weather?.effect ?? 'clear') : sky;
+  useReveal(pageRef);
+
+  // Light up the bio's keywords the first time it scrolls into view.
+  useEffect(() => {
+    const bio = bioRef.current;
+    if (!bio) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        bio.dataset.lit = 'true';
+        observer.disconnect();
+      },
+      // Wait until the bio has scrolled up past the lower third of the screen.
+      { threshold: 0.5, rootMargin: '0px 0px -35% 0px' },
+    );
+    observer.observe(bio);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setInterval(
+      () => setLocalTime(stPeteTime.format(new Date())),
+      30_000,
+    );
+    return () => window.clearInterval(timer);
   }, []);
 
   return (
-    <div className="portfolio" data-theme={dark ? 'dark' : 'light'} id="top">
+    <div
+      className="site"
+      data-theme={dark ? 'dark' : 'light'}
+      id="top"
+      ref={pageRef}
+    >
       <a className="skip-link" href="#main">
         Skip to content
       </a>
-      <header className="folio-header">
-        <a className="wordmark" href="#top" aria-label="Timothy Markfeld home">
-          tm
-          <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M12 2v20M2 12h20M5 5l14 14M5 19 19 5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            />
-          </svg>
-        </a>
-        <span className="header-note">
-          SOFTWARE ENGINEERING
-          <br />
-          &amp; OPEN SOURCE
-        </span>
-        <nav aria-label="Main navigation">
-          <a href="#about">
-            About <span>01</span>
-          </a>
-          <a href="#experience">
-            Experience <span>02</span>
-          </a>
-          <a href="#work">
-            Projects <span>03</span>
-          </a>
-          <a href="#contact">Let’s talk</a>
-        </nav>
-        <button
-          className="folio-theme-toggle"
-          onClick={() => setDark(!dark)}
-          aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-          aria-pressed={dark}
-          title={dark ? 'Switch to light mode' : 'Switch to dark mode'}
-        >
-          {dark ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
-      </header>
-
+      <SiteHeader />
+      <div className="edge-fade" aria-hidden="true" />
       <main id="main">
-        <section className="folio-hero" aria-labelledby="hero-title">
-          <CoastalScene dark={dark} />
-          <div className="hero-eyebrow">
-            <span>
-              <i /> TIMOTHY MARKFELD
-            </span>
-            <span>SENIOR SOFTWARE ENGINEER</span>
+        <section className="hero" aria-label="St. Petersburg, Florida">
+          <div className="scene-frame">
+            <CoastalScene dark={dark} effect={effect} weather={weather} />
           </div>
-          <h1 id="hero-title">
-            Distributed systems.
-            <br />
-            <span>Production ownership.</span>
+          <p className="scene-caption">
+            St. Petersburg, FL · <time>{localTime}</time>
+            {sky !== 'live'
+              ? ` · sky set to ${sky}`
+              : weather && ` · ${weather.temperature}°F, ${weather.label}`}
+          </p>
+        </section>
+
+        <section className="column bio" id="hello" ref={bioRef}>
+          <h1 className="sr-only">
+            Timothy Markfeld, senior software engineer
           </h1>
-          <div className="hero-bottom">
-            <div className="folio-intro">
-              <p>
-                I build high-throughput backends and keep them reliable after
-                they ship.
-              </p>
-              <a className="solid-link" href="#experience">
-                Explore my work <ArrowDown size={18} />
-              </a>
-            </div>
-            <div className="hero-caption">
-              <span>BASED IN ST. PETERSBURG, FL</span>
-            </div>
-          </div>
-        </section>
-
-        <div className="focus-strip" aria-label="Specialties">
-          <span>DISTRIBUTED SYSTEMS</span>
-          <b aria-hidden="true">✳</b>
-          <span>AWS</span>
-          <b aria-hidden="true">✳</b>
-          <span>.NET / TYPESCRIPT</span>
-          <b aria-hidden="true">✳</b>
-          <span>AI AUTOMATION</span>
-        </div>
-
-        <section className="folio-section about-section-new" id="about">
-          <div className="section-topline">
-            <span>01 / ABOUT ME</span>
-          </div>
-          <div className="about-layout">
-            <div className="portrait-block">
-              <div className="portrait-frame">
-                <img
-                  src="/headshot.png"
-                  alt="Timothy Markfeld"
-                  loading="lazy"
-                />
-                <span aria-hidden="true">Hello there.</span>
-              </div>
-              <div className="portrait-label">
-                <span>Timothy Markfeld</span>
-                <span className="portrait-location">
-                  ST. PETE, FL <MapPin size={12} aria-hidden="true" />
-                </span>
-              </div>
-            </div>
-            <div className="about-text">
-              <h2>
-                A little
-                <br />
-                <em>about me.</em>
-              </h2>
-              <p>
-                I’m Tim, a software engineer who likes making complicated things
-                feel straightforward.
-              </p>
-              <p>
-                My work spans healthcare, logistics, and AI. I care about
-                understanding the problem, taking ownership, and keeping
-                software reliable after it ships.
-              </p>
-              <p>
-                Currently at FirmPilot, I build the systems behind AI-powered
-                marketing. I also make open-source tools for problems I’ve met
-                along the way.
-              </p>
-              <div className="education-note">
-                <span className="micro">FOUNDATIONS</span>
-                <strong>University of Alabama</strong>
-                <span>
-                  Master’s &amp; B.S. · Management Information Systems
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="toolbox">
-            <span className="micro">TOOLS OF THE TRADE</span>
-            <p>
-              C# / .NET / TypeScript / React / Next.js / GraphQL / AWS / GCP /
-              Docker / Terraform / SQL / Kafka
-            </p>
-          </div>
-        </section>
-
-        <section className="experience-section folio-section" id="experience">
-          <div className="section-topline">
-            <span>02 / EXPERIENCE</span>
+          <p>Hey,</p>
+          <p>
+            I’m <strong>Tim</strong>, a <RoleChip /> based in{' '}
+            <Token Icon={PalmIcon} order={0} tone="#1f9d6b">
+              St. Pete
+            </Token>
+            .
+          </p>
+          <p>
+            I build{' '}
+            <Token Icon={ServerIcon} order={1} tone="#2f6bff">
+              reliable software
+            </Token>{' '}
+            and work across{' '}
+            <Token Icon={HeartIcon} order={2} tone="#e0445a">
+              healthcare
+            </Token>
+            ,{' '}
+            <Token Icon={TruckIcon} order={3} tone="#d98a1c">
+              logistics
+            </Token>
+            , and{' '}
+            <Token Icon={SparkleIcon} order={4} tone="#8a4fff">
+              AI
+            </Token>
+            .
+          </p>
+          <p>
+            Right now I’m at{' '}
             <a
-              href="/Timothy_Markfeld_Resume.pdf"
+              className="token token-logo"
+              href="https://firmpilot.com/"
               target="_blank"
               rel="noreferrer"
             >
-              VIEW RÉSUMÉ
+              <img src="/firmpilot_logo.jpg" alt="" width="16" height="16" />
+              FirmPilot
             </a>
-          </div>
-          <h2>
-            Where I’ve
-            <br />
-            <em>worked.</em>
-          </h2>
-          <div className="experience-list">
+            , building the systems behind AI-powered marketing.
+          </p>
+        </section>
+
+        <section className="column" id="experience" data-reveal>
+          <h2 className="label">Experience</h2>
+          <div className="jobs">
             {experience.map((job) => (
-              <details
-                className="job"
-                key={job.company}
-                open={true}
-              >
+              <details className="job" key={job.company}>
                 <summary>
-                  <span className="job-date">{job.date}</span>
-                  <span className="job-identity">
-                    <img className="job-logo" src={job.logo} alt="" width="72" height="72" loading="lazy" />
-                    <span className="job-title">
-                      <strong>{job.company}</strong>
-                      <span>{job.role}</span>
-                    </span>
+                  <img
+                    className="job-logo"
+                    src={job.logo}
+                    alt=""
+                    width="32"
+                    height="32"
+                    loading="lazy"
+                  />
+                  <span className="job-title">
+                    <strong>{job.company}</strong>
+                    <span>{job.role}</span>
                   </span>
-                  <span className="job-toggle" aria-hidden="true">
-                    +
-                  </span>
+                  <time>{job.date}</time>
+                  <Plus className="job-toggle" size={14} aria-hidden="true" />
                 </summary>
-                <div className="job-content">
+                <div className="job-body">
                   <p>{job.description}</p>
                   <p>{job.detail}</p>
-                  <div>
-                    <span>{job.tags}</span>
+                  <div className="job-foot">
+                    <span className="chip chip-quiet">{job.metric}</span>
+                    {job.caseStudy && (
+                      <Link to={job.caseStudy} viewTransition>
+                        Case study <ArrowRight size={12} aria-hidden="true" />
+                      </Link>
+                    )}
                     <a href={job.href} target="_blank" rel="noreferrer">
-                      Visit company
+                      Website <ArrowUpRight size={12} aria-hidden="true" />
                     </a>
                   </div>
                 </div>
@@ -313,192 +359,31 @@ export const Home = () => {
           </div>
         </section>
 
-        <section className="folio-section" id="work">
-          <div className="section-topline">
-            <span>03 / SELECTED WORK</span>
-          </div>
-          <div className="section-heading">
-            <h2>
-              Open-source
-              <br />
-              <em>projects &amp; contributions.</em>
-            </h2>
-            <p>
-              Tools I build and contribute to.
-              <br />
-              Available on GitHub.
+        <section className="work" id="work">
+          <div className="column" data-reveal>
+            <h2 className="label">Things I’ve made</h2>
+            <p className="work-intro">
+              Open-source tools I build and contribute to, plus a case study.
             </p>
           </div>
-          <div className="project-grid" ref={projectsRef}>
-            {projects.map((project, index) => (
-              <a
-                className={`project ${project.kind}`}
-                key={project.name}
-                href={project.href}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <div className="project-visual">
-                  <div className="project-heading">
-                    <h3>{project.name}</h3>
-                    <span className="project-number">00{index + 1}</span>
-                  </div>
-                  <div className="project-diagram" aria-hidden="true">
-                    <svg viewBox="0 0 300 240" fill="none" stroke="currentColor" strokeWidth="1.2">
-                      <path className="diagram-corners" d="M8 18V8h10m264 0h10v10M8 222v10h10m264 0h10v-10" />
-                      {project.kind === 'parser' ? (
-                        <>
-                          <path className="diagram-guide" d="M106 120h88" />
-                          <rect className="diagram-node" x="18" y="70" width="88" height="102" rx="4" />
-                          <path d="M18 94h88" />
-                          <text x="29" y="86">HL7</text>
-                          <g className="diagram-record-text">
-                            <text x="26" y="114">MSH|^~\&amp;|</text>
-                            <text x="26" y="128">PID|42||</text>
-                            <text x="26" y="142">DOE^JANE</text>
-                            <text x="26" y="156">PV1|1|O</text>
-                          </g>
-                          <rect className="diagram-node" x="134" y="100" width="32" height="40" rx="3" />
-                          <text x="141" y="155">MAP</text>
-                          <rect className="diagram-node" x="194" y="70" width="88" height="102" rx="4" />
-                          <path d="M194 94h88" />
-                          <text x="205" y="86">FHIR</text>
-                          <g className="diagram-record-text diagram-fhir-json">
-                            <text x="202" y="104">{'{'}</text>
-                            <text x="208" y="114">{'"resourceType":'}</text>
-                            <text x="212" y="124">{'"Patient",'}</text>
-                            <text x="208" y="136">{'"id": "42",'}</text>
-                            <text x="208" y="148">{'"active": true'}</text>
-                            <text x="202" y="160">{'}'}</text>
-                          </g>
-                          <path className="diagram-guide" d="M214 127h14M233 139h14M250 151h14" />
-                          <g className="diagram-accent diagram-fields">
-                            <path className="diagram-motion diagram-field" d="M143 112h14" />
-                            <path className="diagram-motion diagram-field" d="M143 120h14" />
-                            <path className="diagram-motion diagram-field" d="M143 128h14" />
-                          </g>
-                          <text x="34" y="196">MESSAGE</text>
-                          <text x="211" y="196">RESOURCE</text>
-                        </>
-                      ) : project.kind === 'conductor' ? (
-                        <>
-                          <ellipse className="diagram-guide" cx="150" cy="181" rx="113" ry="35" />
-                          <path d="m150 43-94 132 94 35 94-35Zm0 0v167M56 175l94-85 94 85M56 175l94-40 94 40M56 175l94-5 94 5" />
-                          <path className="diagram-accent" d="M150 43v127l94 5-94 35" />
-                          <circle className="diagram-solid" cx="150" cy="43" r="8" />
-                          <circle className="diagram-accent diagram-motion diagram-pulse" cx="150" cy="43" r="11" />
-                          <circle className="diagram-solid diagram-motion diagram-signal" cx="150" cy="43" r="3" />
-                          <circle className="diagram-node" cx="56" cy="175" r="5" />
-                          <circle className="diagram-node" cx="150" cy="210" r="5" />
-                          <circle className="diagram-node" cx="244" cy="175" r="5" />
-                          <text x="134" y="24">APP</text>
-                          <text x="35" y="199">IAM</text>
-                          <text x="139" y="232">SQS</text>
-                          <text x="249" y="199">SNS</text>
-                        </>
-                      ) : (
-                        <>
-                          <rect className="diagram-node" x="30" y="28" width="240" height="184" rx="4" />
-                          <path d="M30 52h240" />
-                          <defs>
-                            <radialGradient id="terminal-red" cx="35%" cy="25%" r="80%">
-                              <stop stopColor="#ed7068" />
-                              <stop offset="1" stopColor="#d95c55" />
-                            </radialGradient>
-                            <radialGradient id="terminal-yellow" cx="35%" cy="25%" r="80%">
-                              <stop stopColor="#e5bc57" />
-                              <stop offset="1" stopColor="#d2a649" />
-                            </radialGradient>
-                            <radialGradient id="terminal-green" cx="35%" cy="25%" r="80%">
-                              <stop stopColor="#79b87b" />
-                              <stop offset="1" stopColor="#65a469" />
-                            </radialGradient>
-                          </defs>
-                          <g stroke="#000000" strokeOpacity="0.15" strokeWidth="0.6">
-                            <circle cx="43" cy="40" r="3.5" fill="url(#terminal-red)" />
-                            <circle cx="55" cy="40" r="3.5" fill="url(#terminal-yellow)" />
-                            <circle cx="67" cy="40" r="3.5" fill="url(#terminal-green)" />
-                          </g>
-                          <text x="192" y="43">MonoCode</text>
-                          <path className="diagram-accent" d="m44 68 7 6-7 6m13 0h8" />
-                          <foreignObject x="86" y="58" width="128" height="128">
-                            <ThinkingOrb dark={dark} />
-                          </foreignObject>
-                          <text className="diagram-thinking-label" x="110" y="194">Thinking</text>
-                          <g fill="var(--card-accent)" stroke="none">
-                            {[0, 1, 2].map((index) => (
-                              <circle
-                                key={index}
-                                className="diagram-motion diagram-thinking-dot"
-                                cx={174 + index * 8}
-                                cy="191"
-                                r="1.8"
-                                style={{ animationDelay: `${index * 0.25}s` }}
-                              />
-                            ))}
-                          </g>
-                        </>
-                      )}
-                    </svg>
-                  </div>
-                </div>
-                <div className="project-copy">
-                  <span className="micro">{project.category}</span>
-                  <p>{project.description}</p>
-                  <span className="project-stack">{project.stack}</span>
-                </div>
-              </a>
-            ))}
-          </div>
-          <a
-            className="text-link"
-            href="https://github.com/tcmarkfeld"
-            target="_blank"
-            rel="noreferrer"
-          >
-            More on GitHub
-          </a>
+          <Gallery />
         </section>
 
+        <ActivityGraph user="tcmarkfeld" />
+
+        <section className="column" data-reveal>
+          <h2 className="label">Currently</h2>
+          <dl className="details">
+            {details.map((item) => (
+              <div key={item.label}>
+                <dt>{item.label}</dt>
+                <dd>{item.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </section>
       </main>
-      <footer className="contact-section" id="contact">
-          <div className="section-topline">
-            <span>04 / WHAT’S NEXT?</span>
-          </div>
-          <a className="contact-title" href="mailto:timmarkfeld@gmail.com">
-            Let’s build
-            <br />
-            <em>something.</em>
-            <ArrowUpRight aria-hidden="true" />
-          </a>
-          <div className="contact-bottom">
-            <a href="mailto:timmarkfeld@gmail.com">
-              timmarkfeld@gmail.com <Mail size={18} />
-            </a>
-            <div>
-              <a
-                href="https://github.com/tcmarkfeld"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Github size={17} /> GitHub
-              </a>
-              <a
-                href="https://linkedin.com/in/timothy-markfeld"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Linkedin size={17} /> LinkedIn
-              </a>
-            </div>
-          </div>
-        <div className="folio-footer">
-          <span>© {new Date().getFullYear()} TIMOTHY MARKFELD</span>
-          <a href="#top">
-            BACK TO TOP <ArrowUp size={14} />
-          </a>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 };

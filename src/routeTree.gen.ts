@@ -9,15 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ChatRouteImport } from './routes/chat'
 import { Route as R404RouteImport } from './routes/404'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WorkCorollaRouteImport } from './routes/work/corolla'
 
-const ChatRoute = ChatRouteImport.update({
-  id: '/chat',
-  path: '/chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const R404Route = R404RouteImport.update({
   id: '/404',
   path: '/404',
@@ -28,46 +23,44 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkCorollaRoute = WorkCorollaRouteImport.update({
+  id: '/work/corolla',
+  path: '/work/corolla',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/404': typeof R404Route
-  '/chat': typeof ChatRoute
+  '/work/corolla': typeof WorkCorollaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/404': typeof R404Route
-  '/chat': typeof ChatRoute
+  '/work/corolla': typeof WorkCorollaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/404': typeof R404Route
-  '/chat': typeof ChatRoute
+  '/work/corolla': typeof WorkCorollaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/404' | '/chat'
+  fullPaths: '/' | '/404' | '/work/corolla'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/404' | '/chat'
-  id: '__root__' | '/' | '/404' | '/chat'
+  to: '/' | '/404' | '/work/corolla'
+  id: '__root__' | '/' | '/404' | '/work/corolla'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   R404Route: typeof R404Route
-  ChatRoute: typeof ChatRoute
+  WorkCorollaRoute: typeof WorkCorollaRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/chat': {
-      id: '/chat'
-      path: '/chat'
-      fullPath: '/chat'
-      preLoaderRoute: typeof ChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/404': {
       id: '/404'
       path: '/404'
@@ -82,13 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/work/corolla': {
+      id: '/work/corolla'
+      path: '/work/corolla'
+      fullPath: '/work/corolla'
+      preLoaderRoute: typeof WorkCorollaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   R404Route: R404Route,
-  ChatRoute: ChatRoute,
+  WorkCorollaRoute: WorkCorollaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
