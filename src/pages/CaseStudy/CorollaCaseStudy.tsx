@@ -19,22 +19,28 @@ const facts = [
 
 const screens = [
   {
-    src: '/ice-delivery-today-page.webp',
-    title: 'Today',
+    src: '/ice-delivery-route.webp',
+    title: 'Today’s route',
     caption:
-      'Counts of coolers and loose or bagged ice up top, then every stop with one-tap map, call, and text.',
+      'Stops grouped by neighborhood, with drop-offs, refills, and pickups, the day’s bag count, and one-tap navigate, call, and text.',
   },
   {
-    src: '/ice-delivery-add-page.webp',
-    title: 'Add',
+    src: '/ice-delivery-route-progress.webp',
+    title: 'Checking off stops',
     caption:
-      'New bookings capture the customer, the delivery window, and the order in one form.',
+      'Marking a stop done updates the day’s progress and moves it to the Done tab.',
   },
   {
-    src: '/ice-delivery-all-deliveries-page.webp',
-    title: 'All',
+    src: '/ice-delivery-new-delivery.webp',
+    title: 'New delivery',
     caption:
-      'Search and a week filter across every booking, with edit and delete inline.',
+      'Bookings capture the customer, the rental address and neighborhood, and the rental dates.',
+  },
+  {
+    src: '/ice-delivery-deliveries.webp',
+    title: 'Deliveries',
+    caption:
+      'Every booking on record, searchable, with a week view and statuses like Active and Pickup today.',
   },
 ];
 
@@ -112,7 +118,7 @@ export function CorollaCaseStudy() {
                   src={screen.src}
                   alt={`${screen.title} screen of the Corolla Ice Delivery app`}
                   width="640"
-                  height="1390"
+                  height="1392"
                   loading="lazy"
                 />
               </div>
