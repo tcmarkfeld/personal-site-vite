@@ -878,17 +878,46 @@
 .diagram-signal {
   animation: diagram-signal 5s linear infinite;
 }
-.thinking-orb {
-  display: block;
-  width: 100%;
-  height: 100%;
+/* Revise: a line is typed, wraps, and the table below reflows down */
+.revise-type {
+  stroke-dasharray: 114;
+  animation: revise-type 5s linear infinite;
 }
-.diagram-thinking-dot {
-  animation: diagram-thinking-dot 2s ease-in-out infinite;
+.revise-wrap {
+  stroke-dasharray: 46;
+  animation: revise-wrap 5s linear infinite;
 }
-.device .diagram-thinking-label {
-  font-size: 11px;
-  letter-spacing: 0;
+.revise-caret {
+  animation:
+    revise-caret 5s linear infinite,
+    revise-blink 0.8s steps(1) infinite;
+}
+.revise-reflow {
+  animation: revise-reflow 5s cubic-bezier(0.3, 1.3, 0.5, 1) infinite;
+}
+@keyframes revise-type {
+  0%, 6% { stroke-dashoffset: 114; opacity: 1; }
+  46%, 90% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes revise-wrap {
+  0%, 48% { stroke-dashoffset: 46; }
+  74%, 90% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes revise-caret {
+  0%, 6% { transform: translate(0, 0); }
+  46% { transform: translate(114px, 0); }
+  48% { transform: translate(0, 7px); }
+  74%, 100% { transform: translate(46px, 7px); }
+}
+@keyframes revise-blink {
+  50% { opacity: 0; }
+}
+@keyframes revise-reflow {
+  0%, 46% { transform: translateY(0); }
+  54%, 90% { transform: translateY(7px); }
+  100% { transform: translateY(0); }
 }
 @keyframes diagram-normalize {
   0%,
@@ -948,15 +977,6 @@
   100% {
     transform: translate(0, 167px);
     opacity: 0;
-  }
-}
-@keyframes diagram-thinking-dot {
-  0%,
-  100% {
-    opacity: 0.25;
-  }
-  50% {
-    opacity: 1;
   }
 }
 

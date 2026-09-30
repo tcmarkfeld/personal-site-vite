@@ -20,12 +20,22 @@ export function Gallery() {
 
   const cards: Card[] = [
     {
+      title: 'Revise',
+      caption: 'A native macOS app that edits PDFs like a doc, no conversions',
+      href: 'https://github.com/tcmarkfeld/revise-pdf',
+      stage: (
+        <div className="device">
+          <ProjectDiagram kind="revise" />
+        </div>
+      ),
+    },
+    {
       title: 'HL7Kit',
       caption: 'Strongly typed HL7 parsing and FHIR conversion for .NET',
       href: 'https://github.com/tcmarkfeld/HL7Kit',
       stage: (
         <div className="device">
-          <ProjectDiagram kind="parser" dark />
+          <ProjectDiagram kind="parser" />
         </div>
       ),
     },
@@ -35,17 +45,7 @@ export function Gallery() {
       href: 'https://github.com/tcmarkfeld/Conductor',
       stage: (
         <div className="device">
-          <ProjectDiagram kind="conductor" dark />
-        </div>
-      ),
-    },
-    {
-      title: 'MonoCode',
-      caption: 'Contributor to a desktop app for AI coding agents',
-      href: 'https://usemono.dev/',
-      stage: (
-        <div className="device">
-          <ProjectDiagram kind="monocode" dark />
+          <ProjectDiagram kind="conductor" />
         </div>
       ),
     },

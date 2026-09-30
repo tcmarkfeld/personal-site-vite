@@ -363,7 +363,7 @@ export const Home = () => {
           <div className="column" data-reveal>
             <h2 className="label">Things I’ve made</h2>
             <p className="work-intro">
-              Open-source tools I build and contribute to, plus a case study.
+              Open-source tools I’ve built, plus a case study.
             </p>
           </div>
           <Gallery />

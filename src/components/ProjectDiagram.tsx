@@ -1,15 +1,7 @@
-import { ThinkingOrb } from '@/components/ThinkingOrb';
+export type DiagramKind = 'parser' | 'conductor' | 'revise';
 
-export type DiagramKind = 'parser' | 'conductor' | 'monocode';
-
-// Animated line drawings for each project: HL7 -> FHIR, IAM fan-out, and an agent terminal.
-export function ProjectDiagram({
-  kind,
-  dark,
-}: {
-  kind: DiagramKind;
-  dark: boolean;
-}) {
+// Animated line drawings for each project: HL7 -> FHIR, IAM fan-out, and a PDF edited in place.
+export function ProjectDiagram({ kind }: { kind: DiagramKind }) {
   return (
     <svg
       viewBox="0 0 300 240"
@@ -179,28 +171,63 @@ export function ProjectDiagram({
             <circle cx="55" cy="40" r="3.5" fill="url(#terminal-yellow)" />
             <circle cx="67" cy="40" r="3.5" fill="url(#terminal-green)" />
           </g>
-          <text x="192" y="43">
-            MonoCode
+          <text x="186" y="43">
+            resume.pdf
           </text>
-          <path className="diagram-accent" d="m44 68 7 6-7 6m13 0h8" />
-          <foreignObject x="86" y="58" width="128" height="128">
-            <ThinkingOrb dark={dark} />
-          </foreignObject>
-          <text className="diagram-thinking-label" x="110" y="194">
-            Thinking
-          </text>
-          <g fill="var(--card-accent)" stroke="none">
-            {[0, 1, 2].map((index) => (
-              <circle
-                key={index}
-                className="diagram-motion diagram-thinking-dot"
-                cx={174 + index * 8}
-                cy="191"
-                r="1.8"
-                style={{ animationDelay: `${index * 0.25}s` }}
-              />
-            ))}
+          {/* Formatting toolbar */}
+          <g className="revise-toolbar">
+            <rect
+              className="diagram-accent"
+              x="40"
+              y="59"
+              width="11"
+              height="11"
+              rx="2"
+            />
+            <text x="43" y="67.5">
+              B
+            </text>
+            <text x="57" y="67.5">
+              I
+            </text>
+            <text x="68" y="67.5">
+              U
+            </text>
+            <path className="diagram-guide" d="M80 59v11" />
+            <text x="87" y="67.5">
+              Aa
+            </text>
+            <circle className="diagram-solid" cx="108" cy="64.5" r="2.5" />
           </g>
+          {/* The page, edited in place */}
+          <rect
+            className="diagram-node"
+            x="120"
+            y="58"
+            width="138"
+            height="146"
+            rx="2"
+          />
+          <path d="M131 72h58" strokeWidth="2.6" />
+          <path className="diagram-guide" d="M131 80h40" />
+          <path d="M131 92h114M131 99h104" />
+          <path className="diagram-motion revise-type" d="M131 106h114" />
+          <path className="diagram-motion revise-wrap" d="M131 113h46" />
+          <path
+            className="diagram-accent diagram-motion revise-caret"
+            d="M131 102v8"
+          />
+          <g className="diagram-motion revise-reflow">
+            <rect x="131" y="124" width="114" height="36" rx="1" />
+            <path d="M131 136h114M131 148h114M169 124v36M207 124v36" />
+            <path className="diagram-guide" d="M131 172h108M131 179h92" />
+          </g>
+          <text x="40" y="196">
+            PDF IN
+          </text>
+          <text x="40" y="208">
+            PDF OUT
+          </text>
         </>
       )}
     </svg>
