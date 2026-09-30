@@ -22,7 +22,7 @@ export function Gallery() {
     {
       title: 'Revise',
       caption: 'A native macOS app that edits PDFs like a doc, no conversions',
-      href: 'https://github.com/tcmarkfeld/revise-pdf',
+      href: 'https://revise.timmarkfeld.com/',
       stage: (
         <div className="device">
           <ProjectDiagram kind="revise" />
