@@ -1,1 +1,4 @@
+# Serve the Revise landing page at revise.timmarkfeld.com.
+http://revise.timmarkfeld.com/* /revise/:splat 200!
+https://revise.timmarkfeld.com/* /revise/:splat 200!
 /* /index.html 200
