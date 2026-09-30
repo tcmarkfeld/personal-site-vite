@@ -143,6 +143,51 @@
       .meta a {
         color: var(--text);
       }
+      .brew-label {
+        margin: 28px 0 8px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .brew {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 6px 6px 6px 14px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--card);
+        text-align: left;
+      }
+      .brew code {
+        flex: 1;
+        min-width: 0;
+        overflow-x: auto;
+        color: var(--strong);
+        font: 12.5px 'Geist Mono', ui-monospace, monospace;
+        white-space: nowrap;
+        scrollbar-width: none;
+      }
+      .brew code span:first-child {
+        color: var(--muted);
+      }
+      .brew button {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--text);
+        font: 500 12px 'Public Sans', ui-sans-serif, system-ui, sans-serif;
+        cursor: pointer;
+      }
+      .brew button:hover {
+        color: var(--strong);
+      }
       h2 {
         display: flex;
         align-items: center;
@@ -305,6 +350,32 @@
           <span id="version">v0.1.0</span> · Apple silicon · macOS 12+ ·
           <a href="https://github.com/tcmarkfeld/revise-pdf">Source</a>
         </p>
+        <p class="brew-label">or install with Homebrew</p>
+        <div class="brew">
+          <code
+            ><span aria-hidden="true">$ </span
+            ><span id="brew-command"
+              >brew install --cask tcmarkfeld/tap/revise</span
+            ></code
+          >
+          <button type="button" id="copy-brew" aria-label="Copy command">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="9" y="9" width="12" height="12" rx="2" />
+              <path d="M5 15V5a2 2 0 0 1 2-2h10" />
+            </svg>
+            <span id="copy-label">Copy</span>
+          </button>
+        </div>
       </section>
 
       <h2>What it does</h2>
@@ -344,6 +415,11 @@
         </li>
       </ol>
 
+      <p class="note">
+        Using Homebrew instead? The command above installs Revise into
+        Applications for you, and <kbd>brew upgrade</kbd> keeps it current.
+      </p>
+
       <h2>Works best with</h2>
       <p class="note">
         Text-based documents like resumes, letters, reports, and forms. Revise
@@ -373,6 +449,19 @@
           document.getElementById('version').textContent = release.tag_name;
         })
         .catch(() => {});
+
+      const copyButton = document.getElementById('copy-brew');
+      const copyLabel = document.getElementById('copy-label');
+      copyButton.addEventListener('click', () => {
+        const command = document.getElementById('brew-command').textContent;
+        navigator.clipboard
+          .writeText(command)
+          .then(() => {
+            copyLabel.textContent = 'Copied';
+            setTimeout(() => (copyLabel.textContent = 'Copy'), 1600);
+          })
+          .catch(() => {});
+      });
     </script>
   </body>
 </html>
