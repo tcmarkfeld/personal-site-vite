@@ -21,6 +21,7 @@ import {
   TruckIcon,
 } from '@/components/BioIcons';
 import { ActivityGraph } from '@/components/ActivityGraph';
+import { PostList } from '@/pages/Blog/BlogIndex';
 import { CoastalScene } from '@/components/CoastalScene';
 import { Gallery } from '@/components/Gallery';
 import { SiteFooter } from '@/components/SiteFooter';
@@ -367,6 +368,14 @@ export const Home = () => {
             </p>
           </div>
           <Gallery />
+        </section>
+
+        <section className="column writing" data-reveal>
+          <h2 className="label">Writing</h2>
+          <PostList />
+          <Link className="writing-all" to={ROUTES.BLOG} viewTransition>
+            All posts <ArrowRight size={12} aria-hidden="true" />
+          </Link>
         </section>
 
         <ActivityGraph user="tcmarkfeld" />

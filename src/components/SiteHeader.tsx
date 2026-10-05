@@ -1,5 +1,5 @@
 import { Link, useLocation } from '@tanstack/react-router';
-import { Command, House, Moon, Snowflake, Sun } from 'lucide-react';
+import { Command, House, Moon, NotebookPen, Sun } from 'lucide-react';
 import { ROUTES } from '@/Navigation/routeEnum';
 import { menuShortcut, setSiteState } from '@/lib/siteState';
 import { setDarkTheme, useDarkTheme } from '@/lib/theme';
@@ -24,13 +24,13 @@ export function SiteHeader() {
           <House size={15} />
         </Link>
         <Link
-          to={ROUTES.COROLLA}
-          aria-label="Case study"
-          data-tip="Case study"
-          aria-current={pathname === ROUTES.COROLLA ? 'page' : undefined}
+          to={ROUTES.BLOG}
+          aria-label="Blog"
+          data-tip="Blog"
+          aria-current={pathname.startsWith(ROUTES.BLOG) ? 'page' : undefined}
           viewTransition
         >
-          <Snowflake size={15} />
+          <NotebookPen size={15} />
         </Link>
       </nav>
       <span className="pill-divider" aria-hidden="true" />

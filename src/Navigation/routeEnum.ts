@@ -1,5 +1,6 @@
 export const ROUTES = {
-  COROLLA: '/work/corolla',
+  BLOG: '/blog',
+  COROLLA: '/blog/corolla-ice-delivery',
   HOME: '/',
   NOT_FOUND: '/404',
 } as const;

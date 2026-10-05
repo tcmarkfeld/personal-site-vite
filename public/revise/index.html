@@ -50,9 +50,9 @@
       @media (prefers-color-scheme: dark) {
         :root {
           --bg: #0e0e0e;
-          --text: #8f8f8f;
+          --text: #b8b8b8;
           --strong: #f1f1f1;
-          --muted: #5f5f5f;
+          --muted: #8c8c8c;
           --card: #171717;
           --line: #ffffff12;
           --blue: #4a7bff;
@@ -173,20 +173,45 @@
         color: var(--muted);
       }
       .brew button {
-        display: inline-flex;
+        display: grid;
         flex-shrink: 0;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 10px;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        padding: 0;
         border: 0;
         border-radius: 8px;
-        background: var(--bg);
-        color: var(--text);
-        font: 500 12px 'Public Sans', ui-sans-serif, system-ui, sans-serif;
+        background: transparent;
+        color: var(--muted);
         cursor: pointer;
+        transition:
+          color 0.2s ease,
+          background 0.2s ease;
       }
       .brew button:hover {
+        background: var(--bg);
         color: var(--strong);
+      }
+      .brew button[data-copied='true'] {
+        color: #1f9d6b;
+      }
+      .copy-back {
+        transform-origin: 9px 9px;
+        transition:
+          opacity 0.25s ease,
+          scale 0.3s cubic-bezier(0.3, 0, 0.2, 1);
+      }
+      .brew button[data-copied='true'] .copy-back {
+        opacity: 0;
+        scale: 0.6;
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
       }
       h2 {
         display: flex;
@@ -358,10 +383,16 @@
               >brew install --cask tcmarkfeld/tap/revise</span
             ></code
           >
-          <button type="button" id="copy-brew" aria-label="Copy command">
+          <button
+            type="button"
+            id="copy-brew"
+            aria-label="Copy command"
+            title="Copy command"
+            data-copied="false"
+          >
             <svg
-              width="14"
-              height="14"
+              width="15"
+              height="15"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -370,10 +401,34 @@
               stroke-linejoin="round"
               aria-hidden="true"
             >
-              <rect x="9" y="9" width="12" height="12" rx="2" />
-              <path d="M5 15V5a2 2 0 0 1 2-2h10" />
+              <path class="copy-back" d="M5 15V5a2 2 0 0 1 2-2h10" />
+              <!-- The front page and the check share five points, so one morphs into the other. -->
+              <path d="M9 9 L20 9 L20 20 L9 20 L9 9">
+                <animate
+                  id="to-check"
+                  attributeName="d"
+                  to="M4.5 12.5 L9 17 L19.5 6.5 L19.5 6.5 L19.5 6.5"
+                  dur="0.32s"
+                  begin="indefinite"
+                  fill="freeze"
+                  calcMode="spline"
+                  keyTimes="0;1"
+                  keySplines="0.3 0 0.2 1"
+                />
+                <animate
+                  id="to-page"
+                  attributeName="d"
+                  to="M9 9 L20 9 L20 20 L9 20 L9 9"
+                  dur="0.32s"
+                  begin="indefinite"
+                  fill="freeze"
+                  calcMode="spline"
+                  keyTimes="0;1"
+                  keySplines="0.3 0 0.2 1"
+                />
+              </path>
             </svg>
-            <span id="copy-label">Copy</span>
+            <span class="sr-only" id="copy-status" aria-live="polite"></span>
           </button>
         </div>
       </section>
@@ -451,14 +506,24 @@
         .catch(() => {});
 
       const copyButton = document.getElementById('copy-brew');
-      const copyLabel = document.getElementById('copy-label');
+      const copyStatus = document.getElementById('copy-status');
+      let resetTimer;
       copyButton.addEventListener('click', () => {
         const command = document.getElementById('brew-command').textContent;
         navigator.clipboard
           .writeText(command)
           .then(() => {
-            copyLabel.textContent = 'Copied';
-            setTimeout(() => (copyLabel.textContent = 'Copy'), 1600);
+            if (copyButton.dataset.copied !== 'true') {
+              document.getElementById('to-check').beginElement();
+            }
+            copyButton.dataset.copied = 'true';
+            copyStatus.textContent = 'Copied';
+            clearTimeout(resetTimer);
+            resetTimer = setTimeout(() => {
+              copyButton.dataset.copied = 'false';
+              copyStatus.textContent = '';
+              document.getElementById('to-page').beginElement();
+            }, 1600);
           })
           .catch(() => {});
       });

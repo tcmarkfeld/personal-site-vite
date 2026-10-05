@@ -21,9 +21,9 @@
 :root[data-theme='dark'] {
   color-scheme: dark;
   --bg: #0e0e0e;
-  --text: #8f8f8f;
+  --text: #b8b8b8;
   --strong: #f1f1f1;
-  --muted: #5f5f5f;
+  --muted: #8c8c8c;
   --line: #ffffff12;
   --card: #171717;
   --raised: #222222;

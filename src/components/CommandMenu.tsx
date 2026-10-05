@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { ROUTES } from '@/Navigation/routeEnum';
+import { posts } from '@/pages/Blog/posts';
 import { setSiteState, useSiteState } from '@/lib/siteState';
 import { setDarkTheme, useDarkTheme } from '@/lib/theme';
 
@@ -22,8 +23,10 @@ type Command = {
   group: string;
   label: string;
   Icon: LucideIcon;
-  run: () => void;
+  run: () => void | Promise<unknown>;
 };
+
+const email = 'timmarkfeld@gmail.com';
 
 export function CommandMenu() {
   const navigate = useNavigate();
@@ -62,7 +65,12 @@ export function CommandMenu() {
     const go = (hash: string) => () => navigate({ to: ROUTES.HOME, hash });
     const open = (url: string) => () => window.open(url, '_blank', 'noopener');
     return [
-      { group: 'Go to', label: 'Hello', Icon: ArrowRight, run: go('hello') },
+      {
+        group: 'Go to',
+        label: 'Hello',
+        Icon: ArrowRight,
+        run: go('hello'),
+      },
       {
         group: 'Go to',
         label: 'Experience',
@@ -77,9 +85,9 @@ export function CommandMenu() {
       },
       {
         group: 'Go to',
-        label: 'Case study: Corolla Ice Delivery',
+        label: 'Blog',
         Icon: ArrowRight,
-        run: () => navigate({ to: ROUTES.COROLLA }),
+        run: () => navigate({ to: ROUTES.BLOG }),
       },
       {
         group: 'Go to',
@@ -87,13 +95,17 @@ export function CommandMenu() {
         Icon: ArrowRight,
         run: go('contact'),
       },
+      ...posts.map((post) => ({
+        group: 'Read',
+        label: post.title,
+        Icon: ArrowRight,
+        run: () => navigate({ to: '/blog/$slug', params: { slug: post.slug } }),
+      })),
       {
         group: 'Do',
         label: 'Copy email address',
         Icon: Copy,
-        run: () => {
-          void navigator.clipboard.writeText('timmarkfeld@gmail.com');
-        },
+        run: () => navigator.clipboard.writeText(email),
       },
       {
         group: 'Do',
@@ -143,84 +155,91 @@ export function CommandMenu() {
 
   function execute(command: Command | undefined) {
     if (!command) return;
-    command.run();
+    const result = command.run();
     if (command.label === 'Copy email address') {
-      setNotice('Copied timmarkfeld@gmail.com');
+      result
+        ?.then(() => setNotice(`Copied ${email}`))
+        .catch(() => setNotice('Couldn’t copy. Your browser blocked it.'));
       return;
     }
     setSiteState({ menu: false });
   }
 
   return (
-    <dialog
-      className="command-menu"
-      ref={dialogRef}
-      aria-label="Command menu"
-      onClose={() => setSiteState({ menu: false })}
-      onClick={(event) => {
-        if (event.target === event.currentTarget) setSiteState({ menu: false });
-      }}
-    >
-      <div className="command-search">
-        <Search size={16} aria-hidden="true" />
-        <input
-          value={query}
-          onChange={(event) => {
-            setQuery(event.target.value);
-            setActive(0);
-          }}
-          onKeyDown={(event) => {
-            if (event.key === 'ArrowDown') {
-              event.preventDefault();
-              setActive((active + 1) % Math.max(results.length, 1));
+    <>
+      <dialog
+        className="command-menu"
+        ref={dialogRef}
+        aria-label="Command menu"
+        onClose={() => setSiteState({ menu: false })}
+        onClick={(event) => {
+          if (event.target === event.currentTarget)
+            setSiteState({ menu: false });
+        }}
+      >
+        <div className="command-search">
+          <Search size={16} aria-hidden="true" />
+          <input
+            value={query}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setActive(0);
+            }}
+            onKeyDown={(event) => {
+              if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                setActive((active + 1) % Math.max(results.length, 1));
+              }
+              if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                setActive(
+                  (active - 1 + results.length) % Math.max(results.length, 1),
+                );
+              }
+              if (event.key === 'Enter') execute(results[active]);
+            }}
+            placeholder="Type a command or search…"
+            aria-label="Search commands"
+            aria-controls="command-results"
+            aria-activedescendant={
+              results[active] ? `command-${active}` : undefined
             }
-            if (event.key === 'ArrowUp') {
-              event.preventDefault();
-              setActive(
-                (active - 1 + results.length) % Math.max(results.length, 1),
-              );
-            }
-            if (event.key === 'Enter') execute(results[active]);
-          }}
-          placeholder="Type a command or search…"
-          aria-label="Search commands"
-          aria-controls="command-results"
-          aria-activedescendant={
-            results[active] ? `command-${active}` : undefined
-          }
-          role="combobox"
-          aria-expanded="true"
-          autoFocus
-        />
-        <kbd>esc</kbd>
-      </div>
-      <ul id="command-results" role="listbox">
-        {results.map((command, index) => (
-          <Fragment key={command.label}>
-            {(index === 0 || results[index - 1].group !== command.group) && (
-              <li className="command-group" role="presentation">
-                {command.group}
+            role="combobox"
+            aria-expanded="true"
+            autoFocus
+          />
+          <kbd>esc</kbd>
+        </div>
+        <ul id="command-results" role="listbox">
+          {results.map((command, index) => (
+            <Fragment key={command.label}>
+              {(index === 0 || results[index - 1].group !== command.group) && (
+                <li className="command-group" role="presentation">
+                  {command.group}
+                </li>
+              )}
+              <li
+                id={`command-${index}`}
+                role="option"
+                aria-selected={index === active}
+                onMouseMove={() => setActive(index)}
+                onClick={() => execute(command)}
+              >
+                <command.Icon size={15} aria-hidden="true" />
+                {command.label}
               </li>
-            )}
-            <li
-              id={`command-${index}`}
-              role="option"
-              aria-selected={index === active}
-              onMouseMove={() => setActive(index)}
-              onClick={() => execute(command)}
-            >
-              <command.Icon size={15} aria-hidden="true" />
-              {command.label}
+            </Fragment>
+          ))}
+          {!results.length && (
+            <li className="command-empty">
+              Nothing matches that. Try “storm”.
             </li>
-          </Fragment>
-        ))}
-        {!results.length && (
-          <li className="command-empty">Nothing matches that. Try “storm”.</li>
-        )}
-      </ul>
-      <p className="command-notice" aria-live="polite">
-        {notice}
-      </p>
-    </dialog>
+          )}
+        </ul>
+        <p className="command-notice" aria-live="polite">
+          {notice}
+        </p>
+      </dialog>
+    </>
   );
 }

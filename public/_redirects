@@ -1,4 +1,6 @@
 # Serve the Revise landing page at revise.timmarkfeld.com.
 http://revise.timmarkfeld.com/* /revise/:splat 200!
 https://revise.timmarkfeld.com/* /revise/:splat 200!
+# The Corolla case study moved into the blog.
+/work/corolla /blog/corolla-ice-delivery 301
 /* /index.html 200
