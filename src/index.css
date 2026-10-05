@@ -11,7 +11,7 @@
   --line: #0000000f;
   --card: #f1f1f1;
   --raised: #ffffff;
-  --accent: #dd704b;
+  --accent: #3aa0e6;
   --shadow: 0 1px 2px #0000000d, 0 8px 24px -8px #0000001f;
   --sans: 'Public Sans', ui-sans-serif, system-ui, sans-serif;
   --mono: 'Geist Mono', ui-monospace, monospace;
@@ -27,6 +27,7 @@
   --line: #ffffff12;
   --card: #171717;
   --raised: #222222;
+  --accent: #5ab8f0;
   --shadow: 0 1px 2px #00000066, 0 8px 24px -8px #000000aa;
 }
 
