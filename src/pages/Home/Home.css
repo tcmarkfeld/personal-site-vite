@@ -1016,13 +1016,15 @@
 }
 .activity-grid {
   display: flex;
-  gap: 2px;
+  gap: 1.5px;
   min-width: 424px;
 }
 .activity-week {
   display: grid;
   flex: 1;
-  gap: 2px;
+  grid-template-rows: 14px repeat(7, auto);
+  align-content: start;
+  gap: 1.5px;
   min-width: 0;
 }
 .activity-month {

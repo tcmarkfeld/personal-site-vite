@@ -76,8 +76,10 @@ export function ActivityGraph({ user }: { user: string }) {
         >
           {weeks.map((week, index) => {
             const first = new Date(week[0].date);
+            // Skip a label too close to the right edge to fit.
             const newMonth =
               index > 0 &&
+              index < weeks.length - 2 &&
               first.getUTCMonth() !==
                 new Date(weeks[index - 1][0].date).getUTCMonth();
             return (
