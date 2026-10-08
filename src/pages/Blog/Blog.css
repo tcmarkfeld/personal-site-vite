@@ -129,6 +129,8 @@
   margin: 14px 0;
   padding: 12px 14px;
   overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--card);

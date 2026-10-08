@@ -16,13 +16,16 @@
     <meta property="og:url" content="https://revise.timmarkfeld.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Revise" />
-    <meta property="og:image" content="https://revise.timmarkfeld.com/icon.png" />
+    <meta property="og:image" content="https://revise.timmarkfeld.com/og.png" />
     <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="512" />
-    <meta property="og:image:height" content="512" />
-    <meta property="og:image:alt" content="The Revise app icon" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:image" content="https://revise.timmarkfeld.com/icon.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Revise, a native Mac app for editing PDFs like a document, shown editing a resume"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://revise.timmarkfeld.com/og.png" />
     <link
       rel="apple-touch-icon"
       href="https://revise.timmarkfeld.com/icon.png"
@@ -163,11 +166,11 @@
       .brew code {
         flex: 1;
         min-width: 0;
-        overflow-x: auto;
         color: var(--strong);
         font: 12.5px 'Geist Mono', ui-monospace, monospace;
-        white-space: nowrap;
-        scrollbar-width: none;
+        line-height: 1.6;
+        /* Wrap at spaces on narrow screens instead of hiding the end. */
+        overflow-wrap: anywhere;
       }
       .brew code span:first-child {
         color: var(--muted);
@@ -227,6 +230,20 @@
         flex: 1;
         height: 1px;
         background: var(--line);
+      }
+      .product {
+        width: min(880px, calc(100vw - 32px));
+        margin: 0 0 28px 50%;
+        translate: -50% 0;
+      }
+      .product img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 14px;
+        box-shadow:
+          0 0 0 1px var(--line),
+          0 30px 60px -28px #1b234066;
       }
       .features {
         display: grid;
@@ -434,6 +451,15 @@
       </section>
 
       <h2>What it does</h2>
+      <figure class="product">
+        <img
+          src="screenshot.webp"
+          alt="Revise editing a sample resume, with a formatting toolbar like Google Docs above the page"
+          width="1600"
+          height="1224"
+          loading="lazy"
+        />
+      </figure>
       <ul class="features">
         <li>
           <strong>Type anywhere</strong>
