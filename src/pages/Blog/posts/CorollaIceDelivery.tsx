@@ -58,7 +58,7 @@ const story = [
   {
     label: 'How it went',
     paragraphs: [
-      'It runs the day-to-day operations through peak season and cut up to three hours off a delivery time each day.',
+      'It runs the day-to-day operations through peak season and cut up to three hours off each delivery day.',
     ],
   },
 ];
