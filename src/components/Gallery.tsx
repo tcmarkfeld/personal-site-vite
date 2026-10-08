@@ -51,7 +51,7 @@ export function Gallery() {
     },
     {
       title: 'Corolla Ice Delivery',
-      caption: 'Case study: the delivery app I shipped to both stores',
+      caption: 'A post about the delivery app I shipped to both stores',
       to: ROUTES.COROLLA,
       stage: <PhoneShot />,
     },

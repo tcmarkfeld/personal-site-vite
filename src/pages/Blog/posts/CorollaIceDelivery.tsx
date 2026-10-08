@@ -38,15 +38,28 @@ const screens = [
 const story = [
   {
     label: 'The problem',
-    body: 'Scheduling was manual. During peak season, every day’s deliveries had to be sorted and planned by hand.',
+    paragraphs: [
+      'Before the app, scheduling was all done by hand. During peak season someone had to sort through every delivery for the day and plan out the route before the driver could head out.',
+    ],
+  },
+  {
+    label: 'Planning the routes',
+    paragraphs: [
+      'A lot of the routing decisions came down to left turns. There are no traffic lights in and out of the neighborhoods, so with traffic, a left turn can take a really long time. I wanted the driver making as few of them as possible.',
+      'So routes start at the neighborhood closest to the warehouse, and work their way south. Along the way the route makes sure the neighborhoods the driver is going into are on the right-hand side of the road, so they can turn right to get in and right to get back out instead of sitting there waiting for a gap. Any neighborhood that was on the left gets delivered to on their way back.',
+    ],
   },
   {
     label: 'What I built',
-    body: 'A React Native app for drivers and operations, shipped to the App Store and Google Play. Route optimization replaced the manual scheduling, and a React site with a Node and MySQL backend meant drivers and ops ran on one stack end to end.',
+    paragraphs: [
+      'I built a React Native app for the drivers and the ops side and shipped it to the App Store and Google Play. The route optimization replaced the manual scheduling, and I built a React site with a Node and MySQL backend to go with it, so the drivers and ops were all on one stack.',
+    ],
   },
   {
-    label: 'The result',
-    body: 'The app ran day-to-day operations through peak season and cut daily delivery time by up to three hours.',
+    label: 'How it went',
+    paragraphs: [
+      'It runs the day-to-day operations through peak season and cut up to three hours off a delivery time each day.',
+    ],
   },
 ];
 
@@ -55,9 +68,10 @@ export function CorollaIceDelivery() {
     <>
       <section className="column post-lede">
         <p>
-          Corolla Ice Delivery delivers ice around Corolla, on North Carolina’s
-          Outer Banks. I owned their delivery app from design through both app
-          stores, plus the site and backend behind it.
+          Corolla Ice Delivery brings ice out to rental houses around Corolla,
+          on the Outer Banks of North Carolina. I built their delivery app, from
+          the design all the way through both app stores, plus the site and
+          backend behind it.
         </p>
       </section>
       <div className="case-screens" data-reveal>
@@ -94,9 +108,15 @@ export function CorollaIceDelivery() {
       </section>
 
       {story.map((part) => (
-        <section className="column case-part" key={part.label} data-reveal>
+        <section
+          className="column case-part prose"
+          key={part.label}
+          data-reveal
+        >
           <h2 className="label">{part.label}</h2>
-          <p>{part.body}</p>
+          {part.paragraphs.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
         </section>
       ))}
 

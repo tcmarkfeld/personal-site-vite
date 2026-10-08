@@ -69,7 +69,7 @@ const experience = [
       'Replaced manual scheduling with route optimization used in day-to-day operations during peak season. Built the supporting React site and Node/MySQL backend so drivers and ops ran on one stack end to end.',
     metric: 'Up to 3 hrs saved a day',
     href: 'https://corollaicedelivery.com/',
-    caseStudy: ROUTES.COROLLA,
+    post: ROUTES.COROLLA,
   },
 ];
 
@@ -345,9 +345,10 @@ export const Home = () => {
                   <p>{job.detail}</p>
                   <div className="job-foot">
                     <span className="chip chip-quiet">{job.metric}</span>
-                    {job.caseStudy && (
-                      <Link to={job.caseStudy} viewTransition>
-                        Case study <ArrowRight size={12} aria-hidden="true" />
+                    {job.post && (
+                      <Link to={job.post} viewTransition>
+                        Read the post{' '}
+                        <ArrowRight size={12} aria-hidden="true" />
                       </Link>
                     )}
                     <a href={job.href} target="_blank" rel="noreferrer">
@@ -364,7 +365,7 @@ export const Home = () => {
           <div className="column" data-reveal>
             <h2 className="label">Things I’ve made</h2>
             <p className="work-intro">
-              Open-source tools I’ve built, plus a case study.
+              Open-source tools I’ve built, and the delivery app I wrote about.
             </p>
           </div>
           <Gallery />

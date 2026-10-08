@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
+import { blogDescription } from '@/pages/Blog/postMeta';
 import { postDate, posts } from '@/pages/Blog/posts';
 import { useDarkTheme } from '@/lib/theme';
 import { useReveal } from '@/lib/useReveal';
@@ -35,9 +36,7 @@ export function BlogIndex() {
       <div className="edge-fade" aria-hidden="true" />
       <main id="main" className="column blog-index">
         <h1>Blog</h1>
-        <p className="blog-lede">
-          Write-ups on things I’ve built: how they work and what I learned.
-        </p>
+        <p className="blog-lede">{blogDescription}</p>
         <PostList />
       </main>
       <SiteFooter />
