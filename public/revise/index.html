@@ -236,7 +236,7 @@
         margin: 0 0 28px 50%;
         translate: -50% 0;
       }
-      .product img {
+      .product video {
         display: block;
         width: 100%;
         height: auto;
@@ -452,13 +452,19 @@
 
       <h2>What it does</h2>
       <figure class="product">
-        <img
-          src="screenshot.webp"
-          alt="Revise editing a sample resume, with a formatting toolbar like Google Docs above the page"
+        <video
+          id="demo"
+          src="demo.mp4"
+          poster="demo-poster.webp"
           width="1600"
-          height="1224"
-          loading="lazy"
-        />
+          height="930"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          aria-label="Revise editing a resume: a job title is retyped and a new Skills heading is added, with the text reflowing as it's typed"
+        ></video>
       </figure>
       <ul class="features">
         <li>
@@ -530,6 +536,14 @@
           document.getElementById('version').textContent = release.tag_name;
         })
         .catch(() => {});
+
+      // Respect reduced motion: show the first frame with controls instead.
+      const demo = document.getElementById('demo');
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        demo.removeAttribute('autoplay');
+        demo.pause();
+        demo.controls = true;
+      }
 
       const copyButton = document.getElementById('copy-brew');
       const copyStatus = document.getElementById('copy-status');
